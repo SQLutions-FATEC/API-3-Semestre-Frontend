@@ -14,17 +14,25 @@
 
 ## 📑 Sobre o projeto
 
+Navios são muito custosos em vários aspectos, sejam pelas suas dimensões, complexidades, entre outros fatores, e por estarem expostos ao ambiente marítimo, é necessário serem feitas manutenções periódicas, e essa situação geralmente resulta na contratação de uma empresa terceirizada para que a mesma seja encarregada da manutenção desses navios.
 
+O cliente, nesse caso, a empresa Altave, surge com o seguinte problema: o proprietário daquele navio pode sofrer prejuízos milionários em virtude de atrasos na entrega do navio. Portanto, é interessante que ele tenha um meio de monitoramento dos funcionários da empresa terceirizada, a fim de garantir que os mesmos estão cumprindo com suas obrigações.
 
-📌 Status do Projeto: 
+O produto solicitado pela Altave é um sistema de pontos que registra as movimentações dos funcionários, com dashboards de gráficos e geração de relatórios. O sistema deve ser capaz de registrar a entrada e saída dos funcionários, bem como a quantidade de horas trabalhadas, e gerar gráficos e relatórios com essas informações.
+
+📌 Status do Projeto: Sprint 1
 
 ### 🏁 Entregas de Sprints
 
+| Sprint  | Previsão    | Status       | Histórico |
+|---------|-------------|--------------|-----------|
+| 01      | 30/03/2025  | Etapa atual  | em breve  |
+| 02      | 27/04/2025	 | Etapa futura | em breve  |
+| 03      | 25/05/2025	 | Etapa futura | em breve  |
 
 ### 🎬 Apresentação Final
-Confira a seguir uma demonstração das funcionalidades para cada tipo de usuário do sistema:
 
-
+🔄 Em breve
 
 [→ Voltar ao topo](https://github.com/SQLutions-FATEC/API-3-Semestre/blob/main/README.md#projeto-sistema-de-ponto-e-gera%C3%A7%C3%A3o-de-relat%C3%B3rios)
 
@@ -34,28 +42,66 @@ Confira a seguir uma demonstração das funcionalidades para cada tipo de usuár
 
 #### ✅ Requisitos Funcionais
 
+| Código | Descrição                                                                         | Prioridade | Fator | Sprint |
+|:------:|-----------------------------------------------------------------------------------|:----------:|:-----:|:------:|
+| RF-1   | Desenvolver uma interface de cadastro de empresas e profissionais, incluindo foto |  🔴 Alta   |   1   |   1    |
+| RF-2   | Dashboard com lista de registros                                                  |  🔴 Alta   |   2   |   1    |
+| RF-3   | Permitir a geração e edição de registros de movimentação                          |  🔴 Alta   |   3   |   1    |
+| RF-4   | Desenvolver filtragem por data, empresa e profissional                            |  🔴 Alta   |   4   |   2    |
+| RF-5   | Dashboard com gráficos                                                            |  🔴 Alta   |   5   |   2    |
+| RF-6   | Permitir a extração de relatórios                                                 |  🔴 Alta   |   6   |   3    |
+| RF-7   | Login de identificação do usuário                                                 |  🟡 Média  |   7   |   3    |
+| RF-8   | API para consumo dos dados                                                        |  🟢 Baixa  |   8   |   2    |
 
 
 #### ✔️ Requisitos Não Funcionais
 
+| Código | Descrição                   |
+|:------:|-----------------------------|
+| RNF-1  | Front Minimalista           |
+| RNF-2  | Guia de instalação          |
+| RNF-3  | Documentação API            |
+| RNF-4  | Modelagem do Banco de Dados |
 
 
 ### Backlog das Sprints
 
 #### Sprint 1
 
+| Épico |  ID  |  Sprint  | Ator    | Ação                                          | Motivo                                                     |
+|:-----:|:----:|:--------:|---------|-----------------------------------------------|------------------------------------------------------------|
+|   1   | US-1 | Sprint 1 | Usuário | Altera o horário de entrada de um funcionário | Para corrigir eventuais falhas no registro automático      |
+|   3   | US-3 | Sprint 1 | Usuário | Visualiza foto do funcionário                 | Para identificá-lo mais facilmente                         |
+|   1   | US-4 | Sprint 1 | Usuário | Descreve o turno do funcionário               | Para centralizar informações e ter parâmetros nas análises |
 
 
 #### Sprint 2
 
+| Épico |  ID  |  Sprint  | Ator    | Ação                                                                         | Motivo                                                                                            |
+|:-----:|:----:|:--------:|---------|------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+|   4   | US-5 | Sprint 2 | Usuário | Determina filtros no momento de visualizar registros de movimentação         | Para visualizar apenas informações pertinentes ao cargo, funcionário ou janela de tempo definidos |
+|   4   | US-6 | Sprint 2 | Usuário | Visualiza registros de movimentação, contendo direção, horário e funcionário | Para obter informações acerca de entradas ou saídas                                               |
+|   5   | US-7 | Sprint 2 | Usuário | Visualiza gráficos baseados nos relatórios                                   | Para ter acesso a diversas análises dos dados gerados                                             |
 
 
 #### Sprint 3
 
+| Épico |  ID  |  Sprint  | Ator    | Ação                        | Motivo                                                 |
+|:-----:|:----:|:--------:|---------|-----------------------------|--------------------------------------------------------|
+|   2   | US-2 | Sprint 3 | Usuário | Exporta relatórios em .xlsx | Para ter acesso aos dados em um formato mais universal |
 
 
 ### User Stories
 
+| Épico | ID   | Sprint   | Ator    | Ação                                                                         | Motivo                                                                                            |
+|:-----:|:----:|:--------:|---------|------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+|   1   | US-1 | Sprint 1 | Usuário | Altera o horário de entrada de um funcionário                                | Para corrigir eventuais falhas no registro automático                                             |
+|   2   | US-2 | Sprint 3 | Usuário | Exporta relatórios em .xlsx                                                  | Para ter acesso aos dados em um formato mais universal                                            |
+|   3   | US-3 | Sprint 1 | Usuário | Visualiza foto do funcionário                                                | Para identificá-lo mais facilmente                                                                |
+|   1   | US-4 | Sprint 1 | Usuário | Descreve o turno do funcionário                                              | Para centralizar informações e ter parâmetros nas análises                                        |
+|   4   | US-5 | Sprint 2 | Usuário | Determina filtros no momento de visualizar registros de movimentação         | Para visualizar apenas informações pertinentes ao cargo, funcionário ou janela de tempo definidos |
+|   4   | US-6 | Sprint 2 | Usuário | Visualiza registros de movimentação, contendo direção, horário e funcionário | Para obter informações acerca de entradas ou saídas                                               |
+|   5   | US-7 | Sprint 2 | Usuário | Visualiza gráficos baseados nos relatórios                                   | Para ter acesso a diversas análises dos dados gerados                                             |
 
 
 [→ Voltar ao topo](https://github.com/SQLutions-FATEC/API-3-Semestre/blob/main/README.md#projeto-sistema-de-ponto-e-gera%C3%A7%C3%A3o-de-relat%C3%B3rios)
@@ -66,7 +112,8 @@ Como planejamento foi feito wireframe para validação do fluxo com o cliente, a
 
 > 🔗 **Links gerais**<br>
 >
-> - 
+> - Documentação do projeto: [API - Sistema de Pontos](https://sqlutions.notion.site/API-Sistema-de-pontos-1a7af2284900804dbcf3c383680968a7
+    )
 
 [→ Voltar ao topo](https://github.com/SQLutions-FATEC/API-3-Semestre/blob/main/README.md#projeto-sistema-de-ponto-e-gera%C3%A7%C3%A3o-de-relat%C3%B3rios)
 
