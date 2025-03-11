@@ -10,8 +10,9 @@
 3. Rode o comando `nvm use` para utilizar a versão do node do projeto e, consequentemente, do npm, localizada no arquivo `.nvmrc`
 4. Navegue até a pasta `front` do projeto
 5. Rode o comando `npm install`
-6. Após instalada as dependências, crie um arquivo `.env` na pasta `front` e copie o `.env.example` para o dentro do arquivo recém criado
-7. Rode o comando `npm run dev` para subir o projeto localmente na porta `5173`
+6. (Opcional) Se estiver usando VsCode, instale o plugin do `Prettier`
+7. Após instalada as dependências, crie um arquivo `.env` na pasta `front` e copie o `.env.example` para o dentro do arquivo recém criado
+8. Rode o comando `npm run dev` para subir o projeto localmente na porta `5173`
 
 ## Estrutura de pastas
 
@@ -21,5 +22,3 @@
 2. Definir uma biblioteca UI (botão, campo de texto, select, multiple select, date picker, table)
 3. Pinia (store do vue)
 4. Vue router (roteamento entre páginas)
-5. ESlint
-6. Axios
