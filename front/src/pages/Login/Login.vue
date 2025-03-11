@@ -1,4 +1,4 @@
-<!-- <script>
+<script>
 import { ref } from 'vue'
 
 export default {
@@ -18,4 +18,4 @@ export default {
 
 <template>
   <button @click="count++">{{ count }}</button>
-</template> -->
+</template>

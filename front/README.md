@@ -21,4 +21,3 @@
 1. Colocar o mock (mirage)
 2. Definir uma biblioteca UI (botão, campo de texto, select, multiple select, date picker, table)
 3. Pinia (store do vue)
-4. Vue router (roteamento entre páginas)
