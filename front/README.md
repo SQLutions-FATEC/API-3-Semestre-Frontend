@@ -1,5 +1,25 @@
-# Vue 3 + Vite
+# Front
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Como rodar o projeto
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+### Linux
+
+1. Baixe o node e o npm `sudo apt update`
+   `sudo apt install nodejs npm`
+2. (Opcional) Baixe o NVM `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash`
+3. Rode o comando `nvm use` para utilizar a versão do node do projeto e, consequentemente, do npm, localizada no arquivo `.nvmrc`
+4. Navegue até a pasta `front` do projeto
+5. Rode o comando `npm install`
+6. Após instalada as dependências, crie um arquivo `.env` na pasta `front` e copie o `.env.example` para o dentro do arquivo recém criado
+7. Rode o comando `npm run dev` para subir o projeto localmente na porta `5173`
+
+## Estrutura de pastas
+
+## O que falta fazer
+
+1. Colocar o mock (mirage)
+2. Definir uma biblioteca UI (botão, campo de texto, select, multiple select, date picker, table)
+3. Pinia (store do vue)
+4. Vue router (roteamento entre páginas)
+5. ESlint
+6. Axios

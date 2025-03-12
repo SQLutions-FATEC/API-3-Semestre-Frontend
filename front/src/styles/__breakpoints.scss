@@ -1,0 +1,18 @@
+$sizes: (
+  tablet: 1023px,
+  mobile: 767px,
+);
+
+@mixin device($device) {
+  @if $device ==tablet {
+    @media (min-width: 768px) and (max-width: map-get($sizes, tablet)) {
+      @content;
+    }
+  }
+
+  @else if $device ==mobile {
+    @media (max-width: map-get($sizes, mobile)) {
+      @content;
+    }
+  }
+}
