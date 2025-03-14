@@ -1,19 +1,17 @@
 <script>
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 export default {
   setup() {
-    const count = ref(0)
+    const count = ref(0);
 
     return {
-      count
-    }
+      count,
+    };
   },
 
-  mounted() {
-    console.log(this.count)
-  }
-}
+  mounted() {},
+};
 </script>
 
 <template>

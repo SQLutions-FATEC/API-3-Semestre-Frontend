@@ -7,7 +7,7 @@ export default {
 <template>
   <div id="app">
     <nav>
-      <router-link to="/login">Login</router-link>
+      <router-link to="/">Login</router-link>
     </nav>
     <router-view />
   </div>
