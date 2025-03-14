@@ -31,5 +31,4 @@
 
 ## O que falta fazer
 
-1. Colocar o mock (mirage)
-2. Definir uma biblioteca UI (botão, campo de texto, select, multiple select, date picker, table)
+1. Definir uma biblioteca UI (botão, campo de texto, select, multiple select, date picker, table)
