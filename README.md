@@ -1,8 +1,6 @@
-# Front
+# Como rodar o projeto
 
-## Como rodar o projeto
-
-### Linux
+## Linux
 
 1. Baixe o node e o npm `sudo apt update`
    `sudo apt install nodejs npm`
@@ -27,8 +25,28 @@
 7. Após instalada as dependências, crie um arquivo `.env` na pasta `front` e copie o `.env.example` para o dentro do arquivo recém criado
 8. Rode o comando `npm run dev` para subir o projeto localmente na porta `5173`
 
-## Estrutura de pastas
+# Estrutura do projeto
 
-## O que falta fazer
+O projeto segue uma estrutura de pastas **agrupadas por tipo**, onde os arquivos são organizados com base em sua função ou recurso no sistema. Essa abordagem facilita a manutenção e a localização de arquivos relacionados a uma mesma camada ou funcionalidade.
 
-1. Definir uma biblioteca UI (botão, campo de texto, select, multiple select, date picker, table)
+Aqui está uma visão geral da estrutura:
+
+```
+src/
+├── assets/ # Arquivos estáticos (imagens, fonts, etc.)
+├── components/ # Componentes reutilizáveis
+├── mock/ # Dados fictícios para API
+├── pages/ # Páginas (rotas do projeto)
+├── router/ # Configuração das rotas (Vue Router)
+├── services/ # Serviços (API calls, lógica de negócio)
+├── stores/ # Gerenciamento de estado (Pinia)
+├── styles/ # Estilos globais ou específicos
+├── utils/ # Utilitários (funções helper, constants, etc.)
+└── main.js # Ponto de entrada da aplicação
+```
+
+## Benefícios
+
+- **Organização clara**: Facilita a localização de arquivos relacionados a uma mesma camada ou funcionalidade.
+- **Manutenção simplificada**: Alterações em uma camada específica (como componentes ou stores) não afetam outras partes do projeto.
+- **Escalabilidade**: A estrutura é fácil de expandir à medida que o projeto cresce.
