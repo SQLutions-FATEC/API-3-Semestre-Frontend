@@ -1,7 +1,12 @@
 <script>
+import { Button } from 'ant-design-vue';
 import { ref } from 'vue';
 
 export default {
+  components: {
+    'a-button': Button,
+  },
+
   setup() {
     const count = ref(0);
 
@@ -15,5 +20,5 @@ export default {
 </script>
 
 <template>
-  <button @click="count++">{{ count }}</button>
+  <a-button type="primary" @click="count++">{{ count }}</a-button>
 </template>

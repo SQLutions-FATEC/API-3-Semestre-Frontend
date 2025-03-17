@@ -5,7 +5,7 @@ export default {
 </script>
 
 <template>
-  <div id="app">
+  <div>
     <nav>
       <router-link to="/">Login</router-link>
     </nav>
