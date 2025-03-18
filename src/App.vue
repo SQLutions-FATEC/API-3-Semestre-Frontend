@@ -30,6 +30,15 @@ export default {
   <div>
     <top-bar @toggle-sidebar="toggleSidebar" />
     <side-bar :is-open="isSidebarOpen" @toggle-sidebar="toggleSidebar" />
-    <router-view />
+    <div class="app">
+      <router-view />
+    </div>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+</style>
