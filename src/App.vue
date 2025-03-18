@@ -30,9 +30,6 @@ export default {
   <div>
     <top-bar @toggle-sidebar="toggleSidebar" />
     <side-bar :is-open="isSidebarOpen" @toggle-sidebar="toggleSidebar" />
-    <nav>
-      <router-link to="/">Company</router-link>
-    </nav>
     <router-view />
   </div>
 </template>
