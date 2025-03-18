@@ -3,7 +3,7 @@ import { Button } from 'ant-design-vue';
 import { ref } from 'vue';
 
 export default {
-  name: 'Company',
+  name: 'Employee',
 
   components: {
     'a-button': Button,

@@ -16,8 +16,14 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
+        // additionalData: `
+        //   @use "${path.resolve(__dirname, 'src/styles/__border-radius.module.scss')}";
+        //   @use "${path.resolve(__dirname, 'src/styles/__colors.module.scss')}";
+        //   @use "${path.resolve(__dirname, 'src/styles/__fonts.module.scss')}";
+        //   @use "${path.resolve(__dirname, 'src/styles/__spacers.module.scss')}";
+        // `,
         additionalData: `
-          @import "${path.resolve(__dirname, 'src/styles/main.scss')}";
+          @use "${path.resolve(__dirname, 'src/styles/main.scss')}" as *;
         `,
       },
     },
