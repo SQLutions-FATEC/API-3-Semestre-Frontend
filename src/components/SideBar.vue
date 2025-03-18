@@ -42,11 +42,15 @@ export default {
 <template>
   <a-drawer
     placement="left"
-    title="Altave"
     :bodyStyle="{ padding: '0px' }"
     :open="isOpen"
     @close="toggleSidebar"
   >
+    <template #title>
+      <router-link to="/" style="color: inherit; text-decoration: underline">
+        Altave
+      </router-link>
+    </template>
     <div class="side-bar">
       <a-button block type="primary" @click="redirect('employee')">
         Funcionários

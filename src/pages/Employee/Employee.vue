@@ -24,3 +24,9 @@ export default {
     <a-button type="primary" @click="createEmployee">Cadastrar</a-button>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.employee {
+  padding: $spacingXxl;
+}
+</style>
