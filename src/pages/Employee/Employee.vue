@@ -26,6 +26,8 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+@import '@/styles/__spacers.module.scss';
+
 .employee {
   padding: $spacingXxl;
 }

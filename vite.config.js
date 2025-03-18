@@ -13,4 +13,16 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
     },
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `
+          @import "${path.resolve(__dirname, 'src/styles/__border-radius.module.scss')}";
+          @import "${path.resolve(__dirname, 'src/styles/__colors.module.scss')}";
+          @import "${path.resolve(__dirname, 'src/styles/__fonts.module.scss')}";
+          @import "${path.resolve(__dirname, 'src/styles/__spacers.module.scss')}";
+        `,
+      },
+    },
+  },
 });
