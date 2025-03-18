@@ -1,12 +1,23 @@
+import Company from '@/pages/Company/Company.vue';
+import Employee from '@/pages/Employee/Employee.vue';
+import Home from '@/pages/Home/Home.vue';
 import { createRouter, createWebHistory } from 'vue-router';
-
-import Login from '@/pages/Login/Login.vue';
 
 const routes = [
   {
     path: '/',
-    name: 'Login',
-    component: Login,
+    name: 'Home',
+    component: Home,
+  },
+  {
+    path: '/employee',
+    name: 'Employee',
+    component: Employee,
+  },
+  {
+    path: '/company',
+    name: 'Company',
+    component: Company,
   },
 ];
 
