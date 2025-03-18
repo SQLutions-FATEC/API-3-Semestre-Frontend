@@ -1,5 +1,5 @@
 <script>
-import { Button } from 'ant-design-vue';
+import { Button, Input } from 'ant-design-vue';
 import { ref } from 'vue';
 
 export default {
@@ -7,20 +7,67 @@ export default {
 
   components: {
     'a-button': Button,
+    'a-input': Input,
   },
 
   setup() {
-    const count = ref(0);
+    const companyName = ref('');
+    const cnpj = ref('');
+    const tradeName = ref('');
+
+    const createCompany = () => {};
 
     return {
-      count,
+      createCompany,
+      companyName,
+      cnpj,
+      tradeName,
     };
   },
-
-  mounted() {},
 };
 </script>
 
 <template>
-  <a-button type="primary" @click="count++">{{ count }}</a-button>
+  <div class="company">
+    <h1>Cadastro de empresa</h1>
+    <div class="company__content">
+      <div class="content__input">
+        <a-input v-model:value="companyName" placeholder="Razão social" />
+      </div>
+      <div class="content__input">
+        <a-input v-model:value="cnpj" placeholder="CNPJ" />
+      </div>
+      <div class="content__input">
+        <a-input v-model:value="tradeName" placeholder="Nome fantasia" />
+      </div>
+      <div class="content__action">
+        <a-button type="primary" style="width: 250px" @click="createCompany">
+          Cadastrar
+        </a-button>
+      </div>
+    </div>
+  </div>
 </template>
+
+<style lang="scss" scoped>
+.company {
+  padding: $spacingXxl;
+
+  .company__content {
+    padding: $spacingXxl 0px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+
+    .content__input {
+      flex: 0 0 calc(50% - 16px);
+      box-sizing: border-box;
+    }
+    .content__action {
+      flex: 0 0 100%;
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
+</style>

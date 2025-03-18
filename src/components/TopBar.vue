@@ -1,8 +1,10 @@
 <script>
+import { Button } from 'ant-design-vue';
 import { MenuOutlined } from '@ant-design/icons-vue';
 
 export default {
   components: {
+    'a-button': Button,
     MenuOutlined,
   },
 
