@@ -1,23 +1,25 @@
 <script>
-import { Button, Drawer } from 'ant-design-vue';
-import { ref } from 'vue';
+import { Drawer } from 'ant-design-vue';
 
 export default {
+  props: {
+    isOpen: {
+      required: true,
+      type: Boolean,
+    },
+  },
+
   components: {
-    'a-button': Button,
     'a-drawer': Drawer,
   },
 
-  setup() {
-    const open = ref(false);
-
-    const toggleDrawer = () => {
-      open.value = !open.value;
+  setup(props, { emit }) {
+    const toggleSidebar = () => {
+      emit('toggle-sidebar');
     };
 
     return {
-      open,
-      toggleDrawer,
+      toggleSidebar,
     };
   },
 };
@@ -25,14 +27,11 @@ export default {
 
 <template>
   <div>
-    <a-button type="primary" @click="toggleDrawer">
-      {{ open ? 'Fechar' : 'Abrir' }}
-    </a-button>
     <a-drawer
       placement="left"
       title="Basic Drawer"
-      :open="open"
-      @close="toggleDrawer"
+      :open="isOpen"
+      @close="toggleSidebar"
     >
       <div>
         <h3>Menu Lateral</h3>
