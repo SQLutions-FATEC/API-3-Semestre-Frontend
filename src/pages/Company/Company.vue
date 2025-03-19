@@ -1,6 +1,7 @@
 <script>
 import { Button, Input } from 'ant-design-vue';
 import { ref } from 'vue';
+import company from '@/services/company';
 
 export default {
   name: 'Company',
@@ -15,7 +16,18 @@ export default {
     const cnpj = ref('');
     const tradeName = ref('');
 
-    const createCompany = () => {};
+    const createCompany = async () => {
+      const payload = {
+        company_name: companyName.value,
+        cnpj: cnpj.value,
+        trade_name: tradeName.value,
+      };
+      try {
+        await company.create(payload);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
     return {
       createCompany,
@@ -57,7 +69,7 @@ export default {
     padding: $spacingXxl 0px;
     display: flex;
     flex-wrap: wrap;
-    gap: 32px;
+    gap: $spacingXxl;
 
     .content__input {
       flex: 0 0 calc(50% - 16px);
