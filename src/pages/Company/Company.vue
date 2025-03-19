@@ -1,14 +1,17 @@
 <script>
-import { Button, Input } from 'ant-design-vue';
+import { Button } from 'ant-design-vue';
 import { ref } from 'vue';
 import company from '@/services/company';
+import AtNumberInput from '@/components/Input/AtNumberInput.vue';
+import AtInput from '@/components/Input/AtInput.vue';
 
 export default {
   name: 'Company',
 
   components: {
     'a-button': Button,
-    'a-input': Input,
+    'at-input': AtInput,
+    'at-number-input': AtNumberInput,
   },
 
   setup() {
@@ -24,9 +27,16 @@ export default {
       };
       try {
         await company.create(payload);
+        resetInputs();
       } catch (error) {
         console.log(error);
       }
+    };
+
+    const resetInputs = () => {
+      companyName.value = '';
+      cnpj.value = '';
+      tradeName.value = '';
     };
 
     return {
@@ -44,13 +54,17 @@ export default {
     <h1>Cadastro de empresa</h1>
     <div class="company__content">
       <div class="content__input">
-        <a-input v-model:value="companyName" placeholder="Razão social" />
+        <at-input v-model:value="companyName" placeholder="Razão social" />
       </div>
       <div class="content__input">
-        <a-input v-model:value="cnpj" placeholder="CNPJ" />
+        <at-number-input
+          v-model:value="cnpj"
+          mask="##.###.###/####-##"
+          placeholder="CNPJ"
+        />
       </div>
       <div class="content__input">
-        <a-input v-model:value="tradeName" placeholder="Nome fantasia" />
+        <at-input v-model:value="tradeName" placeholder="Nome fantasia" />
       </div>
       <div class="content__action">
         <a-button type="primary" style="width: 250px" @click="createCompany">

@@ -1,21 +1,39 @@
-<!-- <script>
-import { ref } from 'vue'
+<script>
+import { Input } from 'ant-design-vue';
 
 export default {
-  setup() {
-    const count = ref(0)
+  name: 'AtInput',
 
-    return {
-      count
-    }
+  components: {
+    'a-input': Input,
   },
 
-  mounted() {
-    console.log(this.count)
-  }
-}
+  props: {
+    placeholder: {
+      required: true,
+      type: String,
+    },
+    value: {
+      default: '',
+      type: String,
+    },
+  },
+
+  emits: ['update:value'],
+
+  setup(props, { emit }) {
+    const handleInput = (event) => {
+      emit('update:value', event.target.value);
+    };
+
+    return {
+      placeholder: props.placeholder,
+      handleInput,
+    };
+  },
+};
 </script>
 
 <template>
-  <button @click="count++">{{ count }}</button>
-</template> -->
+  <a-input :placeholder="placeholder" :value="value" @input="handleInput" />
+</template>
