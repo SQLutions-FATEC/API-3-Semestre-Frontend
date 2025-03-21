@@ -17,7 +17,7 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         additionalData: `
-          @import "${path.resolve(__dirname, 'src/styles/main.scss')}";
+          @use "@/styles/main.scss" as *;
         `,
       },
     },
