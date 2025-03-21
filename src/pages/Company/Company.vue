@@ -17,9 +17,15 @@ export default {
   setup() {
     const companyName = ref('');
     const cnpj = ref('');
+    const errorMessage = ref('');
     const tradeName = ref('');
 
     const createCompany = async () => {
+      if (!companyName.value || !cnpj.value || !tradeName.value) {
+        alert('Todos os campos são obrigatórios');
+        return;
+      }
+
       const payload = {
         company_name: companyName.value,
         cnpj: cnpj.value,
@@ -27,9 +33,20 @@ export default {
       };
       try {
         await company.create(payload);
+        alert(`Empresa ${tradeName.value} criada`);
         resetInputs();
       } catch (error) {
-        console.log(error);
+        console.error(error);
+      }
+    };
+
+    const validateCnpj = (event) => {
+      const newValue = event.target.value;
+      const rawValue = newValue.replace(/\D/g, '');
+      if (rawValue.length === 14) {
+        errorMessage.value = '';
+      } else {
+        errorMessage.value = 'CNPJ deve ter 14 dígitos.';
       }
     };
 
@@ -43,7 +60,9 @@ export default {
       createCompany,
       companyName,
       cnpj,
+      errorMessage,
       tradeName,
+      validateCnpj,
     };
   },
 };
@@ -61,6 +80,8 @@ export default {
           v-model:value="cnpj"
           mask="##.###.###/####-##"
           placeholder="CNPJ"
+          :error-message="errorMessage"
+          @input="validateCnpj"
         />
       </div>
       <div class="content__input">

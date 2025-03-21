@@ -24,25 +24,15 @@ export default {
     },
   },
 
-  emits: ['update:value', 'update:errorMessage'],
+  emits: ['update:value'],
 
   directives: { mask },
 
   setup(props, { emit }) {
     const inputValue = ref(props.value);
-    const error = ref(props.errorMessage);
 
     watch(inputValue, (newValue) => {
       emit('update:value', newValue);
-
-      const rawValue = newValue.replace(/\D/g, '');
-      if (rawValue.length === 14) {
-        error.value = '';
-      } else {
-        error.value = 'CNPJ deve ter 14 dígitos.';
-      }
-
-      emit('update:errorMessage', error.value);
     });
 
     watch(
@@ -54,7 +44,6 @@ export default {
 
     return {
       inputValue,
-      error,
     };
   },
 };
@@ -68,6 +57,6 @@ export default {
       :value="inputValue"
       @input="(event) => (inputValue = event.target.value)"
     />
-    <p v-if="error" style="color: red">{{ error }}</p>
+    <p v-if="errorMessage" style="color: red">{{ errorMessage }}</p>
   </div>
 </template>
