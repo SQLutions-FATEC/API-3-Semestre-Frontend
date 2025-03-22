@@ -1,6 +1,6 @@
 <script>
-import { Button } from 'ant-design-vue';
-import { ref } from 'vue';
+import { Button,  } from 'ant-design-vue';
+import { DownOutlined } from '@ant-design/icons-vue';
 
 export default {
   name: 'Employee',
@@ -10,17 +10,29 @@ export default {
   },
 
   setup() {
-    const count = ref(0);
-
-    return {
-      count,
+    createEmployee
+    
+const handleMenuClick = ({ key }) => {
+  switch (key) {
+    case '1':
+      dropdownText.value = 'Opção 1 selecionada';
+      break;
+    case '2':
+      dropdownText.value = 'Opção 2 selecionada';
+      break;
+    case '3':
+      dropdownText.value = 'Opção 3 selecionada';
+      break;
+    default:
+      dropdownText.value = 'Selecione uma opção';
+};
+}
+  return {
+      createEmployee
     };
   },
-
-  mounted() {},
 };
 </script>
-
 <template>
   <div class="employee">
     <h1>Cadastro de funcionario</h1>
@@ -37,6 +49,7 @@ export default {
       <div class="content__input">
         <a-input v-model:value="bloodType" placeholder="Tipo sanguíneo" />
       </div>
+
       <a-dropdown>
     <a class="ant-dropdown-link" @click.prevent>
       Função
@@ -67,3 +80,4 @@ export default {
     </div>
   </div>
 </template>
+
