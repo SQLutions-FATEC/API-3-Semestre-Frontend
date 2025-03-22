@@ -23,7 +23,7 @@ export default {
 
 <template>
   <div class="employee">
-    <h1>Cadastro de empresa</h1>
+    <h1>Cadastro de funcionario</h1>
     <div class="employee__content">
       <div class="content__input">
         <a-input v-model:value="employeeName" placeholder="Nome completo" />
@@ -31,15 +31,31 @@ export default {
       <div class="content__input">
         <a-input v-model:value="cpf" placeholder="CPF" />
       </div>
-      <div class="ant-dropdown-link">
+      <div class="content__input">
         <a-input v-model:value="birthDate" placeholder="Data de nascimento" />
       </div>
       <div class="content__input">
         <a-input v-model:value="bloodType" placeholder="Tipo sanguíneo" />
       </div>
-      <div class="content__input">
-        <a-input v-model:value="occupation" placeholder="Função" />
-      </div>
+      <a-dropdown>
+    <a class="ant-dropdown-link" @click.prevent>
+      Função
+      <DownOutlined />
+    </a>
+    <template #overlay>
+      <a-menu>
+        <a-menu-item key="1">
+          <a href="javascript:;">Engenheiro</a>
+        </a-menu-item>
+        <a-menu-item key="2">
+          <a href="javascript:;">Pintor</a>
+        </a-menu-item>
+        <a-menu-item key="3">
+          <a href="javascript:;">Criar nova função</a>
+        </a-menu-item>
+      </a-menu>
+    </template>
+  </a-dropdown>
       <div class="content__input">
         <a-input v-model:value="company" placeholder="Empresa" />
       </div>
