@@ -73,7 +73,7 @@ export default {
     <h1>Cadastro de empresa</h1>
     <div class="company__content">
       <div class="content__input">
-        <at-input v-model:value="companyName" placeholder="Razão social" />
+        <at-input v-model:value="companyName" placeholder="Razão social" text />
       </div>
       <div class="content__input">
         <at-number-input
@@ -85,7 +85,7 @@ export default {
         />
       </div>
       <div class="content__input">
-        <at-input v-model:value="tradeName" placeholder="Nome fantasia" />
+        <at-input v-model:value="tradeName" placeholder="Nome fantasia" text />
       </div>
       <div class="content__action">
         <a-button type="primary" style="width: 250px" @click="createCompany">
