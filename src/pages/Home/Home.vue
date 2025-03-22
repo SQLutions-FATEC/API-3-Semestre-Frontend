@@ -1,26 +1,58 @@
 <script>
-import { Button } from 'ant-design-vue';
-import { ref } from 'vue';
+import { Select } from 'ant-design-vue';
+import { onMounted, ref } from 'vue';
+import company from '@/services/company';
 
 export default {
   name: 'Home',
 
   components: {
-    'a-button': Button,
+    Select,
   },
 
   setup() {
-    const count = ref(0);
+    const selectedCompany = ref('');
+
+    const getCompanies = async () => {
+      try {
+        await company.get();
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const handleChange = (event) => {
+      const companyId = event.target.value;
+
+      router.push({
+        path: '/company',
+        query: { company_id: companyId },
+      });
+    };
+
+    onMounted(async () => {
+      await getCompanies();
+    });
 
     return {
-      count,
+      getCompanies,
+      handleChange,
+      selectedCompany,
     };
   },
-
-  mounted() {},
 };
 </script>
 
 <template>
-  <a-button type="primary" @click="count++">{{ count }}</a-button>
+  <a-select
+    v-model:value="selectedCompany"
+    placeholder="Empresas"
+    style="width: 120px"
+    @change="handleChange"
+  >
+    <a-select-option value="jack">Jack</a-select-option>
+    <a-select-option value="lucy">Lucy</a-select-option>
+    <a-select-option value="disabled" disabled>Disabled</a-select-option>
+    <a-select-option value="Yiminghe">yiminghe</a-select-option>
+  </a-select>
 </template>

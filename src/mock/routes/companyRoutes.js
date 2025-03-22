@@ -4,6 +4,19 @@ import { companies } from '@/mock/seeds/companySeeds';
 const companyRoutes = [
   mockFlag(
     {
+      method: 'get',
+      url: '/company',
+      result: () => {
+        return APIFailureWrapper({
+          content: companies,
+          errorMessage: 'Erro ao listar empresa',
+        });
+      },
+    },
+    'on'
+  ),
+  mockFlag(
+    {
       method: 'post',
       url: '/company',
       result: ({ requestBody }) => {
