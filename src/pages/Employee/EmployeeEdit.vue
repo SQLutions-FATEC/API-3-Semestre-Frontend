@@ -67,19 +67,19 @@ export default {
     <h1>Edição de Funcionário</h1>
     <div class="edit_employee_content">
        <div class="content__input">
-            <a-input v-model:value="employeeName" placeholder="Nome completo" />
+            <a-input v-model:value="employeeName" placeholder="Nome completo" :disabled="!isEditing" />
       </div>
 
       <div class="content__input">
-        <a-input v-model:value="employeeCpf" placeholder="CPF" />
+        <a-input v-model:value="employeeCpf" placeholder="CPF" :disabled="!isEditing" />
       </div>
 
       <div class="content__input">
-        <a-input v-model:value="employeeBirthDate" placeholder="Data de nascimento" />
+        <a-input v-model:value="employeeBirthDate" placeholder="Data de nascimento" :disabled="!isEditing" />
       </div>
       
       <div class="content__input">
-        <a-input v-model:value="employeeBloodType" placeholder="Tipo sanguíneo" />
+        <a-input v-model:value="employeeBloodType" placeholder="Tipo sanguíneo" :disabled="!isEditing" />
       </div>
 
       <a-dropdown>
@@ -98,7 +98,7 @@ export default {
       </a-dropdown>
 
       <div class="content__input">
-        <a-input v-model:value="company" placeholder="Empresa" />
+        <a-input v-model:value="company" placeholder="Empresa" :disabled="!isEditing" />
       </div>
 
     </div>
