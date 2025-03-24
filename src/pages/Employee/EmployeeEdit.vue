@@ -22,6 +22,7 @@ export default {
     const employeeBirthDate = ref('');
     const employeeBloodType = ref('');
     const employeeFunction = ref('Selecione uma função');
+    const company = ref('');
 
     const createEmployee = () => {};
 
@@ -37,7 +38,7 @@ export default {
                 employeeFunction.value = 'Pintor';
             break;
             default:
-                employeeFunction.value = 'Adicione uma função';
+                employeeFunction.value = 'Criar nova função';
         }
     };
 
@@ -48,6 +49,7 @@ export default {
         employeeBirthDate,
         employeeBloodType,
         employeeFunction,
+        company,
         handleMenuClick
     };
     },
