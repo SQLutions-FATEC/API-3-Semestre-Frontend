@@ -23,8 +23,13 @@ export default {
     const employeeBloodType = ref('');
     const employeeFunction = ref('Selecione uma função');
     const company = ref('');
+    const isEditing = ref(false);
 
     const editEmployee = () => {};
+
+    const toggleEdit = () => {
+        isEditing.value = !isEditing.value;
+    };
 
     const handleMenuClick = ({ key }) => {
         switch (key) {
@@ -43,6 +48,7 @@ export default {
     };
 
     return{
+        toggleEdit,
         createEmployee,
         employeeName,
         employeeCpf,
@@ -50,6 +56,7 @@ export default {
         employeeBloodType,
         employeeFunction,
         company,
+        isEditing,
         handleMenuClick
     };
     },
