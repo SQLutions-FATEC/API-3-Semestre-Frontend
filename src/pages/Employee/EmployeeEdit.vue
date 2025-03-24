@@ -101,9 +101,34 @@ export default {
         <a-input v-model:value="company" placeholder="Empresa" :disabled="!isEditing" />
       </div>
 
+      <div class="content__action">
+        <a-button type="primary" style="width: 250px" @click="toggleEditMode">
+          {{ isEditing ? 'Confirmar' : 'Editar' }}
+        </a-button>
+      </div>
+
     </div>
  </div>
 </template>
 <style lang = "scss" scoped>
+ .edit_employee {
+  padding: $spacingXxl;
 
+  .edit_employee_content {
+    padding: $spacingXxl 0px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+
+    .content__input {
+      flex: 0 0 calc(50% - 16px);
+      box-sizing: border-box;
+    }
+    .content__action {
+      flex: 0 0 100%;
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
 </style>
