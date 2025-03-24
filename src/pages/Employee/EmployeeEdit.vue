@@ -59,7 +59,7 @@ export default {
  <div class="edit_employee">
     <h1>Edição de Funcionário</h1>
     <div class="edit_employee_content">
-       <div class="content_input">
+       <div class="content__input">
             <a-input v-model:value="employeeName" placeholder="Nome completo" />
       </div>
 
