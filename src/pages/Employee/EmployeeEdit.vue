@@ -90,6 +90,10 @@ export default {
         </template>
       </a-dropdown>
 
+      <div class="content__input">
+        <a-input v-model:value="company" placeholder="Empresa" />
+      </div>
+
     </div>
  </div>
 </template>
