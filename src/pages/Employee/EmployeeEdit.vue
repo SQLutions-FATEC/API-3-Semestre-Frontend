@@ -24,7 +24,7 @@ export default {
     const employeeFunction = ref('Selecione uma função');
     const company = ref('');
 
-    const createEmployee = () => {};
+    const editEmployee = () => {};
 
     const handleMenuClick = ({ key }) => {
         switch (key) {
