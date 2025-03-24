@@ -56,7 +56,12 @@ export default {
 }; 
 </script>
 <template>
-
+ <div class="edit_employee">
+    <h1>Edição de Funcionário</h1>
+    <div class="edit_employee_content">
+      
+    </div>
+ </div>
 </template>
 <style lang = "scss" scoped>
 
