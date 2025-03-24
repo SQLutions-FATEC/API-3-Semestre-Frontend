@@ -75,7 +75,21 @@ export default {
         <a-input v-model:value="employeeBloodType" placeholder="Tipo sanguíneo" />
       </div>
 
-      
+      <a-dropdown>
+        <a class="ant-dropdown-link" @click.prevent>
+          Função
+          <DownOutlined />
+        </a>
+        <template #overlay>
+          <a-menu @click="handleMenuClick">
+            <a-menu-item key="1">Engenheiro</a-menu-item>
+            <a-menu-item key="2">Mecânico</a-menu-item>
+            <a-menu-item key="3">Pintor</a-menu-item>
+            <a-menu-item key="4">Criar nova função</a-menu-item>
+          </a-menu>
+        </template>
+      </a-dropdown>
+
     </div>
  </div>
 </template>
