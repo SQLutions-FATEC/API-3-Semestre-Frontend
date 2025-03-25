@@ -58,6 +58,12 @@ export default {
           <user-outlined />
         </template>
       </a-button>
+      <a-button block type="primary" @click="redirect('employeeEdit')">
+        Editar Funcionário
+        <template #icon>
+          <user-outlined />
+        </template>
+      </a-button>
       <a-button block type="primary" @click="redirect('company')">
         Empresas
         <template #icon>
