@@ -32,8 +32,8 @@ export default {
       const companyId = value;
 
       router.push({
-        path: '/company',
-        query: { company_id: companyId },
+        name: 'Company',
+        params: { id: String(companyId) },
       });
     };
 

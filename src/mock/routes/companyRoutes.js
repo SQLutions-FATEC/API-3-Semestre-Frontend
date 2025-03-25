@@ -5,10 +5,15 @@ const companyRoutes = [
   mockFlag(
     {
       method: 'get',
-      url: '/company',
-      result: () => {
+      url: '/company/:id',
+      result: ({ params }) => {
+        let response = companies;
+        if (!!params) {
+          response = response.find((company) => company.id == params.id);
+        }
+
         return APIFailureWrapper({
-          content: companies,
+          content: response,
           errorMessage: 'Erro ao listar empresa',
         });
       },
@@ -33,6 +38,29 @@ const companyRoutes = [
         return APIFailureWrapper({
           content: newCompany,
           errorMessage: 'Erro ao criar empresa',
+        });
+      },
+    },
+    'on'
+  ),
+  mockFlag(
+    {
+      method: 'put',
+      url: '/company/:id',
+      result: ({ params, requestBody }) => {
+        const body = JSON.parse(requestBody);
+
+        const companyToEdit = companies.find(
+          (company) => company.id == params.id
+        );
+
+        companyToEdit.company_name = body.company_name;
+        companyToEdit.cnpj = body.cnpj;
+        companyToEdit.trade_name = body.trade_name;
+
+        return APIFailureWrapper({
+          content: companyToEdit,
+          errorMessage: 'Erro ao editar empresa',
         });
       },
     },
