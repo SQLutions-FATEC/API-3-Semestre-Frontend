@@ -31,8 +31,8 @@ export default {
         isEditing.value = !isEditing.value;
     };
 
-    const handleMenuClickBloodType = ({ key }) => {
-        switch (key) {
+    const handleMenuClickBloodType = ({ key1 }) => {
+        switch (key1) {
             case '1':
                 employeeBloodType.value = 'A+';
             break;
@@ -57,13 +57,11 @@ export default {
             case '8':
                 employeeBloodType.value = 'O-';
             break;
-            default:
-                employeeFunction.value = 'Selecione um tipo sanguíneo';
         }
     };
 
-    const handleMenuClickCompany = ({ key }) => {
-        switch (key) {
+    const handleMenuClickCompany = ({ key2 }) => {
+        switch (key2) {
             case '1':
                 company.value = 'Empresa A';
             break;
@@ -74,12 +72,12 @@ export default {
                 company.value = 'Empresa C';
             break;
             default:
-                employeeFunction.value = 'Adicionar uma empresa';
+                company.value = 'Adicionar uma empresa';
         }
     };
 
-    const handleMenuClickFunction = ({ key }) => {
-        switch (key) {
+    const handleMenuClickFunction = ({ key3 }) => {
+        switch (key3) {
             case '1':
                 employeeFunction.value = 'Engenheiro';
             break;
@@ -104,7 +102,9 @@ export default {
         employeeFunction,
         company,
         isEditing,
-        handleMenuClick,
+        handleMenuClickFunction,
+        handleMenuClickCompany,
+        handleMenuClickBloodType,
         profileImage,
     };
     },
@@ -136,15 +136,14 @@ export default {
         </a-button>
         <template #overlay>
           <a-menu @click="handleMenuClickBloodType">
-            <a-menu-item key="1">A+</a-menu-item>
-            <a-menu-item key="2">A-</a-menu-item>
-            <a-menu-item key="3">B+</a-menu-item>
-            <a-menu-item key="4">B-</a-menu-item>
-            <a-menu-item key="5">AB+</a-menu-item>
-            <a-menu-item key="6">AB-</a-menu-item>
-            <a-menu-item key="7">O+</a-menu-item>
-            <a-menu-item key="8">O-</a-menu-item>
-            <a-menu-item key="9">Selecione um tipo sanguíneo</a-menu-item>
+            <a-menu-item key1="1">A+</a-menu-item>
+            <a-menu-item key1="2">A-</a-menu-item>
+            <a-menu-item key1="3">B+</a-menu-item>
+            <a-menu-item key1="4">B-</a-menu-item>
+            <a-menu-item key1="5">AB+</a-menu-item>
+            <a-menu-item key1="6">AB-</a-menu-item>
+            <a-menu-item key1="7">O+</a-menu-item>
+            <a-menu-item key1="8">O-</a-menu-item>
           </a-menu>
         </template>
       </a-dropdown>
@@ -157,10 +156,10 @@ export default {
         </a-button>
         <template #overlay>
           <a-menu @click="handleMenuClickFunction">
-            <a-menu-item key="1">Engenheiro</a-menu-item>
-            <a-menu-item key="2">Mecânico</a-menu-item>
-            <a-menu-item key="3">Pintor</a-menu-item>
-            <a-menu-item key="4">Criar nova função</a-menu-item>
+            <a-menu-item key3="1">Engenheiro</a-menu-item>
+            <a-menu-item key3="2">Mecânico</a-menu-item>
+            <a-menu-item key3="3">Pintor</a-menu-item>
+            <a-menu-item key3="4">Criar nova função</a-menu-item>
           </a-menu>
         </template>
       </a-dropdown>
@@ -169,14 +168,14 @@ export default {
       <div class="dropdown">
         <a-dropdown>
         <a-button :disabled = "!isEditing">
-          {{ employeeFunction }}
+          {{ comppany }}
         </a-button>
         <template #overlay>
           <a-menu @click="handleMenuClickCompany">
-            <a-menu-item key="1">Empresa A</a-menu-item>
-            <a-menu-item key="2">Empresa B</a-menu-item>
-            <a-menu-item key="3">Empresa C</a-menu-item>
-            <a-menu-item key="4">Adicionar uma empresa</a-menu-item>
+            <a-menu-item key2="1">Empresa A</a-menu-item>
+            <a-menu-item key2="2">Empresa B</a-menu-item>
+            <a-menu-item key2="3">Empresa C</a-menu-item>
+            <a-menu-item key2="4">Adicionar uma empresa</a-menu-item>
           </a-menu>
         </template>
       </a-dropdown>
