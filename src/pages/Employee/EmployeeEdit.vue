@@ -2,7 +2,6 @@
 
 import { Button, Dropdown, Input, Menu } from 'ant-design-vue';
 import { ref } from 'vue';
-import { Dayjs } from 'dayjs';
 
 export default {
   name: 'EmployeeEdit',
@@ -31,65 +30,49 @@ export default {
         isEditing.value = !isEditing.value;
     };
 
-    const handleMenuClickBloodType = ({ key1 }) => {
-        switch (key1) {
-            case '1':
-                employeeBloodType.value = 'A+';
-            break;
-            case '2':
-                employeeBloodType.value = 'A-';
-            break;
-            case '3':
-                employeeBloodType.value = 'B+';
-            break;
-            case '4':
-                employeeBloodType.value = 'B-';
-            break;
-            case '5':
-                employeeBloodType.value = 'AB+';
-            break;
-            case '6':
-                employeeBloodType.value = 'AB-';
-            break;
-            case '7':
-                employeeBloodType.value = 'O+';
-            break;
-            case '8':
-                employeeBloodType.value = 'O-';
-            break;
-        }
+    const handleMenuClickBloodType = ({ key }) => {
+      switch (key) {
+        case '1': employeeBloodType.value = 'A+'; 
+        break;
+        case '2': employeeBloodType.value = 'A-'; 
+        break;
+        case '3': employeeBloodType.value = 'B+'; 
+        break;
+        case '4': employeeBloodType.value = 'B-'; 
+        break;
+        case '5': employeeBloodType.value = 'AB+'; 
+        break;
+        case '6': employeeBloodType.value = 'AB-'; 
+        break;
+        case '7': employeeBloodType.value = 'O+'; 
+        break;
+        case '8': employeeBloodType.value = 'O-'; 
+        break;
+      }
     };
 
-    const handleMenuClickCompany = ({ key2 }) => {
-        switch (key2) {
-            case '1':
-                company.value = 'Empresa A';
-            break;
-            case '2':
-                company.value = 'Empresa B';
-            break;
-            case '3':
-                company.value = 'Empresa C';
-            break;
-            default:
-                company.value = 'Adicionar uma empresa';
-        }
+    const handleMenuClickCompany = ({ key }) => {
+      switch (key) {
+        case '1': company.value = 'Empresa A'; 
+        break;
+        case '2': company.value = 'Empresa B'; 
+        break;
+        case '3': company.value = 'Empresa C'; 
+        break;
+        default: company.value = 'Adicionar uma empresa';
+      }
     };
 
-    const handleMenuClickFunction = ({ key3 }) => {
-        switch (key3) {
-            case '1':
-                employeeFunction.value = 'Engenheiro';
-            break;
-            case '2':
-                employeeFunction.value = 'Mecânico';
-            break;
-            case '3':
-                employeeFunction.value = 'Pintor';
-            break;
-            default:
-                employeeFunction.value = 'Criar nova função';
-        }
+    const handleMenuClickFunction = ({ key }) => {
+      switch (key) {
+        case '1': employeeFunction.value = 'Engenheiro'; 
+        break;
+        case '2': employeeFunction.value = 'Mecânico'; 
+        break;
+        case '3': employeeFunction.value = 'Pintor'; 
+        break;
+        default: employeeFunction.value = 'Criar nova função';
+      }
     };
 
     return{
@@ -131,54 +114,54 @@ export default {
       
       <div class="dropdown">
         <a-dropdown>
-        <a-button :disabled = "!isEditing">
-          {{ employeeBloodType }}
-        </a-button>
-        <template #overlay>
-          <a-menu @click="handleMenuClickBloodType">
-            <a-menu-item key1="1">A+</a-menu-item>
-            <a-menu-item key1="2">A-</a-menu-item>
-            <a-menu-item key1="3">B+</a-menu-item>
-            <a-menu-item key1="4">B-</a-menu-item>
-            <a-menu-item key1="5">AB+</a-menu-item>
-            <a-menu-item key1="6">AB-</a-menu-item>
-            <a-menu-item key1="7">O+</a-menu-item>
-            <a-menu-item key1="8">O-</a-menu-item>
-          </a-menu>
-        </template>
-      </a-dropdown>
+          <a-button :disabled="!isEditing">
+            {{ employeeBloodType }}
+          </a-button>
+          <template #overlay>
+            <a-menu @click="handleMenuClickBloodType">
+              <a-menu-item key="1">A+</a-menu-item>
+              <a-menu-item key="2">A-</a-menu-item>
+              <a-menu-item key="3">B+</a-menu-item>
+              <a-menu-item key="4">B-</a-menu-item>
+              <a-menu-item key="5">AB+</a-menu-item>
+              <a-menu-item key="6">AB-</a-menu-item>
+              <a-menu-item key="7">O+</a-menu-item>
+              <a-menu-item key="8">O-</a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
       </div>
 
       <div class="dropdown">
-      <a-dropdown>
-        <a-button :disabled = "!isEditing">
-          {{ employeeFunction }}
-        </a-button>
-        <template #overlay>
-          <a-menu @click="handleMenuClickFunction">
-            <a-menu-item key3="1">Engenheiro</a-menu-item>
-            <a-menu-item key3="2">Mecânico</a-menu-item>
-            <a-menu-item key3="3">Pintor</a-menu-item>
-            <a-menu-item key3="4">Criar nova função</a-menu-item>
-          </a-menu>
-        </template>
-      </a-dropdown>
-    </div>
+        <a-dropdown>
+          <a-button :disabled="!isEditing">
+            {{ employeeFunction }}
+          </a-button>
+          <template #overlay>
+            <a-menu @click="handleMenuClickFunction">
+              <a-menu-item key="1">Engenheiro</a-menu-item>
+              <a-menu-item key="2">Mecânico</a-menu-item>
+              <a-menu-item key="3">Pintor</a-menu-item>
+              <a-menu-item key="4">Criar nova função</a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
+      </div>
 
       <div class="dropdown">
         <a-dropdown>
-        <a-button :disabled = "!isEditing">
-          {{ comppany }}
-        </a-button>
-        <template #overlay>
-          <a-menu @click="handleMenuClickCompany">
-            <a-menu-item key2="1">Empresa A</a-menu-item>
-            <a-menu-item key2="2">Empresa B</a-menu-item>
-            <a-menu-item key2="3">Empresa C</a-menu-item>
-            <a-menu-item key2="4">Adicionar uma empresa</a-menu-item>
-          </a-menu>
-        </template>
-      </a-dropdown>
+          <a-button :disabled="!isEditing">
+            {{ company }}
+          </a-button>
+          <template #overlay>
+            <a-menu @click="handleMenuClickCompany">
+              <a-menu-item key="1">Empresa A</a-menu-item>
+              <a-menu-item key="2">Empresa B</a-menu-item>
+              <a-menu-item key="3">Empresa C</a-menu-item>
+              <a-menu-item key="4">Adicionar uma empresa</a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
       </div>
 
       <div class="content__action">
