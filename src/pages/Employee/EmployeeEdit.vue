@@ -2,6 +2,7 @@
 
 import { Button, Dropdown, Input, Menu } from 'ant-design-vue';
 import { ref } from 'vue';
+import { Dayjs } from 'dayjs';
 
 export default {
   name: 'EmployeeEdit',
@@ -22,6 +23,7 @@ export default {
     const employeeFunction = ref('Selecione uma função');
     const company = ref('');
     const isEditing = ref(false);
+    const profileImage = ref('https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg');
 
     const editEmployee = () => {return 0};
 
@@ -55,7 +57,8 @@ export default {
         employeeFunction,
         company,
         isEditing,
-        handleMenuClick
+        handleMenuClick,
+        profileImage,
     };
     },
 }; 
@@ -64,6 +67,9 @@ export default {
  <div class="edit_employee">
     <h1>Edição de Funcionário</h1>
     <div class="edit_employee_content">
+      <div class="profile-picture">
+        <img :src="profileImage" alt="Profile Picture" />
+      </div>
        <div class="content__input">
             <a-input v-model:value="employeeName" placeholder="Nome completo" :disabled="!isEditing" />
       </div>
@@ -73,7 +79,7 @@ export default {
       </div>
 
       <div class="content__input">
-        <a-input v-model:value="employeeBirthDate" placeholder="Data de nascimento" :disabled="!isEditing" />
+        <a-date-picker v-model:value="employeeBirthDate" placeholder="Data de nascimento" :disabled="!isEditing" />
       </div>
       
       <div class="content__input">
@@ -126,6 +132,19 @@ export default {
       display: flex;
       justify-content: center;
     }
+    .profile-picture {
+      flex: 0 0 100%;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 16px;
+
+      img {
+        width: 150px; 
+        height: 150px; 
+        border-radius: 50%; 
+        object-fit: cover; 
+      }
+   }
   }
 }
 </style>
