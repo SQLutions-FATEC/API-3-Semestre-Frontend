@@ -125,7 +125,7 @@ export default {
     }
 
     .content__action {
-      flex: 0 0 calc(100% - 256px);
+      flex: 0 0 calc(100% - 220px);
       display: inline-flex;
       justify-content: center;
     }
