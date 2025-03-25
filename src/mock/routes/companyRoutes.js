@@ -5,12 +5,24 @@ const companyRoutes = [
   mockFlag(
     {
       method: 'get',
+      url: '/company',
+      result: () => {
+        const response = companies;
+
+        return APIFailureWrapper({
+          content: response,
+          errorMessage: 'Erro ao listar empresa',
+        });
+      },
+    },
+    'on'
+  ),
+  mockFlag(
+    {
+      method: 'get',
       url: '/company/:id',
       result: ({ params }) => {
-        let response = companies;
-        if (!!params) {
-          response = response.find((company) => company.id == params.id);
-        }
+        const response = companies.find((company) => company.id == params.id);
 
         return APIFailureWrapper({
           content: response,
