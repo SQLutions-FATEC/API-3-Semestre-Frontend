@@ -1,11 +1,10 @@
 <script>
 
-import { DownOutlined } from '@ant-design/icons-vue';
 import { Button, Dropdown, Input, Menu } from 'ant-design-vue';
 import { ref } from 'vue';
 
 export default {
-  name: 'Employee',
+  name: 'EmployeeEdit',
 
   components: {
     'a-button': Button,
@@ -13,7 +12,6 @@ export default {
     'a-dropdown': Dropdown,
     'a-menu': Menu,
     'a-menu-item': Menu.Item,
-    DownOutlined,
   },
 
   setup() {
@@ -25,7 +23,7 @@ export default {
     const company = ref('');
     const isEditing = ref(false);
 
-    const editEmployee = () => {};
+    const editEmployee = () => {return 0};
 
     const toggleEdit = () => {
         isEditing.value = !isEditing.value;
@@ -49,7 +47,7 @@ export default {
 
     return{
         toggleEdit,
-        createEmployee,
+        editEmployee,
         employeeName,
         employeeCpf,
         employeeBirthDate,
@@ -83,10 +81,9 @@ export default {
       </div>
 
       <a-dropdown>
-        <a class="ant-dropdown-link" @click.prevent>
-          Função
-          <DownOutlined />
-        </a>
+        <a-button>
+          {{ employeeFunction }}
+        </a-button>
         <template #overlay>
           <a-menu @click="handleMenuClick">
             <a-menu-item key="1">Engenheiro</a-menu-item>
@@ -102,7 +99,7 @@ export default {
       </div>
 
       <div class="content__action">
-        <a-button type="primary" style="width: 250px" @click="toggleEditMode">
+        <a-button type="primary" @click="toggleEdit">
           {{ isEditing ? 'Confirmar' : 'Editar' }}
         </a-button>
       </div>
