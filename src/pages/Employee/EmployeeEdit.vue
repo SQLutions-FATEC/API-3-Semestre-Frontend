@@ -19,9 +19,9 @@ export default {
     const employeeName = ref('');
     const employeeCpf = ref('');
     const employeeBirthDate = ref('');
-    const employeeBloodType = ref('');
-    const employeeFunction = ref('Selecione uma função');
-    const company = ref('');
+    const employeeBloodType = ref('Tipo Sanguíneo');
+    const employeeFunction = ref('Função');
+    const company = ref('Empresa');
     const isEditing = ref(false);
     const profileImage = ref('https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg');
 
@@ -31,7 +31,54 @@ export default {
         isEditing.value = !isEditing.value;
     };
 
-    const handleMenuClick = ({ key }) => {
+    const handleMenuClickBloodType = ({ key }) => {
+        switch (key) {
+            case '1':
+                employeeBloodType.value = 'A+';
+            break;
+            case '2':
+                employeeBloodType.value = 'A-';
+            break;
+            case '3':
+                employeeBloodType.value = 'B+';
+            break;
+            case '4':
+                employeeBloodType.value = 'B-';
+            break;
+            case '5':
+                employeeBloodType.value = 'AB+';
+            break;
+            case '6':
+                employeeBloodType.value = 'AB-';
+            break;
+            case '7':
+                employeeBloodType.value = 'O+';
+            break;
+            case '8':
+                employeeBloodType.value = 'O-';
+            break;
+            default:
+                employeeFunction.value = 'Selecione um tipo sanguíneo';
+        }
+    };
+
+    const handleMenuClickCompany = ({ key }) => {
+        switch (key) {
+            case '1':
+                company.value = 'Empresa A';
+            break;
+            case '2':
+                company.value = 'Empresa B';
+            break;
+            case '3':
+                company.value = 'Empresa C';
+            break;
+            default:
+                employeeFunction.value = 'Adicionar uma empresa';
+        }
+    };
+
+    const handleMenuClickFunction = ({ key }) => {
         switch (key) {
             case '1':
                 employeeFunction.value = 'Engenheiro';
@@ -82,16 +129,34 @@ export default {
         <a-date-picker v-model:value="employeeBirthDate" placeholder="Data de nascimento" :disabled="!isEditing" />
       </div>
       
-      <div class="content__input">
-        <a-input v-model:value="employeeBloodType" placeholder="Tipo sanguíneo" :disabled="!isEditing" />
+      <div class="dropdown">
+        <a-dropdown>
+        <a-button :disabled = "!isEditing">
+          {{ employeeBloodType }}
+        </a-button>
+        <template #overlay>
+          <a-menu @click="handleMenuClickBloodType">
+            <a-menu-item key="1">A+</a-menu-item>
+            <a-menu-item key="2">A-</a-menu-item>
+            <a-menu-item key="3">B+</a-menu-item>
+            <a-menu-item key="4">B-</a-menu-item>
+            <a-menu-item key="5">AB+</a-menu-item>
+            <a-menu-item key="6">AB-</a-menu-item>
+            <a-menu-item key="7">O+</a-menu-item>
+            <a-menu-item key="8">O-</a-menu-item>
+            <a-menu-item key="9">Selecione um tipo sanguíneo</a-menu-item>
+          </a-menu>
+        </template>
+      </a-dropdown>
       </div>
 
+      <div class="dropdown">
       <a-dropdown>
-        <a-button>
+        <a-button :disabled = "!isEditing">
           {{ employeeFunction }}
         </a-button>
         <template #overlay>
-          <a-menu @click="handleMenuClick">
+          <a-menu @click="handleMenuClickFunction">
             <a-menu-item key="1">Engenheiro</a-menu-item>
             <a-menu-item key="2">Mecânico</a-menu-item>
             <a-menu-item key="3">Pintor</a-menu-item>
@@ -99,9 +164,22 @@ export default {
           </a-menu>
         </template>
       </a-dropdown>
+    </div>
 
-      <div class="content__input">
-        <a-input v-model:value="company" placeholder="Empresa" :disabled="!isEditing" />
+      <div class="dropdown">
+        <a-dropdown>
+        <a-button :disabled = "!isEditing">
+          {{ employeeFunction }}
+        </a-button>
+        <template #overlay>
+          <a-menu @click="handleMenuClickCompany">
+            <a-menu-item key="1">Empresa A</a-menu-item>
+            <a-menu-item key="2">Empresa B</a-menu-item>
+            <a-menu-item key="3">Empresa C</a-menu-item>
+            <a-menu-item key="4">Adicionar uma empresa</a-menu-item>
+          </a-menu>
+        </template>
+      </a-dropdown>
       </div>
 
       <div class="content__action">
@@ -126,6 +204,7 @@ export default {
     .content__input {
       flex: 0 0 calc(50% - 16px);
       box-sizing: border-box;
+
     }
     .content__action {
       flex: 0 0 100%;
