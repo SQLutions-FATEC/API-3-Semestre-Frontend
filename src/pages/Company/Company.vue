@@ -96,6 +96,8 @@ export default {
         buttonAction.value = 'Editar';
         isEditing.value = true;
         await getCompany(companyId);
+      } else {
+        resetInputs();
       }
     });
 
