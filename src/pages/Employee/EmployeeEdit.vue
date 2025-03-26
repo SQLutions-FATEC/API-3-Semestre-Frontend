@@ -48,6 +48,18 @@ export default {
       { value: 'Adicionar uma empresa', label: 'Adicionar uma empresa' }
     ];
 
+    const handleBloodTypeChange = (value) => {
+      employeeBloodType.value = value[0]; 
+    };
+
+    const handleFunctionChange = (value) => {
+      employeeFunction.value = value[0];
+    };
+
+    const handleCompanyChange = (value) => {
+      company.value = value[0];
+    };
+
     return {
       toggleEdit,
       employeeName,
@@ -61,6 +73,9 @@ export default {
       bloodTypeOptions,
       functionOptions,
       companyOptions,
+      handleBloodTypeChange,
+      handleFunctionChange,
+      handleCompanyChange
     };
   }
 };
