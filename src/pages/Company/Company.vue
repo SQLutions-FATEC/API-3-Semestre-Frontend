@@ -35,7 +35,7 @@ export default {
         cnpj: cnpj.value,
         trade_name: tradeName.value,
       };
-      if (isEditing) {
+      if (isEditing.value) {
         await editCompany(payload);
       } else {
         await createCompany(payload);
