@@ -1,5 +1,5 @@
 <script>
-import { Button, Cascader, Input } from 'ant-design-vue';
+import { Button, Cascader, Input, Modal } from 'ant-design-vue';
 import { ref } from 'vue';
 
 export default {
@@ -7,7 +7,8 @@ export default {
   components: {
     'a-button': Button,
     'a-input': Input,
-    'a-cascader': Cascader
+    'a-cascader': Cascader,
+    'a-modal': Modal
   },
   setup() {
     const employeeName = ref('');
@@ -34,18 +35,16 @@ export default {
       { value: 'O-', label: 'O-' }
     ];
 
-    const functionOptions = [
+    const functionOptions = ref([
       { value: 'Engenheiro', label: 'Engenheiro' },
       { value: 'Mecânico', label: 'Mecânico' },
-      { value: 'Pintor', label: 'Pintor' },
-      { value: 'Criar nova função', label: 'Criar nova função' }
-    ];
+      { value: 'Pintor', label: 'Pintor' }
+    ]);
 
     const companyOptions = [
       { value: 'Empresa A', label: 'Empresa A' },
       { value: 'Empresa B', label: 'Empresa B' },
-      { value: 'Empresa C', label: 'Empresa C' },
-      { value: 'Adicionar uma empresa', label: 'Adicionar uma empresa' }
+      { value: 'Empresa C', label: 'Empresa C' }
     ];
 
     const handleBloodTypeChange = (value) => {
@@ -58,6 +57,22 @@ export default {
 
     const handleCompanyChange = (value) => {
       company.value = value[0];
+    };
+
+    const isFunctionModalVisible = ref(false);
+    const newFunction = ref('');
+
+    const openFunctionModal = () => {
+      isFunctionModalVisible.value = true;
+    };
+
+    const addFunction = () => {
+      if (newFunction.value.trim()) {
+        functionOptions.value.push({ value: newFunction.value, label: newFunction.value });
+        employeeFunction.value = newFunction.value;
+        newFunction.value = '';
+        isFunctionModalVisible.value = false;
+      }
     };
 
     return {
@@ -75,7 +90,11 @@ export default {
       companyOptions,
       handleBloodTypeChange,
       handleFunctionChange,
-      handleCompanyChange
+      handleCompanyChange,
+      isFunctionModalVisible,
+      newFunction,
+      openFunctionModal,
+      addFunction
     };
   }
 };
@@ -118,6 +137,7 @@ export default {
           @change="handleFunctionChange"
           :showSearch="{ filter: (inputValue, path) => path.some(option => option.label.toLowerCase().includes(inputValue.toLowerCase())) }"
         />
+        <a-button type="primary" @click="openFunctionModal">➕ Adicionar Função</a-button>
       </div>
 
       <div class="content__input">
@@ -136,6 +156,11 @@ export default {
         </a-button>
       </div>
     </div>
+
+    <!-- Modal para adicionar nova função -->
+    <a-modal v-model:visible="isFunctionModalVisible" title="Nova Função" @ok="addFunction">
+      <a-input v-model:value="newFunction" placeholder="Digite a nova função" />
+    </a-modal>
   </div>
 </template>
 
@@ -153,11 +178,13 @@ export default {
       flex: 0 0 calc(50% - 16px);
       box-sizing: border-box;
     }
+
     .content__action {
       flex: 0 0 100%;
       display: flex;
       justify-content: center;
     }
+
     .profile-picture {
       flex: 0 0 100%;
       display: flex;
@@ -170,6 +197,12 @@ export default {
         border-radius: 50%;
         object-fit: cover;
       }
+    }
+
+    .dropdown-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
     }
   }
 }
