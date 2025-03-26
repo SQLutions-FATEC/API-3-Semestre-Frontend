@@ -41,6 +41,7 @@ export default {
       { value: 'Engenheiro', label: 'Engenheiro' },
       { value: 'Mecânico', label: 'Mecânico' },
       { value: 'Pintor', label: 'Pintor' },
+      { value: 'add-new', label: '➕ Adicionar Função' },
     ]);
 
     const companyOptions = [
@@ -54,7 +55,11 @@ export default {
     };
 
     const handleFunctionChange = (value) => {
-      employeeFunction.value = value[0];
+      if (value.includes('add-new')) {
+        openFunctionModal();
+      } else {
+        employeeFunction.value = value[0];
+      }
     };
 
     const handleCompanyChange = (value) => {
@@ -139,9 +144,6 @@ export default {
               ),
           }"
         />
-        <a-button type="primary" @click="openFunctionModal"
-          >➕ Adicionar Função</a-button
-        >
       </div>
 
       <div class="dropdown">
