@@ -1,5 +1,6 @@
 <script>
 import { Button, Cascader, Input, Modal } from 'ant-design-vue';
+import dayjs from 'dayjs';
 import { ref } from 'vue';
 
 export default {
@@ -8,17 +9,20 @@ export default {
     'a-button': Button,
     'a-input': Input,
     'a-cascader': Cascader,
-    'a-modal': Modal
+    'a-modal': Modal,
   },
   setup() {
+    const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
     const employeeName = ref('');
     const employeeCpf = ref('');
-    const employeeBirthDate = ref('');
+    const employeeBirthDate = ref(dayjs());
     const employeeBloodType = ref('Tipo Sanguíneo');
     const employeeFunction = ref('Função');
     const company = ref('Empresa');
     const isEditing = ref(false);
-    const profileImage = ref('https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg');
+    const profileImage = ref(
+      'https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg'
+    );
 
     const toggleEdit = () => {
       isEditing.value = !isEditing.value;
@@ -32,23 +36,23 @@ export default {
       { value: 'AB+', label: 'AB+' },
       { value: 'AB-', label: 'AB-' },
       { value: 'O+', label: 'O+' },
-      { value: 'O-', label: 'O-' }
+      { value: 'O-', label: 'O-' },
     ];
 
     const functionOptions = ref([
       { value: 'Engenheiro', label: 'Engenheiro' },
       { value: 'Mecânico', label: 'Mecânico' },
-      { value: 'Pintor', label: 'Pintor' }
+      { value: 'Pintor', label: 'Pintor' },
     ]);
 
     const companyOptions = [
       { value: 'Empresa A', label: 'Empresa A' },
       { value: 'Empresa B', label: 'Empresa B' },
-      { value: 'Empresa C', label: 'Empresa C' }
+      { value: 'Empresa C', label: 'Empresa C' },
     ];
 
     const handleBloodTypeChange = (value) => {
-      employeeBloodType.value = value[0]; 
+      employeeBloodType.value = value[0];
     };
 
     const handleFunctionChange = (value) => {
@@ -68,10 +72,21 @@ export default {
 
     const addFunction = () => {
       if (newFunction.value.trim()) {
-        functionOptions.value.push({ value: newFunction.value, label: newFunction.value });
+        functionOptions.value.push({
+          value: newFunction.value,
+          label: newFunction.value,
+        });
         employeeFunction.value = newFunction.value;
         newFunction.value = '';
         isFunctionModalVisible.value = false;
+      }
+    };
+
+    const handleDateChange = (date) => {
+      if (date) {
+        employeeBirthDate.value = dayjs(date);
+      } else {
+        employeeBirthDate.value = null;
       }
     };
 
@@ -94,9 +109,11 @@ export default {
       isFunctionModalVisible,
       newFunction,
       openFunctionModal,
-      addFunction
+      addFunction,
+      dateFormatList,
+      handleDateChange,
     };
-  }
+  },
 };
 </script>
 
@@ -109,15 +126,29 @@ export default {
       </div>
 
       <div class="content__input">
-        <a-input v-model:value="employeeName" placeholder="Nome completo" :disabled="!isEditing" />
+        <a-input
+          v-model:value="employeeName"
+          placeholder="Nome completo"
+          :disabled="!isEditing"
+        />
       </div>
 
       <div class="content__input">
-        <a-input v-model:value="employeeCpf" placeholder="CPF" :disabled="!isEditing" />
+        <a-input
+          v-model:value="employeeCpf"
+          placeholder="CPF"
+          :disabled="!isEditing"
+        />
       </div>
 
       <div class="content__input">
-        <a-date-picker v-model:value="employeeBirthDate" placeholder="Data de nascimento" :disabled="!isEditing" />
+        <a-date-picker
+          v-model:value="employeeBirthDate"
+          placeholder="Data de nascimento"
+          :format="dateFormatList"
+          :disabled="!isEditing"
+          @change="handleDateChange"
+        />
       </div>
 
       <div class="content__input">
@@ -135,9 +166,16 @@ export default {
           placeholder="Função"
           :disabled="!isEditing"
           @change="handleFunctionChange"
-          :showSearch="{ filter: (inputValue, path) => path.some(option => option.label.toLowerCase().includes(inputValue.toLowerCase())) }"
+          :showSearch="{
+            filter: (inputValue, path) =>
+              path.some((option) =>
+                option.label.toLowerCase().includes(inputValue.toLowerCase())
+              ),
+          }"
         />
-        <a-button type="primary" @click="openFunctionModal">➕ Adicionar Função</a-button>
+        <a-button type="primary" @click="openFunctionModal"
+          >➕ Adicionar Função</a-button
+        >
       </div>
 
       <div class="content__input">
@@ -146,7 +184,12 @@ export default {
           placeholder="Empresa"
           :disabled="!isEditing"
           @change="handleCompanyChange"
-          :showSearch="{ filter: (inputValue, path) => path.some(option => option.label.toLowerCase().includes(inputValue.toLowerCase())) }"
+          :showSearch="{
+            filter: (inputValue, path) =>
+              path.some((option) =>
+                option.label.toLowerCase().includes(inputValue.toLowerCase())
+              ),
+          }"
         />
       </div>
 
@@ -157,8 +200,11 @@ export default {
       </div>
     </div>
 
-    <!-- Modal para adicionar nova função -->
-    <a-modal v-model:visible="isFunctionModalVisible" title="Nova Função" @ok="addFunction">
+    <a-modal
+      v-model:visible="isFunctionModalVisible"
+      title="Nova Função"
+      @ok="addFunction"
+    >
       <a-input v-model:value="newFunction" placeholder="Digite a nova função" />
     </a-modal>
   </div>
