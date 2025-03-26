@@ -1,5 +1,5 @@
 <script>
-import { Button, Cascader, Input } from 'ant-design-vue';
+import { Button, Cascader, DatePicker, Input } from 'ant-design-vue';
 import { ref } from 'vue';
 
 export default {
@@ -9,6 +9,7 @@ export default {
     'a-button': Button,
     'a-input': Input,
     'a-cascader': Cascader,
+    'a-date-picker': DatePicker,
   },
 
   setup() {
@@ -70,7 +71,7 @@ export default {
       </div>
 
       <div class="content__input">
-        <a-input
+        <a-date-picker
           v-model:value="employeeBirthDate"
           placeholder="Data de nascimento"
         />
