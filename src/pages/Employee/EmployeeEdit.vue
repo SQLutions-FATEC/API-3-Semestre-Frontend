@@ -116,6 +116,7 @@ export default {
           placeholder="Função"
           :disabled="!isEditing"
           @change="handleFunctionChange"
+          :showSearch="{ filter: (inputValue, path) => path.some(option => option.label.toLowerCase().includes(inputValue.toLowerCase())) }"
         />
       </div>
 
@@ -125,6 +126,7 @@ export default {
           placeholder="Empresa"
           :disabled="!isEditing"
           @change="handleCompanyChange"
+          :showSearch="{ filter: (inputValue, path) => path.some(option => option.label.toLowerCase().includes(inputValue.toLowerCase())) }"
         />
       </div>
 
