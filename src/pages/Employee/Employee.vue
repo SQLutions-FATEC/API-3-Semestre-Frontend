@@ -1,5 +1,5 @@
 <script>
-import { Button, Cascader, DatePicker, Input } from 'ant-design-vue';
+import { Button, Cascader, DatePicker, Input, Modal } from 'ant-design-vue';
 import { ref } from 'vue';
 
 export default {
@@ -10,6 +10,7 @@ export default {
     'a-input': Input,
     'a-cascader': Cascader,
     'a-date-picker': DatePicker,
+    'a-modal': Modal,
   },
 
   setup() {
@@ -22,6 +23,8 @@ export default {
     const employeeBloodType = ref('');
     let employeeFunction = ref([]);
     const company = ref('');
+    const isFunctionModalOpen = ref(false);
+    const newFunction = ref('');
 
     const bloodTypeOptions = [
       { value: 'A+', label: 'A+' },
@@ -58,6 +61,22 @@ export default {
       company.value = value[0];
     };
 
+    const openFunctionModal = () => {
+      isFunctionModalOpen.value = true;
+    };
+
+    const addFunction = () => {
+      if (newFunction.value.trim()) {
+        functionOptions.value.push({
+          value: newFunction.value,
+          label: newFunction.value,
+        });
+        employeeFunction.value = newFunction.value;
+        newFunction.value = '';
+        isFunctionModalOpen.value = false;
+      }
+    };
+
     return {
       employeeName,
       employeeCpf,
@@ -72,6 +91,10 @@ export default {
       handleBloodTypeChange,
       handleFunctionChange,
       handleCompanyChange,
+      isFunctionModalOpen,
+      newFunction,
+      openFunctionModal,
+      addFunction,
     };
   },
 };
@@ -141,6 +164,14 @@ export default {
         </a-button>
       </div>
     </div>
+
+    <a-modal
+      v-model:open="isFunctionModalOpen"
+      title="Nova Função"
+      @ok="addFunction"
+    >
+      <a-input v-model:value="newFunction" placeholder="Digite a nova função" />
+    </a-modal>
   </div>
 </template>
 
