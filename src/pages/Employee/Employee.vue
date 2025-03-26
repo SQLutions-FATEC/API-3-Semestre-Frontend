@@ -23,24 +23,40 @@ export default {
     let employeeFunction = ref([]);
     const company = ref('');
 
-    const options = [
-      {
-        value: 'zhejiang',
-        label: 'Zhejiang',
-      },
-      {
-        value: 'jiangsu',
-        label: 'Jiangsu',
-      },
+    const bloodTypeOptions = [
+      { value: 'A+', label: 'A+' },
+      { value: 'A-', label: 'A-' },
+      { value: 'B+', label: 'B+' },
+      { value: 'B-', label: 'B-' },
+      { value: 'AB+', label: 'AB+' },
+      { value: 'AB-', label: 'AB-' },
+      { value: 'O+', label: 'O+' },
+      { value: 'O-', label: 'O-' },
     ];
-    const filter = (inputValue, path) => {
-      return path.some(
-        (option) =>
-          option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
-      );
+
+    const functionOptions = ref([
+      { value: 'Engenheiro', label: 'Engenheiro' },
+      { value: 'Mecânico', label: 'Mecânico' },
+      { value: 'Pintor', label: 'Pintor' },
+    ]);
+
+    const companyOptions = [
+      { value: 'Empresa A', label: 'Empresa A' },
+      { value: 'Empresa B', label: 'Empresa B' },
+      { value: 'Empresa C', label: 'Empresa C' },
+    ];
+
+    const handleBloodTypeChange = (value) => {
+      employeeBloodType.value = value[0];
     };
-    const value = ref([]);
-    employeeFunction = value;
+
+    const handleFunctionChange = (value) => {
+      employeeFunction.value = value[0];
+    };
+
+    const handleCompanyChange = (value) => {
+      company.value = value[0];
+    };
 
     return {
       employeeName,
@@ -50,9 +66,12 @@ export default {
       employeeFunction,
       company,
       createEmployee,
-      options,
-      filter,
-      value,
+      bloodTypeOptions,
+      functionOptions,
+      companyOptions,
+      handleBloodTypeChange,
+      handleFunctionChange,
+      handleCompanyChange,
     };
   },
 };
