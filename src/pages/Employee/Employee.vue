@@ -1,5 +1,4 @@
 <script>
-
 import { Button, Cascader, Input } from 'ant-design-vue';
 import { ref } from 'vue';
 
@@ -13,16 +12,15 @@ export default {
   },
 
   setup() {
-
-    const createEmployee = () => { return 0 };
+    const createEmployee = () => {
+      return 0;
+    };
     const employeeName = ref('');
     const employeeCpf = ref('');
     const employeeBirthDate = ref('');
     const employeeBloodType = ref('');
     let employeeFunction = ref([]);
     const company = ref('');
-
-
 
     const options = [
       {
@@ -35,11 +33,13 @@ export default {
       },
     ];
     const filter = (inputValue, path) => {
-      return path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
+      return path.some(
+        (option) =>
+          option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
+      );
     };
     const value = ref([]);
     employeeFunction = value;
-
 
     return {
       employeeName,
@@ -55,7 +55,6 @@ export default {
     };
   },
 };
-
 </script>
 <template>
   <div class="employee">
@@ -71,19 +70,49 @@ export default {
       </div>
 
       <div class="content__input">
-        <a-input v-model:value="employeeBirthDate" placeholder="Data de nascimento" />
-      </div>
-
-      <div class="content__input">
-        <a-input v-model:value="employeeBloodType" placeholder="Tipo sanguíneo" />
+        <a-input
+          v-model:value="employeeBirthDate"
+          placeholder="Data de nascimento"
+        />
       </div>
 
       <div class="dropdown">
-        <a-cascader v-model:value="value" :options="options" :show-search="{ filter }" placeholder="Função" />
+        <a-cascader
+          :options="bloodTypeOptions"
+          placeholder="Tipo Sanguíneo"
+          @change="handleBloodTypeChange"
+        />
       </div>
 
-      <div class="content__input">
-        <a-input v-model:value="company" placeholder="Empresa" />
+      <div class="dropdown">
+        <a-cascader
+          :options="functionOptions"
+          placeholder="Função"
+          @change="handleFunctionChange"
+          :showSearch="{
+            filter: (inputValue, path) =>
+              path.some((option) =>
+                option.label.toLowerCase().includes(inputValue.toLowerCase())
+              ),
+          }"
+        />
+        <a-button type="primary" @click="openFunctionModal"
+          >➕ Adicionar Função</a-button
+        >
+      </div>
+
+      <div class="dropdown">
+        <a-cascader
+          :options="companyOptions"
+          placeholder="Empresa"
+          @change="handleCompanyChange"
+          :showSearch="{
+            filter: (inputValue, path) =>
+              path.some((option) =>
+                option.label.toLowerCase().includes(inputValue.toLowerCase())
+              ),
+          }"
+        />
       </div>
 
       <div class="content__action">
@@ -91,7 +120,6 @@ export default {
           Cadastrar
         </a-button>
       </div>
-
     </div>
   </div>
 </template>
@@ -120,12 +148,7 @@ export default {
     .dropdown {
       flex: 0 0 calc(50% - 128px);
       box-sizing: border-box;
-
-
-
-
     }
-
   }
 }
 </style>
