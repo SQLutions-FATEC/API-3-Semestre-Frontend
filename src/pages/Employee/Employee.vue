@@ -1,6 +1,6 @@
 <script>
 
-import { Button, Dropdown, Input, Menu } from 'ant-design-vue';
+import { Button, Cascader, Input } from 'ant-design-vue';
 import { ref } from 'vue';
 
 export default {
@@ -9,9 +9,7 @@ export default {
   components: {
     'a-button': Button,
     'a-input': Input,
-    'a-dropdown': Dropdown,
-    'a-menu': Menu,
-    'a-menu-item': Menu.Item,
+    'a-cascader': Cascader,
   },
 
   setup() {
@@ -21,26 +19,27 @@ export default {
     const employeeCpf = ref('');
     const employeeBirthDate = ref('');
     const employeeBloodType = ref('');
-    const employeeFunction = ref('Selecione uma função');
+    let employeeFunction = ref([]);
     const company = ref('');
 
 
-    const handleMenuClick = ({ key }) => {
-      switch (key) {
-        case '1':
-          employeeFunction.value = 'Engenheiro';
-          break;
-        case '2':
-          employeeFunction.value = 'Mecânico';
-          break;
-        case '3':
-          employeeFunction.value = 'Pintor';
-          break;
-        default:
-          createEmployee
-          employeeFunction.value = 'Criar nova função';
-      }
+
+    const options = [
+      {
+        value: 'zhejiang',
+        label: 'Zhejiang',
+      },
+      {
+        value: 'jiangsu',
+        label: 'Jiangsu',
+      },
+    ];
+    const filter = (inputValue, path) => {
+      return path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
     };
+    const value = ref([]);
+    employeeFunction = value;
+
 
     return {
       employeeName,
@@ -49,8 +48,10 @@ export default {
       employeeBloodType,
       employeeFunction,
       company,
-      handleMenuClick,
       createEmployee,
+      options,
+      filter,
+      value,
     };
   },
 };
@@ -78,21 +79,7 @@ export default {
       </div>
 
       <div class="dropdown">
-        <a-dropdown>
-
-          <a-button>
-            {{ employeeFunction }}
-          </a-button>
-
-          <template #overlay>
-            <a-menu @click="handleMenuClick">
-              <a-menu-item key="1">Engenheiro</a-menu-item>
-              <a-menu-item key="2">Mecânico</a-menu-item>
-              <a-menu-item key="3">Pintor</a-menu-item>
-              <a-menu-item key="4">Criar nova função</a-menu-item>
-            </a-menu>
-          </template>
-        </a-dropdown>
+        <a-cascader v-model:value="value" :options="options" :show-search="{ filter }" placeholder="Função" />
       </div>
 
       <div class="content__input">
@@ -134,16 +121,9 @@ export default {
       flex: 0 0 calc(50% - 128px);
       box-sizing: border-box;
 
-      :deep(.ant-dropdown-trigger) {
 
-        text-align: left;
-        width: 100%;
 
-        button {
-          width: 100%;
-          text-align: left;
-        }
-      }
+
     }
 
   }
