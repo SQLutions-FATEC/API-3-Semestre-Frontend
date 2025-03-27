@@ -56,11 +56,21 @@ export default {
     };
 
     const handleFunctionChange = (value) => {
-      employeeFunction.value = value[0];
+      if (value.includes('add-new')) {
+        employeeFunction.value = [];
+        openFunctionModal();
+        ensureAddNewIsLast();
+      } else {
+        employeeFunction.value = value[0];
+      }
     };
 
     const handleCompanyChange = (value) => {
       company.value = value[0];
+    };
+
+    const editEmployee = () => {
+      return;
     };
 
     const isFunctionModalVisible = ref(false);
@@ -70,6 +80,19 @@ export default {
       isFunctionModalVisible.value = true;
     };
 
+    const ensureAddNewIsLast = () => {
+      const regularOptions = functionOptions.value.filter(
+        (opt) => opt.value !== 'add-new'
+      );
+
+      functionOptions.value = [
+        ...regularOptions,
+        { value: 'add-new', label: '➕ Adicionar Função' },
+      ];
+    };
+
+    ensureAddNewIsLast();
+
     const addFunction = () => {
       if (newFunction.value.trim()) {
         functionOptions.value.push({
@@ -78,7 +101,8 @@ export default {
         });
         employeeFunction.value = newFunction.value;
         newFunction.value = '';
-        isFunctionModalVisible.value = false;
+        isFunctionModalOpen.value = false;
+        ensureAddNewIsLast();
       }
     };
 
@@ -92,6 +116,7 @@ export default {
 
     return {
       toggleEdit,
+      editEmployee,
       employeeName,
       employeeCpf,
       employeeBirthDate,
@@ -112,6 +137,7 @@ export default {
       addFunction,
       dateFormatList,
       handleDateChange,
+      ensureAddNewIsLast,
     };
   },
 };
@@ -121,76 +147,76 @@ export default {
   <div class="edit_employee">
     <h1>Edição de Funcionário</h1>
     <div class="edit_employee_content">
-      <div class="profile-picture">
-        <img :src="profileImage" alt="Profile Picture" />
+      <div class="left_collumn" style="width: 40%">
+        <div class="content__input">
+          <a-input
+            v-model:value="employeeName"
+            placeholder="Nome completo"
+            :disabled="!isEditing"
+          />
+        </div>
+
+        <div class="content__input">
+          <a-input
+            v-model:value="employeeCpf"
+            placeholder="CPF"
+            :disabled="!isEditing"
+          />
+        </div>
+
+        <div class="content__input">
+          <a-date-picker
+            v-model:value="employeeBirthDate"
+            placeholder="Data de nascimento"
+            :format="dateFormatList"
+            :disabled="!isEditing"
+            @change="handleDateChange"
+          />
+        </div>
+
+        <div class="content__input">
+          <a-cascader
+            :options="bloodTypeOptions"
+            placeholder="Tipo Sanguíneo"
+            :disabled="!isEditing"
+            @change="handleBloodTypeChange"
+          />
+        </div>
+
+        <div class="content__input">
+          <a-cascader
+            :options="functionOptions"
+            placeholder="Função"
+            @change="handleFunctionChange"
+            :showSearch="{
+              filter: (inputValue, path) =>
+                path.some((option) =>
+                  option.label.toLowerCase().includes(inputValue.toLowerCase())
+                ),
+            }"
+          />
+        </div>
       </div>
 
-      <div class="content__input">
-        <a-input
-          v-model:value="employeeName"
-          placeholder="Nome completo"
-          :disabled="!isEditing"
-        />
-      </div>
+      <div class="right_collumn" style="width: 40%">
+        <div class="profile-picture">
+          <img :src="profileImage" alt="Profile Picture" />
+        </div>
 
-      <div class="content__input">
-        <a-input
-          v-model:value="employeeCpf"
-          placeholder="CPF"
-          :disabled="!isEditing"
-        />
-      </div>
-
-      <div class="content__input">
-        <a-date-picker
-          v-model:value="employeeBirthDate"
-          placeholder="Data de nascimento"
-          :format="dateFormatList"
-          :disabled="!isEditing"
-          @change="handleDateChange"
-        />
-      </div>
-
-      <div class="content__input">
-        <a-cascader
-          :options="bloodTypeOptions"
-          placeholder="Tipo Sanguíneo"
-          :disabled="!isEditing"
-          @change="handleBloodTypeChange"
-        />
-      </div>
-
-      <div class="content__input">
-        <a-cascader
-          :options="functionOptions"
-          placeholder="Função"
-          :disabled="!isEditing"
-          @change="handleFunctionChange"
-          :showSearch="{
-            filter: (inputValue, path) =>
-              path.some((option) =>
-                option.label.toLowerCase().includes(inputValue.toLowerCase())
-              ),
-          }"
-        />
-        <a-button type="primary" @click="openFunctionModal"
-          >➕ Adicionar Função</a-button
-        >
-      </div>
-
-      <div class="content__input">
-        <a-cascader
-          :options="companyOptions"
-          placeholder="Empresa"
-          :disabled="!isEditing"
-          @change="handleCompanyChange"
-          :showSearch="{
-            filter: (inputValue, path) =>
-              path.some((option) =>
-                option.label.toLowerCase().includes(inputValue.toLowerCase())
-              ),
-          }"
-        />
+        <div class="content__input">
+          <a-cascader
+            :options="companyOptions"
+            placeholder="Empresa"
+            :disabled="!isEditing"
+            @change="handleCompanyChange"
+            :showSearch="{
+              filter: (inputValue, path) =>
+                path.some((option) =>
+                  option.label.toLowerCase().includes(inputValue.toLowerCase())
+                ),
+            }"
+          />
+        </div>
       </div>
 
       <div class="content__action">
