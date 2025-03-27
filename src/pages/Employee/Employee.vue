@@ -229,6 +229,14 @@ export default {
     .dropdown {
       flex: 0 0 calc(50% - 128px);
       box-sizing: border-box;
+
+      :deep(.ant-picker) {
+        width: 100%;
+      }
+
+      :deep(.ant-cascader) {
+        width: 100%;
+      }
     }
   }
 }
