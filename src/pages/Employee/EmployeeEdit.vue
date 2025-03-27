@@ -149,6 +149,7 @@ export default {
 <template>
   <div class="edit_employee">
     <h1>Edição de Funcionário</h1>
+
     <div class="edit_employee_content">
       <div class="left_collumn" style="width: 40%">
         <div class="content__input">
@@ -167,7 +168,7 @@ export default {
           />
         </div>
 
-        <div class="content__input">
+        <div class="dropdown">
           <a-date-picker
             v-model:value="employeeBirthDate"
             placeholder="Data de nascimento"
@@ -177,7 +178,7 @@ export default {
           />
         </div>
 
-        <div class="content__input">
+        <div class="dropdown">
           <a-cascader
             :options="bloodTypeOptions"
             placeholder="Tipo Sanguíneo"
@@ -186,7 +187,7 @@ export default {
           />
         </div>
 
-        <div class="content__input">
+        <div class="dropdown">
           <a-cascader
             :options="functionOptions"
             placeholder="Função"
@@ -206,7 +207,7 @@ export default {
           <img :src="profileImage" alt="Profile Picture" />
         </div>
 
-        <div class="content__input">
+        <div class="dropdown">
           <a-cascader
             :options="companyOptions"
             placeholder="Empresa"
@@ -244,40 +245,38 @@ export default {
   padding: $spacingXxl;
 
   .edit_employee_content {
+    width: 100%;
     padding: $spacingXxl 0px;
     display: flex;
     flex-wrap: wrap;
+    overflow: auto;
     gap: 32px;
 
+    .profile-picture {
+      margin-bottom: 26px;
+    }
+
     .content__input {
-      flex: 0 0 calc(50% - 16px);
+      flex: 0 0 calc(50% - 128px);
       box-sizing: border-box;
+      margin-bottom: 30px;
     }
 
     .content__action {
-      flex: 0 0 100%;
-      display: flex;
+      flex: 0 0 calc(100% - 200px);
+      display: inline-flex;
       justify-content: center;
     }
 
-    .profile-picture {
-      flex: 0 0 100%;
-      display: flex;
-      justify-content: center;
-      margin-bottom: 16px;
+    .dropdown {
+      flex: 0 0 calc(50% - 128px);
+      box-sizing: border-box;
+      margin-bottom: 30px;
 
-      img {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        object-fit: cover;
+      :deep(.ant-picker),
+      :deep(.ant-cascader) {
+        width: 100%;
       }
-    }
-
-    .dropdown-group {
-      display: flex;
-      gap: 10px;
-      align-items: center;
     }
   }
 }
