@@ -17,6 +17,7 @@ export default {
     const createEmployee = () => {
       return 0;
     };
+    const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
     const employeeName = ref('');
     const employeeCpf = ref('');
     const employeeBirthDate = ref('');
@@ -41,7 +42,6 @@ export default {
       { value: 'Engenheiro', label: 'Engenheiro' },
       { value: 'Mecânico', label: 'Mecânico' },
       { value: 'Pintor', label: 'Pintor' },
-      { value: 'add-new', label: '➕ Adicionar Função' },
     ]);
 
     const companyOptions = [
@@ -56,7 +56,9 @@ export default {
 
     const handleFunctionChange = (value) => {
       if (value.includes('add-new')) {
+        employeeFunction.value = [];
         openFunctionModal();
+        ensureAddNewIsLast();
       } else {
         employeeFunction.value = value[0];
       }
@@ -65,6 +67,27 @@ export default {
     const handleCompanyChange = (value) => {
       company.value = value[0];
     };
+
+    const handleDateChange = (date) => {
+      if (date) {
+        employeeBirthDate.value = dayjs(date);
+      } else {
+        employeeBirthDate.value = null;
+      }
+    };
+
+    const ensureAddNewIsLast = () => {
+      const regularOptions = functionOptions.value.filter(
+        (opt) => opt.value !== 'add-new'
+      );
+
+      functionOptions.value = [
+        ...regularOptions,
+        { value: 'add-new', label: '➕ Adicionar Função' },
+      ];
+    };
+
+    ensureAddNewIsLast();
 
     const openFunctionModal = () => {
       isFunctionModalOpen.value = true;
@@ -79,6 +102,7 @@ export default {
         employeeFunction.value = newFunction.value;
         newFunction.value = '';
         isFunctionModalOpen.value = false;
+        ensureAddNewIsLast();
       }
     };
 
@@ -100,6 +124,9 @@ export default {
       newFunction,
       openFunctionModal,
       addFunction,
+      handleDateChange,
+      dateFormatList,
+      ensureAddNewIsLast,
     };
   },
 };
@@ -117,10 +144,12 @@ export default {
         <a-input v-model:value="employeeCpf" placeholder="CPF" />
       </div>
 
-      <div class="content__input">
+      <div class="dropdown">
         <a-date-picker
           v-model:value="employeeBirthDate"
           placeholder="Data de nascimento"
+          :format="dateFormatList"
+          @change="handleDateChange"
         />
       </div>
 
@@ -135,7 +164,6 @@ export default {
       <div class="dropdown">
         <a-cascader
           :options="functionOptions"
-          placeholder="Função"
           @change="handleFunctionChange"
           :showSearch="{
             filter: (inputValue, path) =>
