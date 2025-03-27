@@ -25,6 +25,9 @@ export default {
     );
 
     const toggleEdit = () => {
+      if (isEditing.value) {
+        editEmployee();
+      }
       isEditing.value = !isEditing.value;
     };
 
@@ -70,7 +73,7 @@ export default {
     };
 
     const editEmployee = () => {
-      return;
+      console.log('Editando funcionário...');
     };
 
     const isFunctionModalVisible = ref(false);
@@ -101,7 +104,7 @@ export default {
         });
         employeeFunction.value = newFunction.value;
         newFunction.value = '';
-        isFunctionModalOpen.value = false;
+        isFunctionModalVisible.value = false;
         ensureAddNewIsLast();
       }
     };
