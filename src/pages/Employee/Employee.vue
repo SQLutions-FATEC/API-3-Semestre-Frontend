@@ -21,11 +21,14 @@ export default {
     const employeeName = ref('');
     const employeeCpf = ref('');
     const employeeBirthDate = ref('');
-    const employeeBloodType = ref('');
-    let employeeFunction = ref([]);
-    const company = ref('');
+    const employeeBloodType = ref('Tipo sanguíneo');
+    const employeeFunction = ref('Função');
+    const company = ref('Empresa');
     const isFunctionModalOpen = ref(false);
     const newFunction = ref('');
+    const profileImage = ref(
+      'https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg'
+    );
 
     const bloodTypeOptions = [
       { value: 'A+', label: 'A+' },
@@ -113,6 +116,7 @@ export default {
       employeeBloodType,
       employeeFunction,
       company,
+      profileImage,
       createEmployee,
       bloodTypeOptions,
       functionOptions,
@@ -136,56 +140,65 @@ export default {
     <h1>Cadastro de Funcionário</h1>
 
     <div class="employee_content">
-      <div class="content__input">
-        <a-input v-model:value="employeeName" placeholder="Nome completo" />
+      <div class="left_collumn" style="width: 40%">
+        <div class="content__input">
+          <a-input v-model:value="employeeName" placeholder="Nome completo" />
+        </div>
+
+        <div class="content__input">
+          <a-input v-model:value="employeeCpf" placeholder="CPF" />
+        </div>
+
+        <div class="dropdown">
+          <a-date-picker
+            v-model:value="employeeBirthDate"
+            placeholder="Data de nascimento"
+            :format="dateFormatList"
+            @change="handleDateChange"
+          />
+        </div>
+
+        <div class="dropdown">
+          <a-cascader
+            :options="bloodTypeOptions"
+            placeholder="Tipo Sanguíneo"
+            @change="handleBloodTypeChange"
+          />
+        </div>
+
+        <div class="dropdown">
+          <a-cascader
+            :options="functionOptions"
+            placeholder="Função"
+            @change="handleFunctionChange"
+            :showSearch="{
+              filter: (inputValue, path) =>
+                path.some((option) =>
+                  option.label.toLowerCase().includes(inputValue.toLowerCase())
+                ),
+            }"
+          />
+        </div>
       </div>
 
-      <div class="content__input">
-        <a-input v-model:value="employeeCpf" placeholder="CPF" />
-      </div>
+      <div class="right_collumn" style="width: 40%">
+        <div class="profile-picture" style="text-align: center">
+          <img :src="profileImage" alt="Profile Picture" />
+        </div>
 
-      <div class="dropdown">
-        <a-date-picker
-          v-model:value="employeeBirthDate"
-          placeholder="Data de nascimento"
-          :format="dateFormatList"
-          @change="handleDateChange"
-        />
-      </div>
-
-      <div class="dropdown">
-        <a-cascader
-          :options="bloodTypeOptions"
-          placeholder="Tipo Sanguíneo"
-          @change="handleBloodTypeChange"
-        />
-      </div>
-
-      <div class="dropdown">
-        <a-cascader
-          :options="functionOptions"
-          @change="handleFunctionChange"
-          :showSearch="{
-            filter: (inputValue, path) =>
-              path.some((option) =>
-                option.label.toLowerCase().includes(inputValue.toLowerCase())
-              ),
-          }"
-        />
-      </div>
-
-      <div class="dropdown">
-        <a-cascader
-          :options="companyOptions"
-          placeholder="Empresa"
-          @change="handleCompanyChange"
-          :showSearch="{
-            filter: (inputValue, path) =>
-              path.some((option) =>
-                option.label.toLowerCase().includes(inputValue.toLowerCase())
-              ),
-          }"
-        />
+        <div class="dropdown">
+          <a-cascader
+            :options="companyOptions"
+            placeholder="Empresa"
+            @change="handleCompanyChange"
+            :showSearch="{
+              filter: (inputValue, path) =>
+                path.some((option) =>
+                  option.label.toLowerCase().includes(inputValue.toLowerCase())
+                ),
+            }"
+          />
+        </div>
       </div>
 
       <div class="content__action">
@@ -210,18 +223,25 @@ export default {
   padding: $spacingXxl;
 
   .employee_content {
+    width: 100%;
     padding: $spacingXxl 0px;
     display: flex;
     flex-wrap: wrap;
+    overflow: auto;
     gap: 32px;
+
+    .profile-picture {
+      margin-bottom: 26px;
+    }
 
     .content__input {
       flex: 0 0 calc(50% - 128px);
       box-sizing: border-box;
+      margin-bottom: 30px;
     }
 
     .content__action {
-      flex: 0 0 calc(100% - 220px);
+      flex: 0 0 calc(100% - 200px);
       display: inline-flex;
       justify-content: center;
     }
@@ -229,11 +249,9 @@ export default {
     .dropdown {
       flex: 0 0 calc(50% - 128px);
       box-sizing: border-box;
+      margin-bottom: 30px;
 
-      :deep(.ant-picker) {
-        width: 100%;
-      }
-
+      :deep(.ant-picker),
       :deep(.ant-cascader) {
         width: 100%;
       }
