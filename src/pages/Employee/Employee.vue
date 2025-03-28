@@ -1,5 +1,6 @@
 <script>
 import { Button, Cascader, DatePicker, Input, Modal } from 'ant-design-vue';
+import dayjs from 'dayjs';
 import { ref } from 'vue';
 
 export default {
@@ -20,10 +21,10 @@ export default {
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
     const employeeName = ref('');
     const employeeCpf = ref('');
-    const employeeBirthDate = ref('');
-    const employeeBloodType = ref('Tipo sanguíneo');
-    const employeeFunction = ref('Função');
-    const company = ref('Empresa');
+    const employeeBirthDate = ref(dayjs());
+    const employeeBloodType = ref('');
+    const employeeFunction = ref('');
+    const company = ref('');
     const isFunctionModalOpen = ref(false);
     const newFunction = ref('');
     const profileImage = ref(
