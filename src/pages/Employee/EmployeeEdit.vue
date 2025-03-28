@@ -245,21 +245,18 @@ export default {
   padding: $spacingXxl;
 
   .edit_employee_content {
-    width: 100%;
     padding: $spacingXxl 0px;
     display: flex;
     flex-wrap: wrap;
     overflow: auto;
-    gap: 32px;
+    gap: $spacingXxl;
 
     .profile-picture {
-      margin-bottom: 26px;
+      margin-bottom: $spacingXxl + 2px;
     }
 
     .content__input {
-      flex: 0 0 calc(50% - 128px);
-      box-sizing: border-box;
-      margin-bottom: 30px;
+      margin-bottom: $spacingXxl;
     }
 
     .content__action {
@@ -269,9 +266,7 @@ export default {
     }
 
     .dropdown {
-      flex: 0 0 calc(50% - 128px);
-      box-sizing: border-box;
-      margin-bottom: 30px;
+      margin-bottom: $spacingXxl;
 
       :deep(.ant-picker),
       :deep(.ant-cascader) {
