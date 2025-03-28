@@ -24,13 +24,6 @@ export default {
       'https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg'
     );
 
-    const toggleEdit = () => {
-      if (isEditing.value) {
-        editEmployee();
-      }
-      isEditing.value = !isEditing.value;
-    };
-
     const bloodTypeOptions = [
       { value: 'A+', label: 'A+' },
       { value: 'A-', label: 'A-' },
@@ -118,7 +111,6 @@ export default {
     };
 
     return {
-      toggleEdit,
       editEmployee,
       employeeName,
       employeeCpf,
@@ -173,7 +165,6 @@ export default {
             v-model:value="employeeBirthDate"
             placeholder="Data de nascimento"
             :format="dateFormatList"
-            :disabled="!isEditing"
             @change="handleDateChange"
           />
         </div>
@@ -182,7 +173,6 @@ export default {
           <a-cascader
             :options="bloodTypeOptions"
             placeholder="Tipo Sanguíneo"
-            :disabled="!isEditing"
             @change="handleBloodTypeChange"
           />
         </div>
@@ -211,7 +201,6 @@ export default {
           <a-cascader
             :options="companyOptions"
             placeholder="Empresa"
-            :disabled="!isEditing"
             @change="handleCompanyChange"
             :showSearch="{
               filter: (inputValue, path) =>
@@ -224,9 +213,7 @@ export default {
       </div>
 
       <div class="content__action">
-        <a-button type="primary" @click="toggleEdit">
-          {{ isEditing ? 'Confirmar' : 'Editar' }}
-        </a-button>
+        <a-button type="primary" @click="editEmployee"> Confirmar </a-button>
       </div>
     </div>
 
