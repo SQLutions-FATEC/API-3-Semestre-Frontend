@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "mock": "vite VITE_MOCK_ENABLED=true",
+    "mock": "VITE_MOCK_ENABLED=true vite",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint --ext .js,.vue src",

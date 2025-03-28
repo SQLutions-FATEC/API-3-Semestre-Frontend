@@ -9,7 +9,7 @@ export function makeServer() {
       models: {},
 
       routes() {
-        this.urlPrefix = 'http://localhost:5173';
+        this.urlPrefix = 'http://localhost:8080';
         this.namespace = 'api';
         this.timing = 400;
 
