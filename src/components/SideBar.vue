@@ -1,8 +1,7 @@
 <script>
+import { UserOutlined, WhatsAppOutlined } from '@ant-design/icons-vue';
 import { Drawer } from 'ant-design-vue';
 import { useRouter } from 'vue-router';
-import { UserOutlined } from '@ant-design/icons-vue';
-import { WhatsAppOutlined } from '@ant-design/icons-vue';
 
 export default {
   props: {
@@ -58,7 +57,7 @@ export default {
           <user-outlined />
         </template>
       </a-button>
-      <a-button block type="primary" @click="redirect('employeeEdit')">
+      <a-button block type="primary" @click="redirect('employee-edit')">
         Editar Funcionário
         <template #icon>
           <user-outlined />
