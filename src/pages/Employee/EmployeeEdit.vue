@@ -110,6 +110,12 @@ export default {
       }
     };
 
+    const showSearch = (inputValue, path) => {
+      return path.some((option) =>
+        option.label.toLowerCase().includes(inputValue.toLowerCase())
+      );
+    };
+
     return {
       editEmployee,
       employeeName,
@@ -133,6 +139,7 @@ export default {
       dateFormatList,
       handleDateChange,
       ensureAddNewIsLast,
+      showSearch,
     };
   },
 };
@@ -182,12 +189,7 @@ export default {
             :options="functionOptions"
             placeholder="Função"
             @change="handleFunctionChange"
-            :showSearch="{
-              filter: (inputValue, path) =>
-                path.some((option) =>
-                  option.label.toLowerCase().includes(inputValue.toLowerCase())
-                ),
-            }"
+            :showSearch="showSearch"
           />
         </div>
       </div>
@@ -202,12 +204,7 @@ export default {
             :options="companyOptions"
             placeholder="Empresa"
             @change="handleCompanyChange"
-            :showSearch="{
-              filter: (inputValue, path) =>
-                path.some((option) =>
-                  option.label.toLowerCase().includes(inputValue.toLowerCase())
-                ),
-            }"
+            :showSearch="showSearch"
           />
         </div>
       </div>
