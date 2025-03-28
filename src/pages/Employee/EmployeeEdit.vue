@@ -218,7 +218,7 @@ export default {
     </div>
 
     <a-modal
-      v-model:visible="isFunctionModalVisible"
+      v-model:open="isFunctionModalVisible"
       title="Nova Função"
       @ok="addFunction"
     >
