@@ -31,7 +31,7 @@ export default {
     <top-bar @toggle-sidebar="toggleSidebar" />
     <side-bar :is-open="isSidebarOpen" @toggle-sidebar="toggleSidebar" />
     <div class="app">
-      <router-view />
+      <router-view :key="$route.fullPath" />
     </div>
   </div>
 </template>

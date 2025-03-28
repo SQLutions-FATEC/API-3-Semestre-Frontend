@@ -12,7 +12,10 @@ app.use(Antd);
 app.use(router);
 app.use(createPinia());
 
-if (process.env.NODE_ENV === 'development') {
+if (
+  process.env.NODE_ENV === 'development' &&
+  import.meta.env.VITE_MOCK_ENABLED === 'true'
+) {
   makeServer();
 }
 
