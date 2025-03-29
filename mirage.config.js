@@ -1,9 +1,9 @@
 import { createServer } from 'miragejs';
-import loginRoutes from '@/mock/routes/loginRoutes';
+import companyRoutes from './src/mock/routes/companyRoutes';
 
 export function makeServer() {
   if (import.meta.env.MODE === 'development' && !window.server) {
-    const routes = [...loginRoutes];
+    const routes = [...companyRoutes];
 
     window.server = createServer({
       models: {},

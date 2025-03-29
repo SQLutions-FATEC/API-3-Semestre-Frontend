@@ -1,7 +1,7 @@
 import Company from '@/pages/Company/Company.vue';
 import Employee from '@/pages/Employee/Employee.vue';
-import EmployeeEdit from '@/pages/Employee/EmployeeEdit.vue';
 import Home from '@/pages/Home/Home.vue';
+import EmployeeEdit from '@/pages/Employee/EmployeeEdit.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
@@ -11,17 +11,17 @@ const routes = [
     component: Home,
   },
   {
-    path: '/employee',
+    path: '/employee/:id?',
     name: 'Employee',
     component: Employee,
   },
   {
-    path: '/employee-edit',
+    path: '/employeeEdit',
     name: 'EmployeeEdit',
     component: EmployeeEdit,
   },
   {
-    path: '/company',
+    path: '/company/:id?',
     name: 'Company',
     component: Company,
   },
