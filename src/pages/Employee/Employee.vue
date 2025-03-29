@@ -46,10 +46,13 @@ export default {
         return;
       }
 
+      const formattedEmployeeDate =
+        employeeBirthDate.value.format('YYYY-MM-DD');
+
       const payload = {
         employee_name: employeeName.value,
 
-        employee_birth_date: employeeBirthDate.value,
+        employee_birth_date: formattedEmployeeDate,
 
         employee_blood_type: employeeBloodType.value,
 
@@ -70,6 +73,7 @@ export default {
           message: error.message,
           response: error.response?.data,
           status: error.response?.status,
+          config: error.config,
         });
       }
     };
