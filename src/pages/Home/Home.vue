@@ -2,8 +2,10 @@
 import { Select, Table } from 'ant-design-vue';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons-vue';
 import company from '@/services/company';
 import clockInOut from '@/services/clockInOut';
+import { h } from 'vue';
 
 export default {
   name: 'Home',
@@ -11,6 +13,8 @@ export default {
   components: {
     'a-select': Select,
     'a-table': Table,
+    'arrow-up-outlined': ArrowUpOutlined,
+    'arrow-down-outlined': ArrowDownOutlined,
   },
 
   setup() {
@@ -109,6 +113,13 @@ export default {
         title: '',
         dataIndex: 'clocked',
         key: 'clocked',
+        customRender: ({ text }) => {
+          if (text === 'Entrada') {
+            return h(ArrowUpOutlined, { style: { color: 'green' } });
+          } else {
+            return h(ArrowDownOutlined, { style: { color: 'red' } });
+          }
+        },
       },
     ]
 
