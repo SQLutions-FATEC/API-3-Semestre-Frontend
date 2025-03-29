@@ -1,7 +1,8 @@
 import api from './api';
 
 const clockInOut = {
-  get: () => api.get('/clock-in-out'),
+  get: (params = { page: 1, size: 10 }) =>
+    api.get('/movimentacoes/search', { params }),
 };
 
 export default clockInOut;

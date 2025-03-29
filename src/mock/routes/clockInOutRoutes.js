@@ -5,7 +5,7 @@ const clockInOutRoutes = [
   mockFlag(
     {
       method: 'get',
-      url: '/clock-in-out',
+      url: '/movimentacoes/search',
       result: () => {
         const response = clockInOut;
 

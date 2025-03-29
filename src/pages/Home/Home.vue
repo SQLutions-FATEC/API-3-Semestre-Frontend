@@ -16,8 +16,11 @@ export default {
   setup() {
     const router = useRouter();
     const companies = ref([]);
-    const selectedCompany = ref(null);
+    const currentPage = ref(1);
     const dataSource = ref([])
+    const pageSize = ref(10);
+    const selectedCompany = ref(null);
+    const totalPages = ref(0);
 
     const getCompanies = async () => {
       try {
@@ -33,15 +36,22 @@ export default {
 
     const getEmployeesClockInOut = async () => {
       try {
-        const { data } = await clockInOut.get();
-        dataSource.value = data.map((info) => ({
+        const { data } = await clockInOut.get(
+          {
+            page: currentPage.value,
+            size: pageSize.value,
+          }
+        );
+        dataSource.value = data.items.map((info) => ({
           key: info.id,
           registerNumber: info.register_number,
+          employee: info.employee.name,
           company: info.company.name,
           role: info.role_name,
           datetime: info.date_time,
           clocked: info.direction
         }));
+        totalPages.value = data.total
       } catch (error) {
         console.error(error);
       }
@@ -54,6 +64,12 @@ export default {
         name: 'Company',
         params: { id: String(companyId) },
       });
+    };
+
+    const handleTableChange = (paginator) => {
+      currentPage.value = paginator.current;
+      pageSize.value = paginator.pageSize;
+      getEmployeesClockInOut();
     };
 
     onMounted(async () => {
@@ -97,12 +113,16 @@ export default {
     ]
 
     return {
+      columns,
       companies,
+      currentPage,
+      dataSource,
       getCompanies,
       handleChange,
+      handleTableChange,
+      pageSize,
       selectedCompany,
-      dataSource,
-      columns
+      totalPages
     };
   },
 };
@@ -117,6 +137,16 @@ export default {
       :options="companies"
       @change="handleChange"
     />
-    <a-table :dataSource="dataSource" :columns="columns" />
+    <a-table
+      :dataSource="dataSource"
+      :columns="columns"
+      :pagination="{
+        current: currentPage,
+        pageSize: pageSize,
+        total: totalPages,
+        showSizeChanger: true,
+        pageSizeOptions: ['10', '20', '50'],
+      }"
+    @change="handleTableChange" />
   </div>
 </template>
