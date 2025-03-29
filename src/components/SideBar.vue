@@ -26,7 +26,7 @@ export default {
 
     const redirect = (path) => {
       router.push({
-        path: path,
+        path: `/${path}`,
       });
     };
 
