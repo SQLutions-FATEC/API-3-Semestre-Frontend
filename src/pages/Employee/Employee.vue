@@ -2,6 +2,7 @@
 import { Button, Cascader, DatePicker, Input, Modal } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import { ref } from 'vue';
+import employee from '@/services/employee';
 
 export default {
   name: 'Employee',
@@ -15,10 +16,7 @@ export default {
   },
 
   setup() {
-    const createEmployee = () => {
-      return 0;
-    };
-    const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
+    const dateFormatList = ['DD/MM/YYYY'];
     const employeeName = ref('');
     const employeeCpf = ref('');
     const employeeBirthDate = ref(dayjs());
@@ -30,6 +28,34 @@ export default {
     const profileImage = ref(
       'https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg'
     );
+
+    const createEmployee = async () => {
+      const payload = {
+        employee_name: employeeName.value,
+
+        employee_birth_date: employeeBirthDate.value,
+
+        employee_blood_type: employeeBloodType.value,
+
+        employee_function: employeeFunction.value,
+
+        company: company.value,
+
+        employee_cpf: employeeCpf.value,
+      };
+
+      console.log('Dados sendo enviados:', JSON.stringify(payload, null, 2));
+
+      try {
+        await employee.create(payload);
+      } catch (error) {
+        console.error('Erro completo:', {
+          message: error.message,
+          response: error.response?.data,
+          status: error.response?.status,
+        });
+      }
+    };
 
     const bloodTypeOptions = [
       { value: 'A+', label: 'A+' },
@@ -49,9 +75,9 @@ export default {
     ]);
 
     const companyOptions = [
-      { value: 'Empresa A', label: 'Empresa A' },
-      { value: 'Empresa B', label: 'Empresa B' },
-      { value: 'Empresa C', label: 'Empresa C' },
+      { value: 1, label: 'Empresa A' },
+      { value: 2, label: 'Empresa B' },
+      { value: 3, label: 'Empresa C' },
     ];
 
     const handleBloodTypeChange = (value) => {
