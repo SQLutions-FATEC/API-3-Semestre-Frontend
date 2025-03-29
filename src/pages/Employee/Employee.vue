@@ -1,18 +1,21 @@
 <script>
-import { Button, Cascader, DatePicker, Input, Modal } from 'ant-design-vue';
+import { Button, Cascader, DatePicker, Modal } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import { ref } from 'vue';
 import employee from '@/services/employee';
+import AtNumberInput from '@/components/Input/AtNumberInput.vue';
+import AtInput from '@/components/Input/AtInput.vue';
 
 export default {
   name: 'Employee',
 
   components: {
     'a-button': Button,
-    'a-input': Input,
     'a-cascader': Cascader,
     'a-date-picker': DatePicker,
     'a-modal': Modal,
+    'at-input': AtInput,
+    'at-number-input': AtNumberInput,
   },
 
   setup() {
@@ -23,6 +26,7 @@ export default {
     const employeeBloodType = ref('');
     const employeeFunction = ref('');
     const company = ref('');
+    const errorMessage = ref('');
     const isFunctionModalOpen = ref(false);
     const newFunction = ref('');
     const profileImage = ref(
@@ -30,6 +34,18 @@ export default {
     );
 
     const createEmployee = async () => {
+      if (
+        !employeeName.value ||
+        !employeeBirthDate.value ||
+        !employeeBloodType.value ||
+        !employeeFunction.value ||
+        !company.value ||
+        !employeeCpf.value
+      ) {
+        alert('Todos os campos são obrigatórios');
+        return;
+      }
+
       const payload = {
         employee_name: employeeName.value,
 
@@ -48,6 +64,7 @@ export default {
 
       try {
         await employee.create(payload);
+        alert(`Usuario ${employeeName.value} cadastrado com sucesso`);
       } catch (error) {
         console.error('Erro completo:', {
           message: error.message,
@@ -136,6 +153,37 @@ export default {
       }
     };
 
+    const search = () => {
+      filter: (inputValue, path) =>
+        path.some((option) =>
+          option.label.toLowerCase().includes(inputValue.toLowerCase())
+        );
+    };
+
+    const clearFields = () => {
+      employeeName.value = '';
+
+      employeeBirthDate.value = '';
+
+      employeeBloodType.value = '';
+
+      employeeFunction.value = '';
+
+      company.value = '';
+
+      employeeCpf.value = '';
+    };
+
+    const validateCpf = (event) => {
+      const newValue = event.target.value;
+      const rawValue = newValue.replace(/\D/g, '');
+      if (rawValue.length === 11) {
+        errorMessage.value = '';
+      } else {
+        errorMessage.value = 'CPF deve ter 11 dígitos.';
+      }
+    };
+
     return {
       employeeName,
       employeeCpf,
@@ -143,6 +191,7 @@ export default {
       employeeBloodType,
       employeeFunction,
       company,
+      errorMessage,
       profileImage,
       createEmployee,
       bloodTypeOptions,
@@ -158,6 +207,9 @@ export default {
       handleDateChange,
       dateFormatList,
       ensureAddNewIsLast,
+      validateCpf,
+      search,
+      clearFields,
     };
   },
 };
@@ -169,11 +221,21 @@ export default {
     <div class="employee_content">
       <div class="left_collumn" style="width: 40%">
         <div class="content__input">
-          <a-input v-model:value="employeeName" placeholder="Nome completo" />
+          <at-input
+            v-model:value="employeeName"
+            placeholder="Nome completo"
+            text
+          />
         </div>
 
         <div class="content__input">
-          <a-input v-model:value="employeeCpf" placeholder="CPF" />
+          <at-number-input
+            v-model:value="employeeCpf"
+            placeholder="CPF"
+            mask="###.###.###-##"
+            :error-message="errorMessage"
+            @input="validateCpf"
+          />
         </div>
 
         <div class="dropdown">
@@ -198,12 +260,7 @@ export default {
             :options="functionOptions"
             placeholder="Função"
             @change="handleFunctionChange"
-            :showSearch="{
-              filter: (inputValue, path) =>
-                path.some((option) =>
-                  option.label.toLowerCase().includes(inputValue.toLowerCase())
-                ),
-            }"
+            :showSearch="search"
           />
         </div>
       </div>
@@ -218,12 +275,7 @@ export default {
             :options="companyOptions"
             placeholder="Empresa"
             @change="handleCompanyChange"
-            :showSearch="{
-              filter: (inputValue, path) =>
-                path.some((option) =>
-                  option.label.toLowerCase().includes(inputValue.toLowerCase())
-                ),
-            }"
+            :showSearch="search"
           />
         </div>
       </div>
