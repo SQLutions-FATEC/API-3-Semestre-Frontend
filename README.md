@@ -6,12 +6,11 @@
    `sudo apt install nodejs npm`
 2. (Opcional) Baixe o NVM `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash`
 3. Rode o comando `nvm use` para utilizar a versão do node do projeto e, consequentemente, do npm, localizada no arquivo `.nvmrc`
-4. Navegue até a pasta `front` do projeto
-5. Rode o comando `npm install`
-6. (Opcional) Lint / Formatter
-   6.1. Se estiver usando VsCode, instale o plugin do `Prettier` e `Eslint`
-   6.2. Use o atalho `Ctrl + Shift + P`, digite `settings` e procure o do vscode
-   6.2.1. Adicione no arquivo:
+4. Rode o comando `npm install`
+5. (Opcional) Lint / Formatter
+   5.1. Se estiver usando VsCode, instale o plugin do `Prettier` e `Eslint`
+   5.2. Use o atalho `Ctrl + Shift + P`, digite `settings` e procure o do vscode
+   5.2.1. Adicione no arquivo:
    ```
       {
          "editor.codeActionsOnSave": {
@@ -22,8 +21,8 @@
          "prettier.requireConfig": true
       }
    ```
-7. Após instalada as dependências, crie um arquivo `.env` na pasta `front` e copie o `.env.example` para o dentro do arquivo recém criado
-8. Rode o comando `npm run dev` para subir o projeto localmente na porta `5173`
+6. Após instalada as dependências, crie um arquivo `.env` na pasta raiz e copie o `.env.example` para o dentro do arquivo recém criado
+7. Rode o comando `npm run dev` para subir o projeto localmente na porta `5173`
 
 # Estrutura do projeto
 
