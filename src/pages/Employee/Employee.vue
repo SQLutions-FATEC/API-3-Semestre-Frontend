@@ -1,35 +1,82 @@
 <script>
-import { Button, Cascader, DatePicker, Input, Modal } from 'ant-design-vue';
+import { Button, Cascader, DatePicker, Image, Modal } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import { ref } from 'vue';
+import employee from '@/services/employee';
+import AtNumberInput from '@/components/Input/AtNumberInput.vue';
+import AtInput from '@/components/Input/AtInput.vue';
 
 export default {
   name: 'Employee',
 
   components: {
     'a-button': Button,
-    'a-input': Input,
     'a-cascader': Cascader,
     'a-date-picker': DatePicker,
     'a-modal': Modal,
+    'at-input': AtInput,
+    'at-number-input': AtNumberInput,
+    'a-image': Image,
   },
 
   setup() {
-    const createEmployee = () => {
-      return 0;
-    };
-    const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
+    const dateFormatList = ['DD/MM/YYYY'];
     const employeeName = ref('');
     const employeeCpf = ref('');
     const employeeBirthDate = ref(dayjs());
     const employeeBloodType = ref('');
     const employeeFunction = ref('');
     const company = ref('');
+    const errorMessage = ref('');
     const isFunctionModalOpen = ref(false);
     const newFunction = ref('');
     const profileImage = ref(
       'https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg'
     );
+
+    const createEmployee = async () => {
+      if (
+        !employeeName.value ||
+        !employeeBirthDate.value ||
+        !employeeBloodType.value ||
+        !employeeFunction.value ||
+        !company.value ||
+        !employeeCpf.value
+      ) {
+        alert('Todos os campos são obrigatórios');
+        return;
+      }
+
+      if (verifyAge(employeeBirthDate.value) < 16) {
+        alert('Não é possivel cadastrar usuários menores de 16 anos');
+        return;
+      }
+
+      const formattedEmployeeDate =
+        employeeBirthDate.value.format('YYYY-MM-DD');
+
+      const payload = {
+        employee_name: employeeName.value,
+        employee_birth_date: formattedEmployeeDate,
+        employee_blood_type: employeeBloodType.value,
+        employee_function: employeeFunction.value,
+        company: company.value,
+        employee_cpf: employeeCpf.value,
+      };
+
+      try {
+        await employee.create(payload);
+        alert(`Usuario ${employeeName.value} cadastrado com sucesso`);
+        clearFields();
+      } catch (error) {
+        console.error('Erro completo:', {
+          message: error.message,
+          response: error.response?.data,
+          status: error.response?.status,
+          config: error.config,
+        });
+      }
+    };
 
     const bloodTypeOptions = [
       { value: 'A+', label: 'A+' },
@@ -49,27 +96,33 @@ export default {
     ]);
 
     const companyOptions = [
-      { value: 'Empresa A', label: 'Empresa A' },
-      { value: 'Empresa B', label: 'Empresa B' },
-      { value: 'Empresa C', label: 'Empresa C' },
+      { value: 1, label: 'Empresa A' },
+      { value: 2, label: 'Empresa B' },
+      { value: 3, label: 'Empresa C' },
     ];
 
     const handleBloodTypeChange = (value) => {
-      employeeBloodType.value = value[0];
+      if (value != null) {
+        employeeBloodType.value = value[0];
+      }
     };
 
     const handleFunctionChange = (value) => {
-      if (value.includes('add-new')) {
-        employeeFunction.value = [];
-        openFunctionModal();
-        ensureAddNewIsLast();
-      } else {
-        employeeFunction.value = value[0];
+      if (value != null) {
+        if (value.includes('add-new')) {
+          employeeFunction.value = [];
+          openFunctionModal();
+          ensureAddNewIsLast();
+        } else {
+          employeeFunction.value = value[0];
+        }
       }
     };
 
     const handleCompanyChange = (value) => {
-      company.value = value[0];
+      if (value != null) {
+        company.value = value[0];
+      }
     };
 
     const handleDateChange = (date) => {
@@ -110,6 +163,31 @@ export default {
       }
     };
 
+    const clearFields = () => {
+      employeeName.value = '';
+
+      employeeBirthDate.value = '';
+
+      employeeCpf.value = '';
+    };
+
+    const validateCpf = (event) => {
+      const newValue = event.target.value;
+      const rawValue = newValue.replace(/\D/g, '');
+      if (rawValue.length === 11) {
+        errorMessage.value = '';
+      } else {
+        errorMessage.value = 'CPF deve ter 11 dígitos.';
+      }
+    };
+
+    const verifyAge = (birthDate) => {
+      const today = dayjs();
+      const birth = dayjs(birthDate);
+
+      return today.diff(birth, 'year');
+    };
+
     return {
       employeeName,
       employeeCpf,
@@ -117,6 +195,7 @@ export default {
       employeeBloodType,
       employeeFunction,
       company,
+      errorMessage,
       profileImage,
       createEmployee,
       bloodTypeOptions,
@@ -132,6 +211,9 @@ export default {
       handleDateChange,
       dateFormatList,
       ensureAddNewIsLast,
+      validateCpf,
+      clearFields,
+      verifyAge,
     };
   },
 };
@@ -143,11 +225,21 @@ export default {
     <div class="employee_content">
       <div class="left_collumn" style="width: 40%">
         <div class="content__input">
-          <a-input v-model:value="employeeName" placeholder="Nome completo" />
+          <at-input
+            v-model:value="employeeName"
+            placeholder="Nome completo"
+            text
+          />
         </div>
 
         <div class="content__input">
-          <a-input v-model:value="employeeCpf" placeholder="CPF" />
+          <at-number-input
+            v-model:value="employeeCpf"
+            placeholder="CPF"
+            mask="###.###.###-##"
+            :error-message="errorMessage"
+            @input="validateCpf"
+          />
         </div>
 
         <div class="dropdown">
@@ -184,7 +276,7 @@ export default {
 
       <div class="right_collumn" style="width: 40%">
         <div class="profile-picture" style="text-align: center">
-          <img :src="profileImage" alt="Profile Picture" />
+          <a-image :width="225" :height="225" :src="profileImage" />
         </div>
 
         <div class="dropdown">
@@ -231,7 +323,7 @@ export default {
     gap: $spacingXxl;
 
     .profile-picture {
-      margin-bottom: $spacingXxl + 2px;
+      margin-bottom: $spacingXxl;
     }
 
     .content__input {
