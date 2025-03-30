@@ -1,5 +1,5 @@
 <script>
-import { Button, Cascader, DatePicker, Modal } from 'ant-design-vue';
+import { Button, Cascader, DatePicker, Image, Modal } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import { ref } from 'vue';
 import employee from '@/services/employee';
@@ -16,6 +16,7 @@ export default {
     'a-modal': Modal,
     'at-input': AtInput,
     'at-number-input': AtNumberInput,
+    'a-image': Image,
   },
 
   setup() {
@@ -56,19 +57,12 @@ export default {
 
       const payload = {
         employee_name: employeeName.value,
-
         employee_birth_date: formattedEmployeeDate,
-
         employee_blood_type: employeeBloodType.value,
-
         employee_function: employeeFunction.value,
-
         company: company.value,
-
         employee_cpf: employeeCpf.value,
       };
-
-      console.log('Dados sendo enviados:', JSON.stringify(payload, null, 2));
 
       try {
         await employee.create(payload);
@@ -282,7 +276,7 @@ export default {
 
       <div class="right_collumn" style="width: 40%">
         <div class="profile-picture" style="text-align: center">
-          <img :src="profileImage" alt="Profile Picture" />
+          <a-image :width="225" :height="225" :src="profileImage" />
         </div>
 
         <div class="dropdown">
@@ -329,7 +323,7 @@ export default {
     gap: $spacingXxl;
 
     .profile-picture {
-      margin-bottom: $spacingXxl + 2px;
+      margin-bottom: $spacingXxl;
     }
 
     .content__input {
