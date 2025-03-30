@@ -46,6 +46,11 @@ export default {
         return;
       }
 
+      if (verifyAge(employeeBirthDate.value) < 16) {
+        alert('Não é possivel cadastrar usuários menores de 16 anos');
+        return;
+      }
+
       const formattedEmployeeDate =
         employeeBirthDate.value.format('YYYY-MM-DD');
 
@@ -68,6 +73,7 @@ export default {
       try {
         await employee.create(payload);
         alert(`Usuario ${employeeName.value} cadastrado com sucesso`);
+        clearFields();
       } catch (error) {
         console.error('Erro completo:', {
           message: error.message,
@@ -102,21 +108,27 @@ export default {
     ];
 
     const handleBloodTypeChange = (value) => {
-      employeeBloodType.value = value[0];
+      if (value != null) {
+        employeeBloodType.value = value[0];
+      }
     };
 
     const handleFunctionChange = (value) => {
-      if (value.includes('add-new')) {
-        employeeFunction.value = [];
-        openFunctionModal();
-        ensureAddNewIsLast();
-      } else {
-        employeeFunction.value = value[0];
+      if (value != null) {
+        if (value.includes('add-new')) {
+          employeeFunction.value = [];
+          openFunctionModal();
+          ensureAddNewIsLast();
+        } else {
+          employeeFunction.value = value[0];
+        }
       }
     };
 
     const handleCompanyChange = (value) => {
-      company.value = value[0];
+      if (value != null) {
+        company.value = value[0];
+      }
     };
 
     const handleDateChange = (date) => {
@@ -162,12 +174,6 @@ export default {
 
       employeeBirthDate.value = '';
 
-      employeeBloodType.value = '';
-
-      employeeFunction.value = '';
-
-      company.value = '';
-
       employeeCpf.value = '';
     };
 
@@ -179,6 +185,13 @@ export default {
       } else {
         errorMessage.value = 'CPF deve ter 11 dígitos.';
       }
+    };
+
+    const verifyAge = (birthDate) => {
+      const today = dayjs();
+      const birth = dayjs(birthDate);
+
+      return today.diff(birth, 'year');
     };
 
     return {
@@ -206,6 +219,7 @@ export default {
       ensureAddNewIsLast,
       validateCpf,
       clearFields,
+      verifyAge,
     };
   },
 };
