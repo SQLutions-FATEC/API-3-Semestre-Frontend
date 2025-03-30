@@ -157,13 +157,6 @@ export default {
       }
     };
 
-    const search = () => {
-      filter: (inputValue, path) =>
-        path.some((option) =>
-          option.label.toLowerCase().includes(inputValue.toLowerCase())
-        );
-    };
-
     const clearFields = () => {
       employeeName.value = '';
 
@@ -212,7 +205,6 @@ export default {
       dateFormatList,
       ensureAddNewIsLast,
       validateCpf,
-      search,
       clearFields,
     };
   },
@@ -264,7 +256,12 @@ export default {
             :options="functionOptions"
             placeholder="Função"
             @change="handleFunctionChange"
-            :showSearch="search"
+            :showSearch="{
+              filter: (inputValue, path) =>
+                path.some((option) =>
+                  option.label.toLowerCase().includes(inputValue.toLowerCase())
+                ),
+            }"
           />
         </div>
       </div>
@@ -279,7 +276,12 @@ export default {
             :options="companyOptions"
             placeholder="Empresa"
             @change="handleCompanyChange"
-            :showSearch="search"
+            :showSearch="{
+              filter: (inputValue, path) =>
+                path.some((option) =>
+                  option.label.toLowerCase().includes(inputValue.toLowerCase())
+                ),
+            }"
           />
         </div>
       </div>
