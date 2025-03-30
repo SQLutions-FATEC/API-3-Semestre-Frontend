@@ -52,7 +52,7 @@ export default {
     </template>
     <div class="side-bar">
       <a-button block type="primary" @click="redirect('employee')">
-        Funcionários
+        Cadastrar Funcionários
         <template #icon>
           <user-outlined />
         </template>
