@@ -1,0 +1,13 @@
+@forward './__border-radius.module.scss';
+@forward './__colors.module.scss';
+@forward './__fonts.module.scss';
+@forward './__spacers.module.scss';
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-bottom: 0px;
+}
