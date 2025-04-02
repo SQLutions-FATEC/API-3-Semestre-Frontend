@@ -82,10 +82,10 @@ Seguiremos o Conventional Commits, com algumas alterações. Para facilitar o di
 
 ## Commits
 
-- <tipo> (<ID da tarefa no Jira>): <breve descrição em inglês>
+- < tipo > (< ID da tarefa no Jira >): < breve descrição em inglês >
   Exemplo: feat (47): updates the readme with commits pattern
 
 ## Branch
 
-- SCRUM-<ID da tarefa no Jira>/<breve descrição em inglês>
+- SCRUM-< ID da tarefa no Jira >/< breve descrição em inglês >
   Exemplo: SCRUM-47/update-readme
