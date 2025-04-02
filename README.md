@@ -72,3 +72,15 @@ src/
 - **Escalabilidade**: A estrutura é fácil de expandir à medida que o projeto cresce.
 
 # Padrão de commits/branch
+
+Seguiremos o Conventional Commits, com algumas alterações. Para facilitar o dia-a-dia do desenvolvimento, o VsCode possui uma extensão chamada `Conventional Commits`, que auxilia este processo.
+
+## Commits
+
+- <tipo> (<ID da tarefa no Jira>): <breve descrição em inglês>
+  Exemplo: feat (47): updates the readme with commits pattern
+
+## Branch
+
+- SCRUM-<ID da tarefa no Jira>/<breve descrição em inglês>
+  Exemplo: SCRUM-47/update-readme
