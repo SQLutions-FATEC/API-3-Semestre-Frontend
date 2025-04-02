@@ -65,11 +65,16 @@ src/
 └── main.js # Ponto de entrada da aplicação
 ```
 
-## Benefícios
+## Benefícios da estruturação
 
 - **Organização clara**: Facilita a localização de arquivos relacionados a uma mesma camada ou funcionalidade.
 - **Manutenção simplificada**: Alterações em uma camada específica (como componentes ou stores) não afetam outras partes do projeto.
 - **Escalabilidade**: A estrutura é fácil de expandir à medida que o projeto cresce.
+
+## Acordos do projeto
+
+- Código em inglês
+- Todos endpoints precisam ter um mock correspondente
 
 # Padrão de commits/branch
 
