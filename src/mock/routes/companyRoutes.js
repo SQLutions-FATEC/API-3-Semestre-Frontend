@@ -84,11 +84,11 @@ const companyRoutes = [
       method: 'delete',
       url: '/company/:id',
       result: ({ params }) => {
-        let companyTodelete = {};
+        let companyToDelete = {};
 
         for (let index = 0; index < companies.length; index++) {
           if (companies[index].id == params.id) {
-            companyTodelete = companies.splice(index, 1)[0];
+            companyToDelete = companies.splice(index, 1)[0];
           }
         }
 
@@ -99,7 +99,7 @@ const companyRoutes = [
         }
 
         return APIFailureWrapper({
-          content: companyTodelete,
+          content: companyToDelete,
           errorMessage: 'Erro ao deletar empresa',
         });
       },

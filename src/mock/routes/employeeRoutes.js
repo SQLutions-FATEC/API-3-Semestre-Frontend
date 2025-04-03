@@ -1,5 +1,6 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import { employees } from '@/mock/seeds/employeeSeeds';
+import { clockInOut } from '@/mock/seeds/clockInOutSeeds';
 
 const employeeRoutes = [
   mockFlag(
@@ -23,6 +24,33 @@ const employeeRoutes = [
         return APIFailureWrapper({
           content: newEmployee,
           errorMessage: 'Erro ao cadastrar funcionário',
+        });
+      },
+    },
+    'on'
+  ),
+  mockFlag(
+    {
+      method: 'delete',
+      url: '/employee/:id',
+      result: ({ params }) => {
+        let employeeToDelete = {};
+
+        for (let index = 0; index < employees.length; index++) {
+          if (employees[index].id == params.id) {
+            employeeToDelete = employees.splice(index, 1)[0];
+          }
+        }
+
+        for (let index = clockInOut.length - 1; index >= 0; index--) {
+          if (clockInOut[index].employee.id == params.id) {
+            clockInOut.splice(index, 1);
+          }
+        }
+
+        return APIFailureWrapper({
+          content: employeeToDelete,
+          errorMessage: 'Erro ao deletar empresa',
         });
       },
     },
