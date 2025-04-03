@@ -2,9 +2,11 @@
 import { Button, Modal } from 'ant-design-vue';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { validateCnpj } from '@/utils/validations/cnpj'; 
 import company from '@/services/company';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import AtInput from '@/components/Input/AtInput.vue';
+import { computed } from 'vue';
 
 export default {
   name: 'Company',
@@ -31,6 +33,10 @@ export default {
     const createEditCompany = async () => {
       if (!companyName.value || !cnpj.value || !tradeName.value) {
         alert('Todos os campos são obrigatórios');
+        return;
+      }
+      if (!!errorMessage.value) {
+        alert('Corrija o CNPJ');
         return;
       }
       const payload = {
@@ -92,14 +98,9 @@ export default {
       isConfirmationModalOpened.value = true;
     };
 
-    const validateCnpj = (event) => {
+    const validateCnpjInput = (event) => {
       const newValue = event.target.value;
-      const rawValue = newValue.replace(/\D/g, '');
-      if (rawValue.length === 14) {
-        errorMessage.value = '';
-      } else {
-        errorMessage.value = 'CNPJ deve ter 14 dígitos.';
-      }
+      errorMessage.value = validateCnpj(newValue);
     };
 
     const resetInputs = () => {
@@ -119,6 +120,10 @@ export default {
       }
     });
 
+    const showDeleteButton = computed(() => {
+      return isEditing.value
+    })
+
     return {
       buttonAction,
       companyName,
@@ -129,8 +134,9 @@ export default {
       isConfirmationModalOpened,
       openConfirmationModal,
       pageTitle,
+      showDeleteButton,
       tradeName,
-      validateCnpj,
+      validateCnpjInput,
     };
   },
 };
@@ -149,14 +155,14 @@ export default {
           mask="##.###.###/####-##"
           placeholder="CNPJ"
           :error-message="errorMessage"
-          @input="validateCnpj"
+          @input="validateCnpjInput"
         />
       </div>
       <div class="content__input">
         <at-input v-model:value="tradeName" placeholder="Nome fantasia" text />
       </div>
       <div class="content__action">
-        <a-button danger style="width: 250px" @click="openConfirmationModal">
+        <a-button v-if="showDeleteButton" danger style="width: 250px" @click="openConfirmationModal">
           Deletar empresa
         </a-button>
         <a-button
@@ -173,9 +179,9 @@ export default {
       title="Deletar empresa"
       @ok="deleteCompany"
     >
-      <span
-        >Tem certeza que deseja deletar a empresa {{ tradeName.value }}?</span
-      >
+      <span>
+        Tem certeza que deseja deletar a empresa {{ tradeName.value }}?
+      </span>
     </a-modal>
   </div>
 </template>

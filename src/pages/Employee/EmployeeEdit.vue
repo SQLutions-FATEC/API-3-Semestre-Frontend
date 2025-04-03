@@ -14,7 +14,7 @@ export default {
   setup() {
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
     const employeeName = ref('');
-    const employeeCpf = ref('');
+    const employeeRN = ref('');
     const employeeBirthDate = ref(dayjs());
     const employeeBloodType = ref('Tipo Sanguíneo');
     const employeeFunction = ref('Função');
@@ -113,7 +113,7 @@ export default {
     return {
       editEmployee,
       employeeName,
-      employeeCpf,
+      employeeRN,
       employeeBirthDate,
       employeeBloodType,
       employeeFunction,
@@ -154,8 +154,8 @@ export default {
 
         <div class="content__input">
           <a-input
-            v-model:value="employeeCpf"
-            placeholder="CPF"
+            v-model:value="employeeRN"
+            placeholder="Número de registro"
             :disabled="!isEditing"
           />
         </div>

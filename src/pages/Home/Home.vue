@@ -56,7 +56,7 @@ export default {
 
     const columns = [
       {
-        title: 'CPF',
+        title: 'Número de registro',
         dataIndex: 'registerNumber',
         key: 'registerNumber',
       },
