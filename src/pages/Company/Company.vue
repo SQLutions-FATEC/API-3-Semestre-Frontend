@@ -1,7 +1,7 @@
 <script>
-import { Button } from 'ant-design-vue';
+import { Button, Modal } from 'ant-design-vue';
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import company from '@/services/company';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import AtInput from '@/components/Input/AtInput.vue';
@@ -11,21 +11,24 @@ export default {
 
   components: {
     'a-button': Button,
+    'a-modal': Modal,
     'at-input': AtInput,
     'at-number-input': AtNumberInput,
   },
 
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const buttonAction = ref('Cadastrar');
     const companyName = ref('');
     const cnpj = ref('');
     const isEditing = ref(false);
+    const isConfirmationModalOpened = ref(false);
     const errorMessage = ref('');
     const pageTitle = ref('Cadastro de empresa');
     const tradeName = ref('');
 
-    const companyAction = async () => {
+    const createEditCompany = async () => {
       if (!companyName.value || !cnpj.value || !tradeName.value) {
         alert('Todos os campos são obrigatórios');
         return;
@@ -52,6 +55,17 @@ export default {
       }
     };
 
+    const deleteCompany = async () => {
+      try {
+        const companyId = route.params.id;
+        await company.delete(companyId);
+        isConfirmationModalOpened.value = false;
+        router.push({ name: 'Home' });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     const editCompany = async (payload) => {
       try {
         payload.company_id = route.params.id;
@@ -72,6 +86,10 @@ export default {
       } catch (error) {
         console.error(error);
       }
+    };
+
+    const openConfirmationModal = () => {
+      isConfirmationModalOpened.value = true;
     };
 
     const validateCnpj = (event) => {
@@ -103,10 +121,13 @@ export default {
 
     return {
       buttonAction,
-      companyAction,
       companyName,
       cnpj,
+      createEditCompany,
+      deleteCompany,
       errorMessage,
+      isConfirmationModalOpened,
+      openConfirmationModal,
       pageTitle,
       tradeName,
       validateCnpj,
@@ -135,11 +156,27 @@ export default {
         <at-input v-model:value="tradeName" placeholder="Nome fantasia" text />
       </div>
       <div class="content__action">
-        <a-button type="primary" style="width: 250px" @click="companyAction">
+        <a-button danger style="width: 250px" @click="openConfirmationModal">
+          Deletar empresa
+        </a-button>
+        <a-button
+          type="primary"
+          style="width: 250px"
+          @click="createEditCompany"
+        >
           {{ buttonAction }}
         </a-button>
       </div>
     </div>
+    <a-modal
+      v-model:open="isConfirmationModalOpened"
+      title="Deletar empresa"
+      @ok="deleteCompany"
+    >
+      <span
+        >Tem certeza que deseja deletar a empresa {{ tradeName.value }}?</span
+      >
+    </a-modal>
   </div>
 </template>
 
@@ -161,6 +198,7 @@ export default {
       flex: 0 0 100%;
       display: flex;
       justify-content: center;
+      gap: 12px;
     }
   }
 }
