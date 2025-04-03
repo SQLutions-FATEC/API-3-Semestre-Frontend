@@ -1,11 +1,13 @@
 <script>
 import { Button, Cascader, DatePicker, Image, Modal } from 'ant-design-vue';
+import { onMounted, ref } from 'vue';
+import { validateRN } from '@/utils/validations/registerNumber';
+import { useRoute } from 'vue-router';
+import { computed } from 'vue';
 import dayjs from 'dayjs';
-import { ref } from 'vue';
 import employee from '@/services/employee';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import AtInput from '@/components/Input/AtInput.vue';
-import { validateRN } from '@/utils/validations/registerNumber';
 
 export default {
   name: 'Employee',
@@ -21,12 +23,15 @@ export default {
   },
 
   setup() {
+    const route = useRoute();
     const dateFormatList = ['DD/MM/YYYY'];
     const employeeName = ref('');
     const employeeRN = ref('');
     const employeeBirthDate = ref(dayjs());
     const employeeBloodType = ref('');
     const employeeFunction = ref('');
+    const isEditing = ref(false);
+    const isConfirmationModalOpened = ref(false);
     const company = ref('');
     const errorMessage = ref('');
     const isFunctionModalOpen = ref(false);
@@ -101,6 +106,21 @@ export default {
       { value: 2, label: 'Empresa B' },
       { value: 3, label: 'Empresa C' },
     ];
+
+    const deleteEmployee = async () => {
+      try {
+        const employeeId = route.params.id;
+        await employee.delete(employeeId);
+        isConfirmationModalOpened.value = false;
+        router.push({ name: 'Home' });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const openConfirmationModal = () => {
+      isConfirmationModalOpened.value = true;
+    };
 
     const handleBloodTypeChange = (value) => {
       if (value != null) {
@@ -184,12 +204,26 @@ export default {
       return today.diff(birth, 'year');
     };
 
+    onMounted(async () => {
+      const employeeId = route.params.id;
+      if (!!employeeId) {
+        isEditing.value = true;
+      }
+    });
+
+    const showDeleteButton = computed(() => {
+      // enquanto nao refatora tela de edit pra ser a mesma que essa, deixei sempre true
+      return isEditing.value || true
+    })
+
     return {
+      deleteEmployee,
       employeeName,
       employeeRN,
       employeeBirthDate,
       employeeBloodType,
       employeeFunction,
+      isConfirmationModalOpened,
       company,
       errorMessage,
       profileImage,
@@ -203,12 +237,14 @@ export default {
       isFunctionModalOpen,
       newFunction,
       openFunctionModal,
+      openConfirmationModal,
       addFunction,
       handleDateChange,
       dateFormatList,
       ensureAddNewIsLast,
-      validateRNInput,
+      showDeleteButton,
       clearFields,
+      validateRNInput,
       verifyAge,
     };
   },
@@ -291,6 +327,9 @@ export default {
       </div>
 
       <div class="content__action">
+        <a-button v-if="showDeleteButton" danger style="width: 250px" @click="openConfirmationModal">
+          Deletar funcionario
+        </a-button>
         <a-button type="primary" style="width: 250px" @click="createEmployee">
           Cadastrar
         </a-button>
@@ -304,12 +343,21 @@ export default {
     >
       <a-input v-model:value="newFunction" placeholder="Digite a nova função" />
     </a-modal>
+    <a-modal
+      v-model:open="isConfirmationModalOpened"
+      title="Deletar funcionário"
+      @ok="deleteEmployee"
+    >
+      <span>
+        Tem certeza que deseja deletar o funcionário {{ employeeName.value }}?
+      </span>
+    </a-modal>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .employee {
-  padding: $spacingXxl;
+  padding: $spacingXxl 0px;
 
   .employee_content {
     padding: $spacingXxl 0px;
@@ -327,9 +375,10 @@ export default {
     }
 
     .content__action {
-      flex: 0 0 calc(100% - 200px);
-      display: inline-flex;
+      flex: 0 0 100%;
+      display: flex;
       justify-content: center;
+      gap: 12px;
     }
 
     .dropdown {
