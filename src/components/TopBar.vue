@@ -22,20 +22,28 @@ export default {
 
 <template>
   <div class="top-bar">
-    <a-button type="primary" shape="circle" @click="toggleSidebar">
-      <template #icon>
-        <menu-outlined />
-      </template>
-    </a-button>
+    <div class="top-bar__container">
+      <a-button type="primary" shape="circle" @click="toggleSidebar">
+        <template #icon>
+          <menu-outlined />
+        </template>
+      </a-button>
+    </div>
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .top-bar {
   height: 50px;
   background-color: blue;
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  justify-content: center;
+
+  .top-bar__container {
+    max-width: 1200px;
+    width: 100%;
+    padding: 0 16px;
+  }
 }
 </style>
