@@ -5,6 +5,7 @@ import { ref } from 'vue';
 import employee from '@/services/employee';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import AtInput from '@/components/Input/AtInput.vue';
+import { validateRN } from '@/utils/validations/registerNumber';
 
 export default {
   name: 'Employee',
@@ -171,14 +172,9 @@ export default {
       employeeRN.value = '';
     };
 
-    const validateRN = (event) => {
+    const validateRNInput = (event) => {
       const newValue = event.target.value;
-      const rawValue = newValue.replace(/\D/g, '');
-      if (rawValue.length === 11) {
-        errorMessage.value = '';
-      } else {
-        errorMessage.value = 'O Número de Registro deve ter 11 dígitos.';
-      }
+      errorMessage.value = validateRN(newValue);
     };
 
     const verifyAge = (birthDate) => {
@@ -211,7 +207,7 @@ export default {
       handleDateChange,
       dateFormatList,
       ensureAddNewIsLast,
-      validateRN,
+      validateRNInput,
       clearFields,
       verifyAge,
     };
@@ -238,7 +234,7 @@ export default {
             placeholder="Número de registro"
             mask="###########"
             :error-message="errorMessage"
-            @input="validateRN"
+            @input="validateRNInput"
           />
         </div>
 
