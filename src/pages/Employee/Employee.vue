@@ -22,7 +22,7 @@ export default {
   setup() {
     const dateFormatList = ['DD/MM/YYYY'];
     const employeeName = ref('');
-    const employeeCpf = ref('');
+    const employeeRN = ref('');
     const employeeBirthDate = ref(dayjs());
     const employeeBloodType = ref('');
     const employeeFunction = ref('');
@@ -41,7 +41,7 @@ export default {
         !employeeBloodType.value ||
         !employeeFunction.value ||
         !company.value ||
-        !employeeCpf.value
+        !employeeRN.value
       ) {
         alert('Todos os campos são obrigatórios');
         return;
@@ -61,7 +61,7 @@ export default {
         employee_blood_type: employeeBloodType.value,
         employee_function: employeeFunction.value,
         company: company.value,
-        employee_cpf: employeeCpf.value,
+        employee_rn: employeeRN.value,
       };
 
       try {
@@ -168,16 +168,16 @@ export default {
 
       employeeBirthDate.value = '';
 
-      employeeCpf.value = '';
+      employeeRN.value = '';
     };
 
-    const validateCpf = (event) => {
+    const validateRN = (event) => {
       const newValue = event.target.value;
       const rawValue = newValue.replace(/\D/g, '');
       if (rawValue.length === 11) {
         errorMessage.value = '';
       } else {
-        errorMessage.value = 'CPF deve ter 11 dígitos.';
+        errorMessage.value = 'O Número de Registro deve ter 11 dígitos.';
       }
     };
 
@@ -190,7 +190,7 @@ export default {
 
     return {
       employeeName,
-      employeeCpf,
+      employeeRN,
       employeeBirthDate,
       employeeBloodType,
       employeeFunction,
@@ -211,7 +211,7 @@ export default {
       handleDateChange,
       dateFormatList,
       ensureAddNewIsLast,
-      validateCpf,
+      validateRN,
       clearFields,
       verifyAge,
     };
@@ -234,11 +234,11 @@ export default {
 
         <div class="content__input">
           <at-number-input
-            v-model:value="employeeCpf"
-            placeholder="CPF"
-            mask="###.###.###-##"
+            v-model:value="employeeRN"
+            placeholder="Número de registro"
+            mask="###########"
             :error-message="errorMessage"
-            @input="validateCpf"
+            @input="validateRN"
           />
         </div>
 
