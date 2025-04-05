@@ -32,6 +32,10 @@ export default {
     const selectedClockIn = ref({});
     const totalInfos = ref(0);
 
+    const closeEditModal = () => {
+      isEditClockInOpened.value = false;
+    };
+
     const getEmployeesClockInOut = async () => {
       try {
         const { data } = await clockInOut.get({
@@ -136,6 +140,7 @@ export default {
 
     return {
       columns,
+      closeEditModal,
       currentPage,
       dataSource,
       isEditClockInOpened,
@@ -165,6 +170,7 @@ export default {
     <edit-clock-in-modal
       v-if="isEditClockInOpened"
       :clock-in="selectedClockIn"
+      @close="closeEditModal"
     />
   </div>
 </template>
