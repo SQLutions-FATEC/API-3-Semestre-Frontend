@@ -27,6 +27,7 @@ export default {
     const employeeBloodType = ref('');
     const employeeFunction = ref('');
     const company = ref('');
+    const isEditing = ref(false);
     const errorMessage = ref('');
     const isFunctionModalOpen = ref(false);
     const newFunction = ref('');
@@ -34,7 +35,7 @@ export default {
       'https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg'
     );
 
-    const createEmployee = async () => {
+    const employeeAction = async () => {
       if (
         !employeeName.value ||
         !employeeBirthDate.value ||
@@ -51,10 +52,6 @@ export default {
         alert('Não é possivel cadastrar usuários menores de 16 anos');
         return;
       }
-
-      const formattedEmployeeDate =
-        employeeBirthDate.value.format('YYYY-MM-DD');
-
       const payload = {
         employee_name: employeeName.value,
         employee_birth_date: formattedEmployeeDate,
@@ -64,9 +61,32 @@ export default {
         employee_cpf: employeeCpf.value,
       };
 
+      if (isEditing.value) {
+        await createEmployee(payload);
+      } else {
+        await editEmployee(payload);
+      }
+    };
+
+    const createEmployee = async () => {
       try {
         await employee.create(payload);
         alert(`Usuario ${employeeName.value} cadastrado com sucesso`);
+        clearFields();
+      } catch (error) {
+        console.error('Erro completo:', {
+          message: error.message,
+          response: error.response?.data,
+          status: error.response?.status,
+          config: error.config,
+        });
+      }
+    };
+
+    const editEmployee = async () => {
+      try {
+        await employee.edit(payload);
+        alert(`Usuario ${employeeName.value} foi editado`);
         clearFields();
       } catch (error) {
         console.error('Erro completo:', {
@@ -195,6 +215,7 @@ export default {
       employeeBloodType,
       employeeFunction,
       company,
+      isEditing,
       errorMessage,
       profileImage,
       createEmployee,
@@ -214,6 +235,8 @@ export default {
       validateCpf,
       clearFields,
       verifyAge,
+      employeeAction,
+      employeeEdit,
     };
   },
 };
@@ -295,7 +318,7 @@ export default {
       </div>
 
       <div class="content__action">
-        <a-button type="primary" style="width: 250px" @click="createEmployee">
+        <a-button type="primary" style="width: 250px" @click="employeeAction">
           Cadastrar
         </a-button>
       </div>
