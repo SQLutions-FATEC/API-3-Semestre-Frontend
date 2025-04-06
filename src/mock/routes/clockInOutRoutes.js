@@ -17,6 +17,29 @@ const clockInOutRoutes = [
     },
     'on'
   ),
+  mockFlag(
+    {
+      method: 'put',
+      url: '/clock_in',
+      result: ({ requestBody }) => {
+        const requestObj = JSON.parse(requestBody);
+
+        clockInOut.forEach((info) => {
+          if (info.register_number == requestObj.register_number) {
+            info.date_time = requestObj.clock_in_time;
+          }
+        });
+
+        const response = clockInOut;
+
+        return APIFailureWrapper({
+          content: null,
+          errorMessage: 'Erro ao editar movimentação',
+        });
+      },
+    },
+    'on'
+  ),
 ];
 
 export default clockInOutRoutes;
