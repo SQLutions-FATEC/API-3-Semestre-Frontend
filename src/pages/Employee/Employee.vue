@@ -25,12 +25,12 @@ export default {
     const employeeCpf = ref('');
     const employeeBirthDate = ref(dayjs());
     const employeeBloodType = ref('');
-    const employeeFunction = ref('');
+    const employeeRole = ref('');
     const company = ref('');
     const isEditing = ref(false);
     const errorMessage = ref('');
-    const isFunctionModalOpen = ref(false);
-    const newFunction = ref('');
+    const isRoleModalOpen = ref(false);
+    const newRole = ref('');
     const profileImage = ref(
       'https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg'
     );
@@ -40,7 +40,7 @@ export default {
         !employeeName.value ||
         !employeeBirthDate.value ||
         !employeeBloodType.value ||
-        !employeeFunction.value ||
+        !employeeRole.value ||
         !company.value ||
         !employeeCpf.value
       ) {
@@ -56,7 +56,7 @@ export default {
         employee_name: employeeName.value,
         employee_birth_date: formattedEmployeeDate,
         employee_blood_type: employeeBloodType.value,
-        employee_function: employeeFunction.value,
+        employee_Role: employeeRole.value,
         company: company.value,
         employee_cpf: employeeCpf.value,
       };
@@ -109,7 +109,7 @@ export default {
       { value: 'O-', label: 'O-' },
     ];
 
-    const functionOptions = ref([
+    const RoleOptions = ref([
       { value: 'Engenheiro', label: 'Engenheiro' },
       { value: 'Mecânico', label: 'Mecânico' },
       { value: 'Pintor', label: 'Pintor' },
@@ -127,14 +127,14 @@ export default {
       }
     };
 
-    const handleFunctionChange = (value) => {
+    const handleRoleChange = (value) => {
       if (value != null) {
         if (value.includes('add-new')) {
-          employeeFunction.value = [];
-          openFunctionModal();
+          employeeRole.value = [];
+          openRoleModal();
           ensureAddNewIsLast();
         } else {
-          employeeFunction.value = value[0];
+          employeeRole.value = value[0];
         }
       }
     };
@@ -154,11 +154,11 @@ export default {
     };
 
     const ensureAddNewIsLast = () => {
-      const regularOptions = functionOptions.value.filter(
+      const regularOptions = RoleOptions.value.filter(
         (opt) => opt.value !== 'add-new'
       );
 
-      functionOptions.value = [
+      RoleOptions.value = [
         ...regularOptions,
         { value: 'add-new', label: '➕ Adicionar Função' },
       ];
@@ -166,19 +166,19 @@ export default {
 
     ensureAddNewIsLast();
 
-    const openFunctionModal = () => {
-      isFunctionModalOpen.value = true;
+    const openRoleModal = () => {
+      isRoleModalOpen.value = true;
     };
 
-    const addFunction = () => {
-      if (newFunction.value.trim()) {
-        functionOptions.value.push({
-          value: newFunction.value,
-          label: newFunction.value,
+    const addRole = () => {
+      if (newRole.value.trim()) {
+        RoleOptions.value.push({
+          value: newRole.value,
+          label: newRole.value,
         });
-        employeeFunction.value = newFunction.value;
-        newFunction.value = '';
-        isFunctionModalOpen.value = false;
+        employeeRole.value = newRole.value;
+        newRole.value = '';
+        isRoleModalOpen.value = false;
         ensureAddNewIsLast();
       }
     };
@@ -213,22 +213,22 @@ export default {
       employeeCpf,
       employeeBirthDate,
       employeeBloodType,
-      employeeFunction,
+      employeeRole,
       company,
       isEditing,
       errorMessage,
       profileImage,
       createEmployee,
       bloodTypeOptions,
-      functionOptions,
+      RoleOptions,
       companyOptions,
       handleBloodTypeChange,
-      handleFunctionChange,
+      handleRoleChange,
       handleCompanyChange,
-      isFunctionModalOpen,
-      newFunction,
-      openFunctionModal,
-      addFunction,
+      isRoleModalOpen,
+      newRole,
+      openRoleModal,
+      addRole,
       handleDateChange,
       dateFormatList,
       ensureAddNewIsLast,
@@ -284,9 +284,9 @@ export default {
 
         <div class="dropdown">
           <a-cascader
-            :options="functionOptions"
+            :options="RoleOptions"
             placeholder="Função"
-            @change="handleFunctionChange"
+            @change="handleRoleChange"
             :showSearch="{
               filter: (inputValue, path) =>
                 path.some((option) =>
@@ -324,12 +324,8 @@ export default {
       </div>
     </div>
 
-    <a-modal
-      v-model:open="isFunctionModalOpen"
-      title="Nova Função"
-      @ok="addFunction"
-    >
-      <a-input v-model:value="newFunction" placeholder="Digite a nova função" />
+    <a-modal v-model:open="isRoleModalOpen" title="Nova Função" @ok="addRole">
+      <a-input v-model:value="newRole" placeholder="Digite a nova função" />
     </a-modal>
   </div>
 </template>

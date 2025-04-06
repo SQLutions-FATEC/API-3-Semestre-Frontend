@@ -15,7 +15,7 @@ const employeeRoutes = [
           employee_name: body.employee_name,
           employee_birth_date: body.employee_birth_date,
           employee_blood_type: body.employee_blood_type,
-          employee_function: body.employee_function,
+          employee_role: body.employee_role,
           company: body.company,
           employee_cpf: body.employee_cpf,
         };
