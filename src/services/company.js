@@ -10,6 +10,7 @@ const company = {
       trade_name: payload.trade_name,
     }),
   edit: (payload) => api.put(`/company/${payload.company_id}`, payload),
+  delete: (companyId) => api.delete(`/company/${companyId}`),
 };
 
 export default company;
