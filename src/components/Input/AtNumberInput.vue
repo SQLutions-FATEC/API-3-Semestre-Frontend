@@ -50,13 +50,25 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="at-number-input">
     <a-input
       v-mask="mask"
       :placeholder="placeholder"
       :value="inputValue"
       @input="(event) => (inputValue = event.target.value)"
     />
-    <p v-if="errorMessage" style="color: red">{{ errorMessage }}</p>
+    <p v-if="errorMessage" class="input__error-message">{{ errorMessage }}</p>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.at-number-input {
+  position: relative;
+
+  .input__error-message {
+    position: absolute;
+    top: 36px;
+    color: red;
+  }
+}
+</style>
