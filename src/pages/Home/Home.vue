@@ -8,6 +8,7 @@ import {
 } from '@ant-design/icons-vue';
 import clockInOut from '@/services/clockInOut';
 import EditClockInModal from '@/components/Modals/EditClockInModal.vue';
+import HomeHeader from '@/components/Headers/HomeHeader.vue';
 import { h } from 'vue';
 import { RouterLink } from 'vue-router';
 
@@ -22,6 +23,7 @@ export default {
     'arrow-down-outlined': ArrowDownOutlined,
     'edit-clock-in-modal': EditClockInModal,
     'edit-outlined': EditOutlined,
+    'home-header': HomeHeader,
   },
 
   setup() {
@@ -155,6 +157,7 @@ export default {
 
 <template>
   <div class="home">
+    <home-header />
     <a-table
       :dataSource="dataSource"
       :columns="columns"
@@ -177,6 +180,9 @@ export default {
 
 <style lang="scss" scoped>
 .home {
-  padding: $spacingXxl 0px;
+  padding: $spacingLg 0px $spacingXxl 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 </style>
