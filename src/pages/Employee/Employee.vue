@@ -50,11 +50,13 @@ export default {
         alert('Todos os campos são obrigatórios');
         return;
       }
+      const age = verifyAge(employeeBirthDate.value);
 
-      if (verifyAge(employeeBirthDate.value) < 16) {
-        alert('Não é possivel cadastrar usuários menores de 16 anos');
+      if (age < 16 || age > 100) {
+        alert('Não é possivel cadastrar usuários com esta idades');
         return;
       }
+
       const payload = {
         employee_name: employeeName.value,
         employee_birth_date: formattedEmployeeDate,
