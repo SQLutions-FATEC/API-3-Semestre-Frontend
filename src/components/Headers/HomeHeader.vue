@@ -20,7 +20,6 @@ export default {
 <style lang="scss" scoped>
 .home-header {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  justify-content: space-between;
 }
 </style>
