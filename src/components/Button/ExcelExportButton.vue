@@ -23,11 +23,17 @@ export default {
     const isLoading = ref(false);
 
     const exportToExcel = async () => {
+      if (!props.data || props.data.length === 0) {
+        alert('Nenhum dado disponível para exportação');
+        return;
+      }
+
       isLoading.value = true;
 
+      const formattedData = formatData(props.data);
       try {
-        const headers = Object.keys(props.data[0]);
-        const rows = props.data.map((item) => Object.values(item));
+        const headers = Object.keys(formattedData[0]);
+        const rows = formattedData.map((item) => Object.values(item));
 
         const worksheet = [headers, ...rows];
 
@@ -55,6 +61,19 @@ export default {
       } finally {
         isLoading.value = false;
       }
+    };
+
+    const formatData = (data) => {
+      return data.map((info) => {
+        return {
+          'Número de Registro': info.registerNumber,
+          Funcionário: info.employee,
+          Empresa: info.company,
+          Função: info.role,
+          Horário: info.datetime,
+          Movimentação: info.clocked,
+        };
+      });
     };
 
     return {
