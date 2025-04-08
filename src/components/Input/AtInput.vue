@@ -71,12 +71,24 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="at-input">
     <a-input
       :placeholder="placeholder"
       :value="inputValue"
       @input="handleInput"
     />
-    <p v-if="errorMessage" style="color: red">{{ errorMessage }}</p>
+    <p v-if="errorMessage" class="input__error-message">{{ errorMessage }}</p>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.at-input {
+  position: relative;
+
+  .input__error-message {
+    position: absolute;
+    top: 36px;
+    color: red;
+  }
+}
+</style>

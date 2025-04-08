@@ -2,7 +2,6 @@ import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import { employees } from '@/mock/seeds/employeeSeeds';
 
 const employeeRoutes = [
-
   mockFlag(
     {
       method: 'post',
@@ -17,7 +16,7 @@ const employeeRoutes = [
           employee_blood_type: body.employee_blood_type,
           employee_role: body.employee_role,
           company: body.company,
-          employee_cpf: body.employee_cpf,
+          employee_rn: body.employee_rn,
         };
         employees.push(newEmployee);
 

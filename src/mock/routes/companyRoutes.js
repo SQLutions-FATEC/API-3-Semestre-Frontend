@@ -1,5 +1,6 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import { companies } from '@/mock/seeds/companySeeds';
+import { clockInOut } from '@/mock/seeds/clockInOutSeeds';
 
 const companyRoutes = [
   mockFlag(
@@ -73,6 +74,33 @@ const companyRoutes = [
         return APIFailureWrapper({
           content: companyToEdit,
           errorMessage: 'Erro ao editar empresa',
+        });
+      },
+    },
+    'on'
+  ),
+  mockFlag(
+    {
+      method: 'delete',
+      url: '/company/:id',
+      result: ({ params }) => {
+        let companyTodelete = {};
+
+        for (let index = 0; index < companies.length; index++) {
+          if (companies[index].id == params.id) {
+            companyTodelete = companies.splice(index, 1)[0];
+          }
+        }
+
+        for (let index = clockInOut.length - 1; index >= 0; index--) {
+          if (clockInOut[index].company.id == params.id) {
+            clockInOut.splice(index, 1);
+          }
+        }
+
+        return APIFailureWrapper({
+          content: companyTodelete,
+          errorMessage: 'Erro ao deletar empresa',
         });
       },
     },

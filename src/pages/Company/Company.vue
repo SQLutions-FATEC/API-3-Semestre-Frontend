@@ -1,33 +1,42 @@
 <script>
-import { Button } from 'ant-design-vue';
+import { Button, Modal } from 'ant-design-vue';
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { validateCnpj } from '@/utils/validations/cnpj'; 
 import company from '@/services/company';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import AtInput from '@/components/Input/AtInput.vue';
+import { computed } from 'vue';
 
 export default {
   name: 'Company',
 
   components: {
     'a-button': Button,
+    'a-modal': Modal,
     'at-input': AtInput,
     'at-number-input': AtNumberInput,
   },
 
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const buttonAction = ref('Cadastrar');
     const companyName = ref('');
     const cnpj = ref('');
     const isEditing = ref(false);
+    const isConfirmationModalOpened = ref(false);
     const errorMessage = ref('');
     const pageTitle = ref('Cadastro de empresa');
     const tradeName = ref('');
 
-    const companyAction = async () => {
+    const createEditCompany = async () => {
       if (!companyName.value || !cnpj.value || !tradeName.value) {
         alert('Todos os campos são obrigatórios');
+        return;
+      }
+      if (!!errorMessage.value) {
+        alert('Corrija o CNPJ');
         return;
       }
       const payload = {
@@ -47,6 +56,17 @@ export default {
         await company.create(payload);
         alert(`Empresa ${tradeName.value} criada`);
         resetInputs();
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const deleteCompany = async () => {
+      try {
+        const companyId = route.params.id;
+        await company.delete(companyId);
+        isConfirmationModalOpened.value = false;
+        router.push({ name: 'Home' });
       } catch (error) {
         console.error(error);
       }
@@ -74,14 +94,13 @@ export default {
       }
     };
 
-    const validateCnpj = (event) => {
+    const openConfirmationModal = () => {
+      isConfirmationModalOpened.value = true;
+    };
+
+    const validateCnpjInput = (event) => {
       const newValue = event.target.value;
-      const rawValue = newValue.replace(/\D/g, '');
-      if (rawValue.length === 14) {
-        errorMessage.value = '';
-      } else {
-        errorMessage.value = 'CNPJ deve ter 14 dígitos.';
-      }
+      errorMessage.value = validateCnpj(newValue);
     };
 
     const resetInputs = () => {
@@ -101,15 +120,23 @@ export default {
       }
     });
 
+    const showDeleteButton = computed(() => {
+      return isEditing.value
+    })
+
     return {
       buttonAction,
-      companyAction,
       companyName,
       cnpj,
+      createEditCompany,
+      deleteCompany,
       errorMessage,
+      isConfirmationModalOpened,
+      openConfirmationModal,
       pageTitle,
+      showDeleteButton,
       tradeName,
-      validateCnpj,
+      validateCnpjInput,
     };
   },
 };
@@ -128,18 +155,34 @@ export default {
           mask="##.###.###/####-##"
           placeholder="CNPJ"
           :error-message="errorMessage"
-          @input="validateCnpj"
+          @input="validateCnpjInput"
         />
       </div>
       <div class="content__input">
         <at-input v-model:value="tradeName" placeholder="Nome fantasia" text />
       </div>
       <div class="content__action">
-        <a-button type="primary" style="width: 250px" @click="companyAction">
+        <a-button v-if="showDeleteButton" danger style="width: 250px" @click="openConfirmationModal">
+          Deletar empresa
+        </a-button>
+        <a-button
+          type="primary"
+          style="width: 250px"
+          @click="createEditCompany"
+        >
           {{ buttonAction }}
         </a-button>
       </div>
     </div>
+    <a-modal
+      v-model:open="isConfirmationModalOpened"
+      title="Deletar empresa"
+      @ok="deleteCompany"
+    >
+      <span>
+        Tem certeza que deseja deletar a empresa {{ tradeName.value }}?
+      </span>
+    </a-modal>
   </div>
 </template>
 
@@ -161,6 +204,7 @@ export default {
       flex: 0 0 100%;
       display: flex;
       justify-content: center;
+      gap: 12px;
     }
   }
 }

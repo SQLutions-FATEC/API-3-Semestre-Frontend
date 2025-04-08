@@ -1,11 +1,10 @@
 <script>
 import { Select, Table } from 'ant-design-vue';
 import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons-vue';
-import company from '@/services/company';
 import clockInOut from '@/services/clockInOut';
 import { h } from 'vue';
+import { RouterLink } from 'vue-router';
 
 export default {
   name: 'Home',
@@ -18,56 +17,31 @@ export default {
   },
 
   setup() {
-    const router = useRouter();
-    const companies = ref([]);
     const currentPage = ref(1);
-    const dataSource = ref([])
+    const dataSource = ref([]);
     const pageSize = ref(10);
-    const selectedCompany = ref(null);
-    const totalPages = ref(0);
-
-    const getCompanies = async () => {
-      try {
-        const { data } = await company.get();
-        companies.value = data.map((company) => ({
-          label: company.company_name,
-          value: company.id,
-        }));
-      } catch (error) {
-        console.error(error);
-      }
-    };
+    const totalInfos = ref(0);
 
     const getEmployeesClockInOut = async () => {
       try {
-        const { data } = await clockInOut.get(
-          {
-            page: currentPage.value,
-            size: pageSize.value,
-          }
-        );
+        const { data } = await clockInOut.get({
+          page: currentPage.value,
+          size: pageSize.value,
+        });
         dataSource.value = data.items.map((info) => ({
           key: info.id,
           registerNumber: info.register_number,
           employee: info.employee.name,
+          employeeId: info.employee.id,
           company: info.company.name,
           role: info.role_name,
           datetime: info.date_time,
-          clocked: info.direction
+          clocked: info.direction,
         }));
-        totalPages.value = data.total
+        totalInfos.value = data.total;
       } catch (error) {
         console.error(error);
       }
-    }
-
-    const handleChange = (value) => {
-      const companyId = value;
-
-      router.push({
-        name: 'Company',
-        params: { id: String(companyId) },
-      });
     };
 
     const handleTableChange = (paginator) => {
@@ -77,15 +51,12 @@ export default {
     };
 
     onMounted(async () => {
-      await Promise.allSettled([
-        getCompanies(),
-        getEmployeesClockInOut(),
-      ]);
+      await getEmployeesClockInOut();
     });
 
     const columns = [
       {
-        title: 'CPF',
+        title: 'Número de registro',
         dataIndex: 'registerNumber',
         key: 'registerNumber',
       },
@@ -98,6 +69,16 @@ export default {
         title: 'Empresa',
         dataIndex: 'company',
         key: 'company',
+        customRender: ({ text, record }) => {
+          return h(
+            RouterLink,
+            {
+              to: { path: `/company/${record.employeeId}` },
+              style: { color: 'inherit', textDecoration: 'underline' },
+            },
+            () => text
+          );
+        },
       },
       {
         title: 'Função',
@@ -121,43 +102,31 @@ export default {
           }
         },
       },
-    ]
+    ];
 
     return {
       columns,
-      companies,
       currentPage,
       dataSource,
-      getCompanies,
-      handleChange,
       handleTableChange,
       pageSize,
-      selectedCompany,
-      totalPages
+      totalInfos,
     };
   },
 };
 </script>
 
 <template>
-  <div>
-    <a-select
-      v-model:value="selectedCompany"
-      placeholder="Empresas"
-      style="width: 120px"
-      :options="companies"
-      @change="handleChange"
-    />
-    <a-table
-      :dataSource="dataSource"
-      :columns="columns"
-      :pagination="{
-        current: currentPage,
-        pageSize: pageSize,
-        total: totalPages,
-        showSizeChanger: true,
-        pageSizeOptions: ['10', '20', '50'],
-      }"
-    @change="handleTableChange" />
-  </div>
+  <a-table
+    :dataSource="dataSource"
+    :columns="columns"
+    :pagination="{
+      current: currentPage,
+      pageSize: pageSize,
+      total: totalInfos,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '20', '50'],
+    }"
+    @change="handleTableChange"
+  />
 </template>
