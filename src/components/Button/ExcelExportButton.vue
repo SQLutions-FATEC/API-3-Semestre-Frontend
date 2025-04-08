@@ -21,6 +21,21 @@ export default {
 
   setup(props) {
     const isLoading = ref(false);
+    const CHUNK_SIZE = import.meta.env.VITE_EXCEL_CHUNK_SIZE || 100;
+
+    const processInChunks = async (data, processFn) => {
+      const chunks = [];
+      for (let index = 0; index < data.length; index += CHUNK_SIZE) {
+        chunks.push(data.slice(index, index + CHUNK_SIZE));
+      }
+
+      const results = [];
+      for (const chunk of chunks) {
+        results.push(...(await processFn(chunk)));
+        await new Promise((resolve) => setTimeout(resolve, 10));
+      }
+      return results;
+    };
 
     const exportToExcel = async () => {
       if (!props.data || props.data.length === 0) {
@@ -30,8 +45,11 @@ export default {
 
       isLoading.value = true;
 
-      const formattedData = formatData(props.data);
       try {
+        const formattedData = await processInChunks(props.data, (chunk) => {
+          return formatData(chunk);
+        });
+
         const headers = Object.keys(formattedData[0]);
         const rows = formattedData.map((item) => Object.values(item));
 
@@ -57,7 +75,7 @@ export default {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } catch (error) {
-        console.error('Erro na exportação:', error);
+        alert('Erro na exportação:', error);
       } finally {
         isLoading.value = false;
       }
