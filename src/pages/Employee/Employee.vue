@@ -1,8 +1,9 @@
 <script>
 import { Button, Cascader, DatePicker, Image, Modal } from 'ant-design-vue';
 import dayjs from 'dayjs';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import employee from '@/services/employee';
+import company from '@/services/company';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import AtInput from '@/components/Input/AtInput.vue';
 import { validateRN } from '@/utils/validations/registerNumber';
@@ -27,7 +28,8 @@ export default {
     const employeeBirthDate = ref(dayjs());
     const employeeBloodType = ref('');
     const employeeRole = ref('');
-    const company = ref('');
+    const companyId = ref('');
+    const companyOptions = ref([]);
     const isEditing = ref(false);
     const errorMessage = ref('');
     const isRoleModalOpen = ref(false);
@@ -86,7 +88,7 @@ export default {
 
     const editEmployee = async () => {
       try {
-        await employee.edit(payload);
+        //await employee.edit(payload);
         alert(`Usuario ${employeeName.value} foi editado`);
         clearFields();
       } catch (error) {
@@ -110,17 +112,27 @@ export default {
       { value: 'O-', label: 'O-' },
     ];
 
+    const fetchCompanies = async () => {
+      try {
+        const response = await company.get();
+        companyOptions.value = response.data.map((item) => ({
+          value: item.id,
+          label: item.company_name,
+        }));
+      } catch (error) {
+        console.error('Erro ao buscar empresas:', error);
+      }
+    };
+
+    onMounted(() => {
+      fetchCompanies();
+    });
+
     const RoleOptions = ref([
       { value: 'Engenheiro', label: 'Engenheiro' },
       { value: 'Mecânico', label: 'Mecânico' },
       { value: 'Pintor', label: 'Pintor' },
     ]);
-
-    const companyOptions = [
-      { value: 1, label: 'Empresa A' },
-      { value: 2, label: 'Empresa B' },
-      { value: 3, label: 'Empresa C' },
-    ];
 
     const handleBloodTypeChange = (value) => {
       if (value != null) {
@@ -210,7 +222,7 @@ export default {
       employeeBirthDate,
       employeeBloodType,
       employeeRole,
-      company,
+      companyId,
       isEditing,
       errorMessage,
       profileImage,
@@ -232,7 +244,8 @@ export default {
       clearFields,
       verifyAge,
       employeeAction,
-      employeeEdit,
+      onMounted,
+      fetchCompanies,
     };
   },
 };
