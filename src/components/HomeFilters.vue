@@ -2,6 +2,7 @@
 import { Button, DatePicker, Select } from 'ant-design-vue';
 import AtInput from '@/components/Input/AtInput.vue';
 import { ref } from 'vue';
+import { eventBus } from '@/utils/eventBus';
 
 export default {
   name: 'HomeFilters',
@@ -16,10 +17,26 @@ export default {
   },
 
   setup() {
+    const companyNameFilter = ref('');
+    const datetimeFilter = ref([]);
+    const employeeNameFilter = ref('');
+    const roleFilter = ref('');
     const selectedFilter = ref('Funcionário');
 
-    const teste = () => {
-      console.log('oi');
+    const filterClockInOut = async () => {
+      let loading = true;
+      try {
+        eventBus.$emit('filter-changed', {
+          company: companyNameFilter.value,
+          employee: employeeNameFilter.value,
+          role: roleFilter.value,
+          dateRange: datetimeFilter.value,
+        });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        loading = false;
+      }
     };
 
     const selectFilter = (value) => {
@@ -27,7 +44,11 @@ export default {
     };
 
     return {
-      teste,
+      filterClockInOut,
+      companyNameFilter,
+      datetimeFilter,
+      employeeNameFilter,
+      roleFilter,
       selectedFilter,
       selectFilter,
     };
@@ -39,21 +60,25 @@ export default {
   <div class="home-filters">
     <at-input
       v-if="selectedFilter === 'Funcionário'"
+      v-model:value="employeeNameFilter"
       style="width: 250px"
       placeholder="Digite o nome do funcionário"
     />
     <at-input
       v-else-if="selectedFilter === 'Empresa'"
+      v-model:value="companyNameFilter"
       style="width: 250px"
       placeholder="Digite o nome da empresa"
     />
     <at-input
       v-else-if="selectedFilter === 'Função'"
+      v-model:value="roleFilter"
       style="width: 250px"
       placeholder="Digite a função"
     />
     <div v-else-if="selectedFilter === 'Data'" class="filters__date">
       <a-range-picker
+        v-model:value="datetimeFilter"
         style="width: 250px"
         show-time
         :placeholder="['Hora inicial', 'Hora final']"
@@ -70,7 +95,7 @@ export default {
       <a-option value="Função">Função</a-option>
       <a-option value="Data">Data</a-option>
     </a-select>
-    <a-button @click="teste">Filtrar</a-button>
+    <a-button @click="filterClockInOut">Filtrar</a-button>
   </div>
 </template>
 

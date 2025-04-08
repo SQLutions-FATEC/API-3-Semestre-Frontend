@@ -1,6 +1,6 @@
 <script>
 import { Button, Select, Table } from 'ant-design-vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, onBeforeUnmount, ref } from 'vue';
 import {
   ArrowUpOutlined,
   ArrowDownOutlined,
@@ -11,6 +11,7 @@ import EditClockInModal from '@/components/Modals/EditClockInModal.vue';
 import HomeHeader from '@/components/Headers/HomeHeader.vue';
 import { h } from 'vue';
 import { RouterLink } from 'vue-router';
+import { eventBus } from '@/utils/eventBus';
 
 export default {
   name: 'Home',
@@ -38,12 +39,25 @@ export default {
       isEditClockInOpened.value = false;
     };
 
-    const getEmployeesClockInOut = async () => {
+    const getEmployeesClockInOut = async (filters) => {
       try {
-        const { data } = await clockInOut.get({
+        const params = {
           page: currentPage.value,
           size: pageSize.value,
-        });
+        };
+
+        if (filters && filters.company) params.company = filters.company;
+        if (filters && filters.employee) params.employee = filters.employee;
+        if (filters && filters.role) params.role = filters.role;
+        if (filters && filters.dateRange?.length === 2) {
+          params.start_date = filters.dateRange[0].format(
+            'YYYY-MM-DD HH:mm:ss'
+          );
+          params.end_date = filters.dateRange[1].format('YYYY-MM-DD HH:mm:ss');
+        }
+
+        const { data } = await clockInOut.get(params);
+
         dataSource.value = data.items.map((info) => ({
           key: info.id,
           registerNumber: info.register_number,
@@ -65,14 +79,23 @@ export default {
       isEditClockInOpened.value = true;
     };
 
-    const handleTableChange = (paginator) => {
+    const handleFilterChange = async (filters) => {
+      await getEmployeesClockInOut(filters);
+    };
+
+    const handleTableChange = async (paginator) => {
       currentPage.value = paginator.current;
       pageSize.value = paginator.pageSize;
-      getEmployeesClockInOut();
+      await getEmployeesClockInOut();
     };
 
     onMounted(async () => {
+      eventBus.$on('filter-changed', handleFilterChange);
       await getEmployeesClockInOut();
+    });
+
+    onBeforeUnmount(() => {
+      eventBus.$off('filter-changed', handleFilterChange);
     });
 
     const columns = [
