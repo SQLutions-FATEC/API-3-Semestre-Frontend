@@ -109,12 +109,12 @@ export default {
 .home-filters {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: $spacingMd;
 
   .filters__date {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: $spacingMd;
   }
 }
 </style>

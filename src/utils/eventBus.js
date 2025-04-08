@@ -1,4 +1,3 @@
-// utils/eventBus.js
 import { reactive } from 'vue';
 
 const listeners = reactive({});
