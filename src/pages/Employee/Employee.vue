@@ -25,7 +25,7 @@ export default {
     const dateFormatList = ['DD/MM/YYYY'];
     const employeeName = ref('');
     const employeeRN = ref('');
-    const employeeBirthDate = ref(dayjs());
+    const employeeBirthDate = ref(null);
     const employeeBloodType = ref('');
     const employeeRole = ref('');
     const companyId = ref('');
@@ -39,12 +39,13 @@ export default {
     );
 
     const employeeAction = async () => {
+      console.log(employeeBirthDate);
       if (
         !employeeName.value ||
         !employeeBirthDate.value ||
         !employeeBloodType.value ||
         !employeeRole.value ||
-        !company.value ||
+        !companyId.value ||
         !employeeRN.value
       ) {
         alert('Todos os campos são obrigatórios');
@@ -57,12 +58,14 @@ export default {
         return;
       }
 
+      const formattedDate = employeeBirthDate.value.format('DD/MM/YYYY');
+
       const payload = {
         employee_name: employeeName.value,
-        employee_birth_date: formattedEmployeeDate,
+        employee_birth_date: formattedDate,
         employee_blood_type: employeeBloodType.value,
         employee_Role: employeeRole.value,
-        company: company.value,
+        company_id: companyId.value,
         employee_rn: employeeRN.value,
       };
 
@@ -156,16 +159,12 @@ export default {
 
     const handleCompanyChange = (value) => {
       if (value != null) {
-        company.value = value[0];
+        companyId.value = value[0];
       }
     };
 
     const handleDateChange = (date) => {
-      if (date) {
-        employeeBirthDate.value = dayjs(date);
-      } else {
-        employeeBirthDate.value = null;
-      }
+      employeeBirthDate.value = date;
     };
 
     const ensureAddNewIsLast = () => {
@@ -212,10 +211,7 @@ export default {
     };
 
     const verifyAge = (birthDate) => {
-      const today = dayjs();
-      const birth = dayjs(birthDate);
-
-      return today.diff(birth, 'year');
+      return dayjs().diff(birthDate, 'year');
     };
 
     return {
