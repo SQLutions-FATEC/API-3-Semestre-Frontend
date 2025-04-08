@@ -21,7 +21,7 @@ export default {
     const datetimeFilter = ref([]);
     const employeeNameFilter = ref('');
     const roleFilter = ref('');
-    const selectedFilter = ref('Funcionário');
+    const selectedFilter = ref('employee');
 
     const filterClockInOut = async () => {
       let loading = true;
@@ -63,24 +63,24 @@ export default {
 <template>
   <div class="home-filters">
     <at-input
-      v-if="selectedFilter === 'Funcionário'"
+      v-if="selectedFilter === 'employee'"
       v-model:value="employeeNameFilter"
       style="width: 250px"
       placeholder="Digite o nome do funcionário"
     />
     <at-input
-      v-else-if="selectedFilter === 'Empresa'"
+      v-else-if="selectedFilter === 'company'"
       v-model:value="companyNameFilter"
       style="width: 250px"
       placeholder="Digite o nome da empresa"
     />
     <at-input
-      v-else-if="selectedFilter === 'Função'"
+      v-else-if="selectedFilter === 'role'"
       v-model:value="roleFilter"
       style="width: 250px"
       placeholder="Digite a função"
     />
-    <div v-else-if="selectedFilter === 'Data'" class="filters__date">
+    <div v-else-if="selectedFilter === 'datetime'" class="filters__date">
       <a-range-picker
         v-model:value="datetimeFilter"
         style="width: 300px"
@@ -96,10 +96,10 @@ export default {
       placeholder="Selecione um filtro"
       @change="selectFilter"
     >
-      <a-option value="Funcionário">Funcionário</a-option>
-      <a-option value="Empresa">Empresa</a-option>
-      <a-option value="Função">Função</a-option>
-      <a-option value="Data">Data</a-option>
+      <a-option value="employee">Funcionário</a-option>
+      <a-option value="company">Empresa</a-option>
+      <a-option value="role">Função</a-option>
+      <a-option value="datetime">Data</a-option>
     </a-select>
     <a-button @click="filterClockInOut">Filtrar</a-button>
   </div>
