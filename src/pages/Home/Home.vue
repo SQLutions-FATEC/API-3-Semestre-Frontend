@@ -206,6 +206,6 @@ export default {
   padding: $spacingLg 0px $spacingXxl 0px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
 }
 </style>

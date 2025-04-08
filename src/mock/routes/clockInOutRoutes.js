@@ -1,13 +1,47 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import { clockInOut } from '@/mock/seeds/clockInOutSeeds';
+import dayjs from 'dayjs';
 
 const clockInOutRoutes = [
   mockFlag(
     {
       method: 'get',
       url: '/clock_in/search',
-      result: () => {
-        const response = clockInOut;
+      result: ({ queryParams }) => {
+        let response = clockInOut;
+        if (queryParams.employee) {
+          response = response.filter((item) =>
+            item.employee.name
+              .toLowerCase()
+              .includes(queryParams.employee.toLowerCase())
+          );
+        } else if (queryParams.company) {
+          response = response.filter((item) =>
+            item.company.name
+              .toLowerCase()
+              .includes(queryParams.company.toLowerCase())
+          );
+        } else if (queryParams.role) {
+          response = response.filter((item) =>
+            item.role_name
+              .toLowerCase()
+              .includes(queryParams.role.toLowerCase())
+          );
+        } else if (queryParams.start_date && queryParams.end_date) {
+          response = response.filter((item) => {
+            const itemDate = dayjs(item.date_time, 'YYYY-MM-DD HH:mm');
+            const startDate = dayjs(
+              queryParams.start_date,
+              'YYYY-MM-DD HH:mm:ss'
+            ).startOf('minute');
+            const endDate = dayjs(
+              queryParams.end_date,
+              'YYYY-MM-DD HH:mm:ss'
+            ).endOf('minute');
+
+            return itemDate.isAfter(startDate) && itemDate.isBefore(endDate);
+          });
+        }
 
         return APIFailureWrapper({
           content: { items: response, total: response.length },

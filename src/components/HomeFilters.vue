@@ -40,6 +40,10 @@ export default {
     };
 
     const selectFilter = (value) => {
+      companyNameFilter.value = '';
+      datetimeFilter.value = [];
+      employeeNameFilter.value = '';
+      roleFilter.value = '';
       selectedFilter.value = value;
     };
 
@@ -79,14 +83,16 @@ export default {
     <div v-else-if="selectedFilter === 'Data'" class="filters__date">
       <a-range-picker
         v-model:value="datetimeFilter"
-        style="width: 250px"
+        style="width: 300px"
+        format="YYYY-MM-DD HH:mm"
         show-time
         :placeholder="['Hora inicial', 'Hora final']"
+        :time-picker-props="{ format: 'HH:mm' }"
       />
     </div>
     <a-select
       v-model:value="selectedFilter"
-      style="width: 200px"
+      style="width: 150px"
       placeholder="Selecione um filtro"
       @change="selectFilter"
     >
