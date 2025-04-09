@@ -1,6 +1,6 @@
 <script>
 import { Button, Select, Table } from 'ant-design-vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, onBeforeUnmount, ref, h } from 'vue';
 import {
   ArrowUpOutlined,
   ArrowDownOutlined,
@@ -8,8 +8,9 @@ import {
 } from '@ant-design/icons-vue';
 import clockInOut from '@/services/clockInOut';
 import EditClockInModal from '@/components/Modals/EditClockInModal.vue';
-import { h } from 'vue';
+import HomeHeader from '@/components/Headers/HomeHeader.vue';
 import { RouterLink } from 'vue-router';
+import { eventBus } from '@/utils/eventBus';
 
 export default {
   name: 'Home',
@@ -22,10 +23,12 @@ export default {
     'arrow-down-outlined': ArrowDownOutlined,
     'edit-clock-in-modal': EditClockInModal,
     'edit-outlined': EditOutlined,
+    'home-header': HomeHeader,
   },
 
   setup() {
     const currentPage = ref(1);
+    const currentFilters = ref({});
     const dataSource = ref([]);
     const isEditClockInOpened = ref(false);
     const pageSize = ref(10);
@@ -36,12 +39,35 @@ export default {
       isEditClockInOpened.value = false;
     };
 
-    const getEmployeesClockInOut = async () => {
+    const getEmployeesClockInOut = async (filters) => {
       try {
-        const { data } = await clockInOut.get({
+        const params = {
           page: currentPage.value,
           size: pageSize.value,
-        });
+        };
+
+        if (filters) {
+          currentFilters.value = filters;
+        } else {
+          currentFilters.value = {};
+        }
+
+        if (currentFilters.value.company)
+          params.company = currentFilters.value.company;
+        if (currentFilters.value.employee)
+          params.employee = currentFilters.value.employee;
+        if (currentFilters.value.role) params.role = currentFilters.value.role;
+        if (currentFilters.value.dateRange?.length === 2) {
+          params.start_date = currentFilters.value.dateRange[0].format(
+            'YYYY-MM-DD HH:mm:ss'
+          );
+          params.end_date = currentFilters.value.dateRange[1].format(
+            'YYYY-MM-DD HH:mm:ss'
+          );
+        }
+
+        const { data } = await clockInOut.get(params);
+
         dataSource.value = data.items.map((info) => ({
           key: info.id,
           registerNumber: info.register_number,
@@ -63,14 +89,23 @@ export default {
       isEditClockInOpened.value = true;
     };
 
-    const handleTableChange = (paginator) => {
+    const handleFilterChange = async (filters) => {
+      await getEmployeesClockInOut(filters);
+    };
+
+    const handleTableChange = async (paginator) => {
       currentPage.value = paginator.current;
       pageSize.value = paginator.pageSize;
-      getEmployeesClockInOut();
+      await getEmployeesClockInOut(currentFilters.value);
     };
 
     onMounted(async () => {
+      eventBus.$on('filter-changed', handleFilterChange);
       await getEmployeesClockInOut();
+    });
+
+    onBeforeUnmount(() => {
+      eventBus.$off('filter-changed', handleFilterChange);
     });
 
     const columns = [
@@ -156,6 +191,7 @@ export default {
 
 <template>
   <div class="home">
+    <home-header />
     <a-table
       :dataSource="dataSource"
       :columns="columns"
@@ -179,6 +215,9 @@ export default {
 
 <style lang="scss" scoped>
 .home {
-  padding: $spacingXxl 0px;
+  padding: $spacingLg 0px $spacingXxl 0px;
+  display: flex;
+  flex-direction: column;
+  gap: $spacingXl;
 }
 </style>
