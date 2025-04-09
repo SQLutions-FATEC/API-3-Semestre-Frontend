@@ -22,7 +22,7 @@ export default {
     },
   },
 
-  emits: ['close'],
+  emits: ['close', 'reload'],
 
   setup(props, { emit }) {
     const clockInTime = ref('');
@@ -36,15 +36,20 @@ export default {
       emit('close');
     };
 
+    const handleCloseAndReload = () => {
+      emit('reload');
+      handleClose();
+    };
+
     const editClockIn = async () => {
       loading.value = true;
       const params = {
         clock_in_time: clockInTime.value,
-        register_number: registerNumber.value
-      }
+        register_number: registerNumber.value,
+      };
       try {
         await clockInOut.put(params);
-        handleClose();
+        handleCloseAndReload();
       } catch (error) {
         alert('Houve um erro ao tentar editar a movimentação');
       } finally {
@@ -93,9 +98,9 @@ export default {
       </div>
       <div class="col-6">
         <at-input
-        v-model:value="employeeName"
-        placeholder="Nome do funcionário"
-        disabled
+          v-model:value="employeeName"
+          placeholder="Nome do funcionário"
+          disabled
         />
       </div>
       <div class="col-6">
@@ -112,7 +117,7 @@ export default {
           disabled
         />
       </div>
-      <div class="col-6">
+      <div class="col-12">
         <at-number-input
           v-model:value="clockInTime"
           placeholder="Horário do registro"
@@ -132,6 +137,9 @@ export default {
 
   .col-6 {
     flex: 1 1 calc(50% - 12px);
+  }
+  .col-12 {
+    flex: 1 1 100%;
   }
 }
 </style>

@@ -1,6 +1,6 @@
 <script>
 import { Button, Select, Table } from 'ant-design-vue';
-import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { onMounted, onBeforeUnmount, ref, h } from 'vue';
 import {
   ArrowUpOutlined,
   ArrowDownOutlined,
@@ -9,7 +9,6 @@ import {
 import clockInOut from '@/services/clockInOut';
 import EditClockInModal from '@/components/Modals/EditClockInModal.vue';
 import HomeHeader from '@/components/Headers/HomeHeader.vue';
-import { h } from 'vue';
 import { RouterLink } from 'vue-router';
 import { eventBus } from '@/utils/eventBus';
 
@@ -29,6 +28,7 @@ export default {
 
   setup() {
     const currentPage = ref(1);
+    const currentFilters = ref({});
     const dataSource = ref([]);
     const isEditClockInOpened = ref(false);
     const pageSize = ref(10);
@@ -46,14 +46,24 @@ export default {
           size: pageSize.value,
         };
 
-        if (filters && filters.company) params.company = filters.company;
-        if (filters && filters.employee) params.employee = filters.employee;
-        if (filters && filters.role) params.role = filters.role;
-        if (filters && filters.dateRange?.length === 2) {
-          params.start_date = filters.dateRange[0].format(
+        if (filters) {
+          currentFilters.value = filters;
+        } else {
+          currentFilters.value = {};
+        }
+
+        if (currentFilters.value.company)
+          params.company = currentFilters.value.company;
+        if (currentFilters.value.employee)
+          params.employee = currentFilters.value.employee;
+        if (currentFilters.value.role) params.role = currentFilters.value.role;
+        if (currentFilters.value.dateRange?.length === 2) {
+          params.start_date = currentFilters.value.dateRange[0].format(
             'YYYY-MM-DD HH:mm:ss'
           );
-          params.end_date = filters.dateRange[1].format('YYYY-MM-DD HH:mm:ss');
+          params.end_date = currentFilters.value.dateRange[1].format(
+            'YYYY-MM-DD HH:mm:ss'
+          );
         }
 
         const { data } = await clockInOut.get(params);
@@ -88,7 +98,7 @@ export default {
     const handleTableChange = async (paginator) => {
       currentPage.value = paginator.current;
       pageSize.value = paginator.pageSize;
-      await getEmployeesClockInOut();
+      await getEmployeesClockInOut(currentFilters.value);
     };
 
     onMounted(async () => {
@@ -170,6 +180,7 @@ export default {
       closeEditModal,
       currentPage,
       dataSource,
+      getEmployeesClockInOut,
       isEditClockInOpened,
       handleTableChange,
       pageSize,
@@ -199,6 +210,7 @@ export default {
       v-if="isEditClockInOpened"
       :clock-in="selectedClockIn"
       @close="closeEditModal"
+      @reload="getEmployeesClockInOut"
     />
   </div>
 </template>

@@ -64,8 +64,6 @@ const clockInOutRoutes = [
           }
         });
 
-        const response = clockInOut;
-
         return APIFailureWrapper({
           content: null,
           errorMessage: 'Erro ao editar movimentação',

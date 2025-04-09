@@ -2,7 +2,7 @@
 import { Button, Cascader, DatePicker, Image, Modal } from 'ant-design-vue';
 import { onMounted, ref } from 'vue';
 import { validateRN } from '@/utils/validations/registerNumber';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { computed } from 'vue';
 import dayjs from 'dayjs';
 import employee from '@/services/employee';
@@ -24,6 +24,7 @@ export default {
 
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const dateFormatList = ['DD/MM/YYYY'];
     const employeeName = ref('');
     const employeeRN = ref('');
@@ -213,8 +214,8 @@ export default {
 
     const showDeleteButton = computed(() => {
       // enquanto nao refatora tela de edit pra ser a mesma que essa, deixei sempre true
-      return isEditing.value || true
-    })
+      return isEditing.value || true;
+    });
 
     return {
       deleteEmployee,
@@ -327,7 +328,12 @@ export default {
       </div>
 
       <div class="content__action">
-        <a-button v-if="showDeleteButton" danger style="width: 250px" @click="openConfirmationModal">
+        <a-button
+          v-if="showDeleteButton"
+          danger
+          style="width: 250px"
+          @click="openConfirmationModal"
+        >
           Deletar funcionario
         </a-button>
         <a-button type="primary" style="width: 250px" @click="createEmployee">
