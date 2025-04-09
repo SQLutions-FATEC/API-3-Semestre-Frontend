@@ -119,7 +119,7 @@ export default {
         employeeBloodType.value = data.employee_blood_type;
         role.value = data.employee_role;
         companyId.value = data.company;
-        employee_rn.value = String(data.employee_rn);
+        employeeRN.value = String(data.employee_rn);
         pageTitle.value = `Editar ${tradeName.value}`;
       } catch (error) {
         console.error(error);
@@ -157,11 +157,11 @@ export default {
         isEditing.value = true;
         await getEmployee(employeeId);
       } else {
-        resetInputs();
+        clearFields();
       }
     });
 
-    const RoleOptions = ref([
+    const roleOptions = ref([
       { value: 'Engenheiro', label: 'Engenheiro' },
       { value: 'Mecânico', label: 'Mecânico' },
       { value: 'Pintor', label: 'Pintor' },
@@ -196,11 +196,11 @@ export default {
     };
 
     const ensureAddNewIsLast = () => {
-      const regularOptions = RoleOptions.value.filter(
+      const regularOptions = roleOptions.value.filter(
         (opt) => opt.value !== 'add-new'
       );
 
-      RoleOptions.value = [
+      roleOptions.value = [
         ...regularOptions,
         { value: 'add-new', label: '➕ Adicionar Função' },
       ];
@@ -214,7 +214,7 @@ export default {
 
     const addRole = () => {
       if (newRole.value.trim()) {
-        RoleOptions.value.push({
+        roleOptions.value.push({
           value: newRole.value,
           label: newRole.value,
         });
@@ -249,12 +249,13 @@ export default {
       employeeBloodType,
       employeeRole,
       companyId,
+      buttonAction,
       isEditing,
       errorMessage,
       profileImage,
       createEmployee,
       bloodTypeOptions,
-      RoleOptions,
+      roleOptions,
       companyOptions,
       handleBloodTypeChange,
       handleRoleChange,
@@ -322,7 +323,7 @@ export default {
 
         <div class="dropdown">
           <a-cascader
-            :options="RoleOptions"
+            :options="roleOptions"
             placeholder="Função"
             @change="handleRoleChange"
             :showSearch="{
