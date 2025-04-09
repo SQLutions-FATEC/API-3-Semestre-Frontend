@@ -46,7 +46,7 @@ const employeeRoutes = [
           employee_birth_date: body.employee_birth_date,
           employee_blood_type: body.employee_blood_type,
           employee_role: body.employee_role,
-          company: body.company,
+          company_id: body.company_id,
           employee_rn: body.employee_rn,
         };
         employees.push(newEmployee);
