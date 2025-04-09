@@ -20,6 +20,21 @@ const employeeRoutes = [
   ),
   mockFlag(
     {
+      method: 'get',
+      url: '/employee/:id',
+      result: ({ params }) => {
+        const response = employees.find((employee) => employee.id = params.id);
+
+        return APIFailureWrapper({
+          content: response,
+          errorMessage: 'Erro ao listar funcionário',
+        });
+      },
+    },
+    'on'
+  ),
+  mockFlag(
+    {
       method: 'post',
       url: '/employee',
       result: ({ requestBody }) => {
