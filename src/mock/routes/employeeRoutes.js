@@ -1,7 +1,23 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import { employees } from '@/mock/seeds/employeeSeeds';
+import { errorMessages } from 'vue/compiler-sfc';
 
 const employeeRoutes = [
+  mockFlag(
+    {
+      method: 'get',
+      url: '/employee',
+      result: () => {
+        const response = employees;
+
+        return APIFailureWrapper({
+          content: response,
+          errorMessage: 'Erro ao listar os funcionários',
+        });
+      },
+    },
+    'on'
+  ),
   mockFlag(
     {
       method: 'post',
