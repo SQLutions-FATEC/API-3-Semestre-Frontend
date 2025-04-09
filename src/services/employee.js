@@ -10,6 +10,7 @@ const employee = {
       company: payload.company,
       employee_rn: payload.employee_rn,
     }),
+  delete: (employeeId) => api.delete(`/employee/${employeeId}`),
 };
 
 export default employee;

@@ -117,16 +117,25 @@ export default {
 </script>
 
 <template>
-  <a-table
-    :dataSource="dataSource"
-    :columns="columns"
-    :pagination="{
-      current: currentPage,
-      pageSize: pageSize,
-      total: totalInfos,
-      showSizeChanger: true,
-      pageSizeOptions: ['10', '20', '50'],
-    }"
-    @change="handleTableChange"
-  />
+  <div class="home">
+    <a-table
+      :dataSource="dataSource"
+      :columns="columns"
+      :pagination="{
+        current: currentPage,
+        pageSize: pageSize,
+        total: totalInfos,
+        showSizeChanger: true,
+        pageSizeOptions: ['10', '20', '50'],
+      }"
+      @change="handleTableChange"
+    />
+  </div>
 </template>
+
+
+<style lang="scss" scoped>
+.home {
+  padding: $spacingXxl 0px;
+}
+</style>

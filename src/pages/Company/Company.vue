@@ -188,7 +188,7 @@ export default {
 
 <style lang="scss" scoped>
 .company {
-  padding: $spacingXxl;
+  padding: $spacingXxl 0px;
 
   .company__content {
     padding: $spacingXxl 0px;
