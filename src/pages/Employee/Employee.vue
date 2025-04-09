@@ -2,6 +2,8 @@
 import { Button, Cascader, DatePicker, Image, Modal } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import { ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import router from '../../router/router';
 import employee from '@/services/employee';
 import company from '@/services/company';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
@@ -24,12 +26,15 @@ export default {
   setup() {
     const dateFormatList = ['DD/MM/YYYY'];
     const employeeName = ref('');
+    const route = useRoute();
+    const router = useRouter();
     const employeeRN = ref('');
     const employeeBirthDate = ref(null);
     const employeeBloodType = ref('');
     const employeeRole = ref('');
     const companyId = ref('');
     const companyOptions = ref([]);
+    const buttonAction = ref('Cadastrar');
     const isEditing = ref(false);
     const errorMessage = ref('');
     const isRoleModalOpen = ref(false);
@@ -106,6 +111,21 @@ export default {
       }
     };
 
+    const getEmployee = async (employeeId) => {
+      try {
+        const { data } = await employee.get(employeeId);
+        employeeName.value = data.employee_name;
+        employeeBirthDate.value = data.employee_birth_date;
+        employeeBloodType.value = data.employee_blood_type;
+        role.value = data.employee_role;
+        companyId.value = data.company;
+        employee_rn.value = String(data.employee_rn);
+        pageTitle.value = `Editar ${tradeName.value}`;
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     const bloodTypeOptions = [
       { value: 'A+', label: 'A+' },
       { value: 'A-', label: 'A-' },
@@ -129,8 +149,16 @@ export default {
       }
     };
 
-    onMounted(() => {
+    onMounted(async () => {
       fetchCompanies();
+      const employeeId = route.params.id;
+      if (!!employeeId) {
+        buttonAction.value = 'Editar';
+        isEditing.value = true;
+        await getEmployee(employeeId);
+      } else {
+        resetInputs();
+      }
     });
 
     const RoleOptions = ref([
@@ -244,6 +272,9 @@ export default {
       employeeAction,
       onMounted,
       fetchCompanies,
+      getEmployee,
+      router,
+      route,
     };
   },
 };
@@ -326,7 +357,7 @@ export default {
 
       <div class="content__action">
         <a-button type="primary" style="width: 250px" @click="employeeAction">
-          Cadastrar
+          {{ buttonAction }}
         </a-button>
       </div>
     </div>
