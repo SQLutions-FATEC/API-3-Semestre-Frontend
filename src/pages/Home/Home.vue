@@ -143,6 +143,7 @@ export default {
       closeEditModal,
       currentPage,
       dataSource,
+      getEmployeesClockInOut,
       isEditClockInOpened,
       handleTableChange,
       pageSize,
@@ -171,6 +172,7 @@ export default {
       v-if="isEditClockInOpened"
       :clock-in="selectedClockIn"
       @close="closeEditModal"
+      @reload="getEmployeesClockInOut"
     />
   </div>
 </template>
