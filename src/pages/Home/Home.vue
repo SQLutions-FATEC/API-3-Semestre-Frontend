@@ -1,8 +1,13 @@
 <script>
-import { Select, Table } from 'ant-design-vue';
+import { Button, Select, Table } from 'ant-design-vue';
 import { onMounted, ref } from 'vue';
-import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons-vue';
+import {
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+  EditOutlined,
+} from '@ant-design/icons-vue';
 import clockInOut from '@/services/clockInOut';
+import EditClockInModal from '@/components/Modals/EditClockInModal.vue';
 import { h } from 'vue';
 import { RouterLink } from 'vue-router';
 
@@ -10,17 +15,26 @@ export default {
   name: 'Home',
 
   components: {
+    'a-button': Button,
     'a-select': Select,
     'a-table': Table,
     'arrow-up-outlined': ArrowUpOutlined,
     'arrow-down-outlined': ArrowDownOutlined,
+    'edit-clock-in-modal': EditClockInModal,
+    'edit-outlined': EditOutlined,
   },
 
   setup() {
     const currentPage = ref(1);
     const dataSource = ref([]);
+    const isEditClockInOpened = ref(false);
     const pageSize = ref(10);
+    const selectedClockIn = ref({});
     const totalInfos = ref(0);
+
+    const closeEditModal = () => {
+      isEditClockInOpened.value = false;
+    };
 
     const getEmployeesClockInOut = async () => {
       try {
@@ -42,6 +56,11 @@ export default {
       } catch (error) {
         console.error(error);
       }
+    };
+
+    const handleEdit = (clockIn) => {
+      selectedClockIn.value = clockIn;
+      isEditClockInOpened.value = true;
     };
 
     const handleTableChange = (paginator) => {
@@ -102,14 +121,33 @@ export default {
           }
         },
       },
+      {
+        title: 'Ações',
+        key: 'actions',
+        customRender: ({ record }) => {
+          return h(
+            Button,
+            {
+              type: 'primary',
+              shape: 'circle',
+              onClick: () => handleEdit(record),
+            },
+            () => h(EditOutlined)
+          );
+        },
+      },
     ];
 
     return {
       columns,
+      closeEditModal,
       currentPage,
       dataSource,
+      getEmployeesClockInOut,
+      isEditClockInOpened,
       handleTableChange,
       pageSize,
+      selectedClockIn,
       totalInfos,
     };
   },
@@ -130,9 +168,14 @@ export default {
       }"
       @change="handleTableChange"
     />
+    <edit-clock-in-modal
+      v-if="isEditClockInOpened"
+      :clock-in="selectedClockIn"
+      @close="closeEditModal"
+      @reload="getEmployeesClockInOut"
+    />
   </div>
 </template>
-
 
 <style lang="scss" scoped>
 .home {

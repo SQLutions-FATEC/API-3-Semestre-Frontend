@@ -10,6 +10,10 @@ export default {
   },
 
   props: {
+    disabled: {
+      default: false,
+      type: Boolean,
+    },
     placeholder: {
       required: true,
       type: String,
@@ -73,6 +77,7 @@ export default {
 <template>
   <div class="at-input">
     <a-input
+      :disabled="disabled"
       :placeholder="placeholder"
       :value="inputValue"
       @input="handleInput"
