@@ -59,6 +59,32 @@ const employeeRoutes = [
     },
     'on'
   ),
+  mockFlag(
+    {
+      method: 'put',
+      url: '/employee/:id',
+      result: ({ params, requestBody }) => {
+        const body = JSON.parse(requestBody);
+
+        const employeeToEdit = employees.find(
+          (employee) => employee.id == params.id
+        );
+
+        employeeToEdit.employee_name = body.employee_name;
+        employeeToEdit.employee_blood_type = body.employee_blood_type;
+        employeeToEdit.employee_role = body.employee_role;
+        employeeToEdit.company_id = body.company_id;
+        employeeToEdit.employee_rn = body.employee_rn;
+        employeeToEdit.employee_birth_date = body.employee_birth_date;
+
+        return APIFailureWrapper({
+          content: companyToEdit,
+          errorMessage: 'Erro ao editar empresa',
+        });
+      },
+    },
+    'on'
+  ),
 ];
 
 export default employeeRoutes;
