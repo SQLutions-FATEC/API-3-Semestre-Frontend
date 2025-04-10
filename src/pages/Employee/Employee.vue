@@ -5,8 +5,6 @@ import { validateRN } from '@/utils/validations/registerNumber';
 import { useRoute, useRouter } from 'vue-router';
 import { computed } from 'vue';
 import dayjs from 'dayjs';
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 import router from '../../router/router';
 import employee from '@/services/employee';
 import company from '@/services/company';
@@ -31,13 +29,10 @@ export default {
     const router = useRouter();
     const dateFormatList = ['DD/MM/YYYY'];
     const employeeName = ref('');
-    const route = useRoute();
-    const router = useRouter();
     const employeeRN = ref('');
     const employeeBirthDate = ref(null);
     const employeeBloodType = ref('');
     const employeeRole = ref('');
-    const isEditing = ref(false);
     const isConfirmationModalOpened = ref(false);
     const companyId = ref('');
     const companyOptions = ref([]);
@@ -52,7 +47,6 @@ export default {
     );
 
     const employeeAction = async () => {
-      console.log(employeeBirthDate);
       if (
         !employeeName.value ||
         !employeeBirthDate.value ||
@@ -108,7 +102,6 @@ export default {
       try {
         //await employee.edit(payload);
         alert(`Usuario ${employeeName.value} foi editado`);
-        clearFields();
       } catch (error) {
         console.error('Erro completo:', {
           message: error.message,
@@ -251,7 +244,7 @@ export default {
     const clearFields = () => {
       employeeName.value = '';
 
-      employeeBirthDate.value = '';
+      employeeBirthDate.value = null;
 
       employeeRN.value = '';
     };
@@ -413,16 +406,7 @@ export default {
       @ok="deleteEmployee"
     >
       <span>
-        Tem certeza que deseja deletar o funcionário {{ employeeName.value }}?
-      </span>
-    </a-modal>
-    <a-modal
-      v-model:open="isConfirmationModalOpened"
-      title="Deletar funcionário"
-      @ok="deleteEmployee"
-    >
-      <span>
-        Tem certeza que deseja deletar o funcionário {{ employeeName.value }}?
+        Tem certeza que deseja deletar o funcionário {{ employeeName }}?
       </span>
     </a-modal>
   </div>
