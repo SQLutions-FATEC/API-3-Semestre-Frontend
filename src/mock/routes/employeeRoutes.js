@@ -79,8 +79,8 @@ const employeeRoutes = [
         employeeToEdit.employee_birth_date = body.employee_birth_date;
 
         return APIFailureWrapper({
-          content: companyToEdit,
-          errorMessage: 'Erro ao editar empresa',
+          content: employeeToEdit,
+          errorMessage: 'Erro ao editar funcionário',
         });
       },
     },
