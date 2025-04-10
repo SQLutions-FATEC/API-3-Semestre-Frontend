@@ -12,6 +12,7 @@ const employee = {
       company_id: payload.company_id,
       employee_rn: payload.employee_rn,
     }),
+    edit: (payload) => api.put(`/employee/${payload.employee_id}`, payload),
 };
 
 export default employee;
