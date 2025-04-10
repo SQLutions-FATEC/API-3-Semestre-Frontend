@@ -118,8 +118,8 @@ export default {
         employeeName.value = data.employee_name;
         employeeBirthDate.value = data.employee_birth_date;
         employeeBloodType.value = data.employee_blood_type;
-        role.value = data.employee_role;
-        companyId.value = data.company;
+        employeeRole.value = data.employee_role;
+        companyId.value = data.company_id;
         employeeRN.value = String(data.employee_rn);
         pageTitle.value = `Editar ${employeeName.value}`;
       } catch (error) {
