@@ -68,6 +68,7 @@ export default {
       const formattedDate = employeeBirthDate.value.format('DD/MM/YYYY');
 
       const payload = {
+        employee_id: route.params.id,
         employee_name: employeeName.value,
         employee_birth_date: formattedDate,
         employee_blood_type: employeeBloodType.value,
@@ -102,7 +103,6 @@ export default {
       try {
         await employee.edit(payload);
         alert(`Usuario ${employeeName.value} foi editado`);
-        pageTitle.value = `Editar ${employeeName.value}`;
       } catch (error) {
         console.error('Erro completo:', {
           message: error.message,
