@@ -1,33 +1,73 @@
 <script>
-import { Select, Table } from 'ant-design-vue';
-import { onMounted, ref } from 'vue';
-import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons-vue';
+import { Button, Select, Table } from 'ant-design-vue';
+import { onMounted, onBeforeUnmount, ref, h } from 'vue';
+import {
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+  EditOutlined,
+} from '@ant-design/icons-vue';
 import clockInOut from '@/services/clockInOut';
-import { h } from 'vue';
+import EditClockInModal from '@/components/Modals/EditClockInModal.vue';
+import HomeHeader from '@/components/Headers/HomeHeader.vue';
 import { RouterLink } from 'vue-router';
+import { eventBus } from '@/utils/eventBus';
 
 export default {
   name: 'Home',
 
   components: {
+    'a-button': Button,
     'a-select': Select,
     'a-table': Table,
     'arrow-up-outlined': ArrowUpOutlined,
     'arrow-down-outlined': ArrowDownOutlined,
+    'edit-clock-in-modal': EditClockInModal,
+    'edit-outlined': EditOutlined,
+    'home-header': HomeHeader,
   },
 
   setup() {
     const currentPage = ref(1);
+    const currentFilters = ref({});
     const dataSource = ref([]);
+    const isEditClockInOpened = ref(false);
     const pageSize = ref(10);
+    const selectedClockIn = ref({});
     const totalInfos = ref(0);
 
-    const getEmployeesClockInOut = async () => {
+    const closeEditModal = () => {
+      isEditClockInOpened.value = false;
+    };
+
+    const getEmployeesClockInOut = async (filters) => {
       try {
-        const { data } = await clockInOut.get({
+        const params = {
           page: currentPage.value,
           size: pageSize.value,
-        });
+        };
+
+        if (filters) {
+          currentFilters.value = filters;
+        } else {
+          currentFilters.value = {};
+        }
+
+        if (currentFilters.value.company)
+          params.company = currentFilters.value.company;
+        if (currentFilters.value.employee)
+          params.employee = currentFilters.value.employee;
+        if (currentFilters.value.role) params.role = currentFilters.value.role;
+        if (currentFilters.value.dateRange?.length === 2) {
+          params.start_date = currentFilters.value.dateRange[0].format(
+            'YYYY-MM-DD HH:mm:ss'
+          );
+          params.end_date = currentFilters.value.dateRange[1].format(
+            'YYYY-MM-DD HH:mm:ss'
+          );
+        }
+
+        const { data } = await clockInOut.get(params);
+
         dataSource.value = data.items.map((info) => ({
           key: info.id,
           registerNumber: info.register_number,
@@ -44,14 +84,28 @@ export default {
       }
     };
 
-    const handleTableChange = (paginator) => {
+    const handleEdit = (clockIn) => {
+      selectedClockIn.value = clockIn;
+      isEditClockInOpened.value = true;
+    };
+
+    const handleFilterChange = async (filters) => {
+      await getEmployeesClockInOut(filters);
+    };
+
+    const handleTableChange = async (paginator) => {
       currentPage.value = paginator.current;
       pageSize.value = paginator.pageSize;
-      getEmployeesClockInOut();
+      await getEmployeesClockInOut(currentFilters.value);
     };
 
     onMounted(async () => {
+      eventBus.$on('filter-changed', handleFilterChange);
       await getEmployeesClockInOut();
+    });
+
+    onBeforeUnmount(() => {
+      eventBus.$off('filter-changed', handleFilterChange);
     });
 
     const columns = [
@@ -102,14 +156,33 @@ export default {
           }
         },
       },
+      {
+        title: 'Ações',
+        key: 'actions',
+        customRender: ({ record }) => {
+          return h(
+            Button,
+            {
+              type: 'primary',
+              shape: 'circle',
+              onClick: () => handleEdit(record),
+            },
+            () => h(EditOutlined)
+          );
+        },
+      },
     ];
 
     return {
       columns,
+      closeEditModal,
       currentPage,
       dataSource,
+      getEmployeesClockInOut,
+      isEditClockInOpened,
       handleTableChange,
       pageSize,
+      selectedClockIn,
       totalInfos,
     };
   },
@@ -117,16 +190,34 @@ export default {
 </script>
 
 <template>
-  <a-table
-    :dataSource="dataSource"
-    :columns="columns"
-    :pagination="{
-      current: currentPage,
-      pageSize: pageSize,
-      total: totalInfos,
-      showSizeChanger: true,
-      pageSizeOptions: ['10', '20', '50'],
-    }"
-    @change="handleTableChange"
-  />
+  <div class="home">
+    <home-header />
+    <a-table
+      :dataSource="dataSource"
+      :columns="columns"
+      :pagination="{
+        current: currentPage,
+        pageSize: pageSize,
+        total: totalInfos,
+        showSizeChanger: true,
+        pageSizeOptions: ['10', '20', '50'],
+      }"
+      @change="handleTableChange"
+    />
+    <edit-clock-in-modal
+      v-if="isEditClockInOpened"
+      :clock-in="selectedClockIn"
+      @close="closeEditModal"
+      @reload="getEmployeesClockInOut"
+    />
+  </div>
 </template>
+
+<style lang="scss" scoped>
+.home {
+  padding: $spacingLg 0px $spacingXxl 0px;
+  display: flex;
+  flex-direction: column;
+  gap: $spacingXl;
+}
+</style>

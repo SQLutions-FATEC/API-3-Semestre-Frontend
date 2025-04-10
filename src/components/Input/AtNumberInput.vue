@@ -6,6 +6,10 @@ export default {
   name: 'AtNumberInput',
 
   props: {
+    disabled: {
+      default: false,
+      type: Boolean,
+    },
     errorMessage: {
       default: '',
       type: String,
@@ -53,6 +57,7 @@ export default {
   <div class="at-number-input">
     <a-input
       v-mask="mask"
+      :disabled="disabled"
       :placeholder="placeholder"
       :value="inputValue"
       @input="(event) => (inputValue = event.target.value)"

@@ -12,7 +12,8 @@ const employee = {
       company_id: payload.company_id,
       employee_rn: payload.employee_rn,
     }),
-    edit: (payload) => api.put(`/employee/${payload.employee_id}`, payload),
+  edit: (payload) => api.put(`/employee/${payload.employee_id}`, payload),
+  delete: (employeeId) => api.delete(`/employee/${employeeId}`),
 };
 
 export default employee;
