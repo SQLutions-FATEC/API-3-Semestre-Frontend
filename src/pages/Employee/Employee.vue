@@ -116,11 +116,24 @@ export default {
       try {
         const { data } = await employee.get(employeeId);
         employeeName.value = data.employee_name;
-        employeeBirthDate.value = data.employee_birth_date;
-        employeeBloodType.value = data.employee_blood_type;
-        employeeRole.value = data.employee_role;
+        employeeBirthDate.value = dayjs(data.birth_date, 'DD/MM/YYYY');
+        employeeBloodType.value = data.blood_type;
+        employeeRole.value = data.role;
+
+        if (!roleOptions.value.some((opt) => opt.value === data.role)) {
+          roleOptions.value.push({ value: data.role, label: data.role });
+        }
+
         companyId.value = data.company_id;
-        employeeRN.value = String(data.employee_rn);
+
+        const company = companyOptions.value.find(
+          (c) => c.value === data.company_id
+        );
+        if (company) {
+          companyId.label = company.label;
+        }
+
+        employeeRN.value = String(data.reg_num);
         pageTitle.value = `Editar ${employeeName.value}`;
       } catch (error) {
         console.error(error);
