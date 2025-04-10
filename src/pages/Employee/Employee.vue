@@ -34,6 +34,7 @@ export default {
     const employeeRole = ref('');
     const companyId = ref('');
     const companyOptions = ref([]);
+    const pageTitle = ref('Cadastro de funcionário');
     const buttonAction = ref('Cadastrar');
     const isEditing = ref(false);
     const errorMessage = ref('');
@@ -120,7 +121,7 @@ export default {
         role.value = data.employee_role;
         companyId.value = data.company;
         employeeRN.value = String(data.employee_rn);
-        pageTitle.value = `Editar ${tradeName.value}`;
+        pageTitle.value = `Editar ${employeeName.value}`;
       } catch (error) {
         console.error(error);
       }
@@ -276,13 +277,14 @@ export default {
       getEmployee,
       router,
       route,
+      pageTitle,
     };
   },
 };
 </script>
 <template>
   <div class="employee">
-    <h1>Cadastro de Funcionário</h1>
+    <h1>{{ pageTitle }}</h1>
 
     <div class="employee_content">
       <div class="left_collumn" style="width: 40%">
