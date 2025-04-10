@@ -341,6 +341,7 @@ export default {
 
         <div class="dropdown">
           <a-cascader
+            v-model:value="employeeBloodType"
             :options="bloodTypeOptions"
             placeholder="Tipo Sanguíneo"
             @change="handleBloodTypeChange"
@@ -349,6 +350,7 @@ export default {
 
         <div class="dropdown">
           <a-cascader
+            v-model:value="employeeRole"
             :options="roleOptions"
             placeholder="Função"
             @change="handleRoleChange"
@@ -369,6 +371,7 @@ export default {
 
         <div class="dropdown">
           <a-cascader
+            v-model:value="companyId"
             :options="companyOptions"
             placeholder="Empresa"
             @change="handleCompanyChange"
