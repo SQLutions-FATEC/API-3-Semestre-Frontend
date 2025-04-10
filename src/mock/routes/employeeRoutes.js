@@ -24,7 +24,7 @@ const employeeRoutes = [
       method: 'get',
       url: '/employee/:id',
       result: ({ params }) => {
-        const response = employees.find((employee) => employee.id = params.id);
+        const response = employees.find((employee) => employee.id == params.id);
 
         return APIFailureWrapper({
           content: response,
