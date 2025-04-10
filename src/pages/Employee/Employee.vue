@@ -77,13 +77,13 @@ export default {
       };
 
       if (isEditing.value) {
-        await createEmployee(payload);
-      } else {
         await editEmployee(payload);
+      } else {
+        await createEmployee(payload);
       }
     };
 
-    const createEmployee = async () => {
+    const createEmployee = async (payload) => {
       try {
         await employee.create(payload);
         alert(`Usuario ${employeeName.value} cadastrado com sucesso`);
