@@ -98,10 +98,11 @@ export default {
       }
     };
 
-    const editEmployee = async () => {
+    const editEmployee = async (payload) => {
       try {
-        //await employee.edit(payload);
+        await employee.edit(payload);
         alert(`Usuario ${employeeName.value} foi editado`);
+        pageTitle.value = `Editar ${employeeName.value}`;
       } catch (error) {
         console.error('Erro completo:', {
           message: error.message,
