@@ -257,9 +257,11 @@ export default {
 
     const clearFields = () => {
       employeeName.value = '';
-
       employeeBirthDate.value = null;
-
+      employeeRN.value = '';
+      employeeBloodType.value = '';
+      employeeRole.value = '';
+      companyId.value = '';
       employeeRN.value = '';
     };
 
