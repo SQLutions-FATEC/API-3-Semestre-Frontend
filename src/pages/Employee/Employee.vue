@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import router from '../../router/router';
 import employee from '@/services/employee';
 import company from '@/services/company';
+import role from '@/services/role';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import AtInput from '@/components/Input/AtInput.vue';
 
@@ -36,6 +37,7 @@ export default {
     const isConfirmationModalOpened = ref(false);
     const companyId = ref('');
     const companyOptions = ref([]);
+    const roleOptions = ref([]);
     const pageTitle = ref('Cadastro de funcionário');
     const buttonAction = ref('Cadastrar');
     const isEditing = ref(false);
@@ -119,10 +121,13 @@ export default {
         employeeName.value = data.employee_name;
         employeeBirthDate.value = dayjs(data.birth_date, 'DD/MM/YYYY');
         employeeBloodType.value = data.blood_type;
-        employeeRole.value = data.role;
+        employeeRole.value = data.role_id;
 
-        if (!roleOptions.value.some((opt) => opt.value === data.role)) {
-          roleOptions.value.push({ value: data.role, label: data.role });
+        const foundRole = roleOptions.value.find(
+          (role) => role.value === data.role_id
+        );
+        if (foundRole) {
+          employeeRole.label = role.label;
         }
 
         companyId.value = data.company_id;
@@ -164,8 +169,22 @@ export default {
       }
     };
 
+    const fetchRoles = async () => {
+      try {
+        const response = await role.get();
+        roleOptions.value = response.data.map((item) => ({
+          value: item.id,
+          label: item.name,
+        }));
+        ensureAddNewIsLast();
+      } catch (error) {
+        console.error('Erro ao buscar funções:', error);
+      }
+    };
+
     onMounted(async () => {
       fetchCompanies();
+      fetchRoles();
       const employeeId = route.params.id;
       if (!!employeeId) {
         buttonAction.value = 'Editar';
@@ -175,12 +194,6 @@ export default {
         clearFields();
       }
     });
-
-    const roleOptions = ref([
-      { value: 'Engenheiro', label: 'Engenheiro' },
-      { value: 'Mecânico', label: 'Mecânico' },
-      { value: 'Pintor', label: 'Pintor' },
-    ]);
 
     const deleteEmployee = async () => {
       try {
@@ -235,8 +248,6 @@ export default {
         { value: 'add-new', label: '➕ Adicionar Função' },
       ];
     };
-
-    ensureAddNewIsLast();
 
     const openRoleModal = () => {
       isRoleModalOpen.value = true;
