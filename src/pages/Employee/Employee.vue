@@ -1,9 +1,9 @@
 <script>
-import { Button, Cascader, DatePicker, Image, Modal } from 'ant-design-vue';
-import { onMounted, ref } from 'vue';
+import { Button, Cascader, DatePicker, Modal, Upload, message, Image } from 'ant-design-vue';
+import { CameraOutlined } from '@ant-design/icons-vue';
+import { onMounted, ref, computed } from 'vue';
 import { validateRN } from '@/utils/validations/registerNumber';
 import { useRoute, useRouter } from 'vue-router';
-import { computed } from 'vue';
 import dayjs from 'dayjs';
 import employee from '@/services/employee';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
@@ -17,9 +17,11 @@ export default {
     'a-cascader': Cascader,
     'a-date-picker': DatePicker,
     'a-modal': Modal,
+    'a-upload': Upload,
+    'a-image': Image,
     'at-input': AtInput,
     'at-number-input': AtNumberInput,
-    'a-image': Image,
+    CameraOutlined,
   },
 
   setup() {
@@ -31,8 +33,6 @@ export default {
     const employeeBirthDate = ref(dayjs());
     const employeeBloodType = ref('');
     const employeeFunction = ref('');
-    const isEditing = ref(false);
-    const isConfirmationModalOpened = ref(false);
     const company = ref('');
     const errorMessage = ref('');
     const isFunctionModalOpen = ref(false);
@@ -40,6 +40,47 @@ export default {
     const profileImage = ref(
       'https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg'
     );
+    const isConfirmationModalOpened = ref(false);
+    const isEditing = ref(false);
+    const defaultProfileImage = profileImage.value;
+
+    const beforeUpload = (file) => {
+      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+      if (!isJpgOrPng) {
+        message.error('Você só pode enviar arquivos JPG/PNG!');
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        message.error('A imagem deve ser menor que 2MB!');
+      }
+      return isJpgOrPng && isLt2M;
+    };
+
+    const handleImageChange = (info) => {
+      if (info.file.status === 'uploading') {
+        return;
+      }
+      if (info.file.status === 'done') {
+        message.success(`${info.file.name} carregado com sucesso`);
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} falhou no upload.`);
+      }
+    };
+
+    const customRequest = ({ file, onSuccess, onError }) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        profileImage.value = reader.result;
+        onSuccess("Imagem carregada com sucesso", file);
+      };
+
+      reader.onerror = (error) => {
+        onError(error);
+      };
+
+      reader.readAsDataURL(file);
+    };
 
     const createEmployee = async () => {
       if (
@@ -50,38 +91,37 @@ export default {
         !company.value ||
         !employeeRN.value
       ) {
-        alert('Todos os campos são obrigatórios');
+        message.error('Todos os campos são obrigatórios');
         return;
       }
 
       if (verifyAge(employeeBirthDate.value) < 16) {
-        alert('Não é possivel cadastrar usuários menores de 16 anos');
+        message.error('Não é possivel cadastrar usuários menores de 16 anos');
         return;
       }
 
-      const formattedEmployeeDate =
-        employeeBirthDate.value.format('YYYY-MM-DD');
+      const formattedEmployeeDate = employeeBirthDate.value.format('YYYY-MM-DD');
 
-      const payload = {
-        employee_name: employeeName.value,
-        employee_birth_date: formattedEmployeeDate,
-        employee_blood_type: employeeBloodType.value,
-        employee_function: employeeFunction.value,
-        company: company.value,
-        employee_rn: employeeRN.value,
-      };
+      const formData = new FormData();
+      formData.append('employee_name', employeeName.value);
+      formData.append('employee_birth_date', formattedEmployeeDate);
+      formData.append('employee_blood_type', employeeBloodType.value);
+      formData.append('employee_function', employeeFunction.value);
+      formData.append('company', company.value);
+      formData.append('employee_rn', employeeRN.value);
+
+      if (profileImage.value && profileImage.value !== defaultProfileImage) {
+        const blob = await fetch(profileImage.value).then(res => res.blob());
+        formData.append('profile_image', blob, 'profile.jpg');
+      }
 
       try {
-        await employee.create(payload);
-        alert(`Usuario ${employeeName.value} cadastrado com sucesso`);
+        await employee.create(formData);
+        message.success(`Usuário ${employeeName.value} cadastrado com sucesso`);
         clearFields();
       } catch (error) {
-        console.error('Erro completo:', {
-          message: error.message,
-          response: error.response?.data,
-          status: error.response?.status,
-          config: error.config,
-        });
+        console.error('Erro completo:', error);
+        message.error('Erro ao cadastrar funcionário');
       }
     };
 
@@ -107,21 +147,6 @@ export default {
       { value: 2, label: 'Empresa B' },
       { value: 3, label: 'Empresa C' },
     ];
-
-    const deleteEmployee = async () => {
-      try {
-        const employeeId = route.params.id;
-        await employee.delete(employeeId);
-        isConfirmationModalOpened.value = false;
-        router.push({ name: 'Home' });
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const openConfirmationModal = () => {
-      isConfirmationModalOpened.value = true;
-    };
 
     const handleBloodTypeChange = (value) => {
       if (value != null) {
@@ -187,10 +212,9 @@ export default {
 
     const clearFields = () => {
       employeeName.value = '';
-
-      employeeBirthDate.value = '';
-
+      employeeBirthDate.value = dayjs();
       employeeRN.value = '';
+      profileImage.value = defaultProfileImage;
     };
 
     const validateRNInput = (event) => {
@@ -205,6 +229,25 @@ export default {
       return today.diff(birth, 'year');
     };
 
+    const deleteEmployee = async () => {
+      try {
+        const employeeId = route.params.id;
+        await employee.delete(employeeId);
+        isConfirmationModalOpened.value = false;
+        router.push({ name: 'Home' });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const openConfirmationModal = () => {
+      isConfirmationModalOpened.value = true;
+    };
+
+    const showDeleteButton = computed(() => {
+      return isEditing.value || true;
+    });
+
     onMounted(async () => {
       const employeeId = route.params.id;
       if (!!employeeId) {
@@ -212,22 +255,16 @@ export default {
       }
     });
 
-    const showDeleteButton = computed(() => {
-      // enquanto nao refatora tela de edit pra ser a mesma que essa, deixei sempre true
-      return isEditing.value || true;
-    });
-
     return {
-      deleteEmployee,
       employeeName,
       employeeRN,
       employeeBirthDate,
       employeeBloodType,
       employeeFunction,
-      isConfirmationModalOpened,
       company,
       errorMessage,
       profileImage,
+      defaultProfileImage,
       createEmployee,
       bloodTypeOptions,
       functionOptions,
@@ -238,163 +275,20 @@ export default {
       isFunctionModalOpen,
       newFunction,
       openFunctionModal,
-      openConfirmationModal,
       addFunction,
       handleDateChange,
       dateFormatList,
       ensureAddNewIsLast,
-      showDeleteButton,
-      clearFields,
       validateRNInput,
+      clearFields,
       verifyAge,
+      beforeUpload,
+      handleImageChange,
+      customRequest,
+      deleteEmployee,
+      openConfirmationModal,
+      showDeleteButton,
     };
   },
 };
 </script>
-<template>
-  <div class="employee">
-    <h1>Cadastro de Funcionário</h1>
-
-    <div class="employee_content">
-      <div class="left_collumn" style="width: 40%">
-        <div class="content__input">
-          <at-input
-            v-model:value="employeeName"
-            placeholder="Nome completo"
-            text
-          />
-        </div>
-
-        <div class="content__input">
-          <at-number-input
-            v-model:value="employeeRN"
-            placeholder="Número de registro"
-            mask="###########"
-            :error-message="errorMessage"
-            @input="validateRNInput"
-          />
-        </div>
-
-        <div class="dropdown">
-          <a-date-picker
-            v-model:value="employeeBirthDate"
-            placeholder="Data de nascimento"
-            :format="dateFormatList"
-            @change="handleDateChange"
-          />
-        </div>
-
-        <div class="dropdown">
-          <a-cascader
-            :options="bloodTypeOptions"
-            placeholder="Tipo Sanguíneo"
-            @change="handleBloodTypeChange"
-          />
-        </div>
-
-        <div class="dropdown">
-          <a-cascader
-            :options="functionOptions"
-            placeholder="Função"
-            @change="handleFunctionChange"
-            :showSearch="{
-              filter: (inputValue, path) =>
-                path.some((option) =>
-                  option.label.toLowerCase().includes(inputValue.toLowerCase())
-                ),
-            }"
-          />
-        </div>
-      </div>
-
-      <div class="right_collumn" style="width: 40%">
-        <div class="profile-picture" style="text-align: center">
-          <a-image :width="225" :height="225" :src="profileImage" />
-        </div>
-
-        <div class="dropdown">
-          <a-cascader
-            :options="companyOptions"
-            placeholder="Empresa"
-            @change="handleCompanyChange"
-            :showSearch="{
-              filter: (inputValue, path) =>
-                path.some((option) =>
-                  option.label.toLowerCase().includes(inputValue.toLowerCase())
-                ),
-            }"
-          />
-        </div>
-      </div>
-
-      <div class="content__action">
-        <a-button
-          v-if="showDeleteButton"
-          danger
-          style="width: 250px"
-          @click="openConfirmationModal"
-        >
-          Deletar funcionario
-        </a-button>
-        <a-button type="primary" style="width: 250px" @click="createEmployee">
-          Cadastrar
-        </a-button>
-      </div>
-    </div>
-
-    <a-modal
-      v-model:open="isFunctionModalOpen"
-      title="Nova Função"
-      @ok="addFunction"
-    >
-      <a-input v-model:value="newFunction" placeholder="Digite a nova função" />
-    </a-modal>
-    <a-modal
-      v-model:open="isConfirmationModalOpened"
-      title="Deletar funcionário"
-      @ok="deleteEmployee"
-    >
-      <span>
-        Tem certeza que deseja deletar o funcionário {{ employeeName.value }}?
-      </span>
-    </a-modal>
-  </div>
-</template>
-
-<style lang="scss" scoped>
-.employee {
-  padding: $spacingXxl 0px;
-
-  .employee_content {
-    padding: $spacingXxl 0px;
-    display: flex;
-    flex-wrap: wrap;
-    overflow: auto;
-    gap: $spacingXxl;
-
-    .profile-picture {
-      margin-bottom: $spacingXxl;
-    }
-
-    .content__input {
-      margin-bottom: $spacingXxl;
-    }
-
-    .content__action {
-      flex: 0 0 100%;
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-    }
-
-    .dropdown {
-      margin-bottom: $spacingXxl;
-
-      :deep(.ant-picker),
-      :deep(.ant-cascader) {
-        width: 100%;
-      }
-    }
-  }
-}
-</style>
