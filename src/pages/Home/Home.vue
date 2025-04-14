@@ -128,7 +128,7 @@ export default {
           return h(
             RouterLink,
             {
-              to: { path: `/company/${record.employeeId}` },
+              to: { path: `/company/${record.companyId}` },
               style: { color: 'inherit', textDecoration: 'underline' },
             },
             () => text
