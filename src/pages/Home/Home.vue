@@ -119,6 +119,16 @@ export default {
         title: 'Funcionário',
         dataIndex: 'employee',
         key: 'employee',
+        customRender: ({ text, record }) => {
+          return h(
+            RouterLink,
+            {
+              to: { path: `/employee/${record.employeeId}` },
+              style: { color: 'inherit', textDecoration: 'underline' },
+            },
+            () => text
+          );
+        },
       },
       {
         title: 'Empresa',
