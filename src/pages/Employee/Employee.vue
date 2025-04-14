@@ -31,7 +31,7 @@ export default {
     const dateFormatList = ['DD/MM/YYYY'];
     const employeeName = ref('');
     const employeeRN = ref('');
-    const employeeBirthDate = ref(null);
+    const employeeBirthDate = ref('');
     const employeeBloodType = ref('');
     const employeeRole = ref('');
     const isConfirmationModalOpened = ref(false);
@@ -268,7 +268,7 @@ export default {
 
     const clearFields = () => {
       employeeName.value = '';
-      employeeBirthDate.value = null;
+      employeeBirthDate.value = '';
       employeeRN.value = '';
       employeeBloodType.value = '';
       employeeRole.value = '';
