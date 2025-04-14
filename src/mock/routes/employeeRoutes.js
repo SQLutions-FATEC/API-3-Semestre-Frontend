@@ -67,19 +67,19 @@ const employeeRoutes = [
       result: ({ params, requestBody }) => {
         const body = JSON.parse(requestBody);
 
-        const employeeToEdit = employees.find(
-          (employee) => employee.id == params.id
-        );
-
-        employeeToEdit.employee_name = body.employee_name;
-        employeeToEdit.employee_blood_type = body.employee_blood_type;
-        employeeToEdit.employee_role = body.employee_role;
-        employeeToEdit.company_id = body.company_id;
-        employeeToEdit.employee_rn = body.employee_rn;
-        employeeToEdit.employee_birth_date = body.employee_birth_date;
+        employees.forEach((employee) => {
+          if (employee.id == params.id) {
+            employee.employee_name = body.employee_name;
+            employee.blood_type = body.employee_blood_type;
+            employee.role = body.employee_role;
+            employee.company_id = body.company_id;
+            employee.reg_num = body.employee_rn;
+            employee.birth_date = body.employee_birth_date;
+          }
+        });
 
         return APIFailureWrapper({
-          content: employeeToEdit,
+          content: null,
           errorMessage: 'Erro ao editar funcionário',
         });
       },
@@ -113,7 +113,6 @@ const employeeRoutes = [
     },
     'on'
   ),
-  
 ];
 
 export default employeeRoutes;
