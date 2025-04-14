@@ -1,16 +1,16 @@
 <script>
-import { Button, Select, Table } from 'ant-design-vue';
-import { onMounted, onBeforeUnmount, ref, h } from 'vue';
+import HomeHeader from '@/components/Headers/HomeHeader.vue';
+import EditClockInModal from '@/components/Modals/EditClockInModal.vue';
+import clockInOut from '@/services/clockInOut';
+import { eventBus } from '@/utils/eventBus';
 import {
-  ArrowUpOutlined,
   ArrowDownOutlined,
+  ArrowUpOutlined,
   EditOutlined,
 } from '@ant-design/icons-vue';
-import clockInOut from '@/services/clockInOut';
-import EditClockInModal from '@/components/Modals/EditClockInModal.vue';
-import HomeHeader from '@/components/Headers/HomeHeader.vue';
+import { Button, Select, Table } from 'ant-design-vue';
+import { h, onBeforeUnmount, onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
-import { eventBus } from '@/utils/eventBus';
 
 export default {
   name: 'Home',
@@ -73,6 +73,7 @@ export default {
           registerNumber: info.register_number,
           employee: info.employee.name,
           employeeId: info.employee.id,
+          companyId: info.company.id,
           company: info.company.name,
           role: info.role_name,
           datetime: info.date_time,
