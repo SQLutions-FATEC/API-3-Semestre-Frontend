@@ -79,6 +79,8 @@ export default {
           clocked: info.direction,
         }));
         totalInfos.value = data.total;
+
+        eventBus.$emit('table-data', dataSource.value);
       } catch (error) {
         console.error(error);
       }
