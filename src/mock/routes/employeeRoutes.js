@@ -1,8 +1,39 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import { employees } from '@/mock/seeds/employeeSeeds';
+import { errorMessages } from 'vue/compiler-sfc';
 import { clockInOut } from '@/mock/seeds/clockInOutSeeds';
 
 const employeeRoutes = [
+  mockFlag(
+    {
+      method: 'get',
+      url: '/employee',
+      result: () => {
+        const response = employees;
+
+        return APIFailureWrapper({
+          content: response,
+          errorMessage: 'Erro ao listar os funcionários',
+        });
+      },
+    },
+    'on'
+  ),
+  mockFlag(
+    {
+      method: 'get',
+      url: '/employee/:id',
+      result: ({ params }) => {
+        const response = employees.find((employee) => employee.id == params.id);
+
+        return APIFailureWrapper({
+          content: response,
+          errorMessage: 'Erro ao listar funcionário',
+        });
+      },
+    },
+    'on'
+  ),
   mockFlag(
     {
       method: 'post',
@@ -15,8 +46,8 @@ const employeeRoutes = [
           employee_name: body.employee_name,
           employee_birth_date: body.employee_birth_date,
           employee_blood_type: body.employee_blood_type,
-          employee_function: body.employee_function,
-          company: body.company,
+          employee_role: body.employee_role,
+          company_id: body.company_id,
           employee_rn: body.employee_rn,
         };
         employees.push(newEmployee);
@@ -24,6 +55,32 @@ const employeeRoutes = [
         return APIFailureWrapper({
           content: newEmployee,
           errorMessage: 'Erro ao cadastrar funcionário',
+        });
+      },
+    },
+    'on'
+  ),
+  mockFlag(
+    {
+      method: 'put',
+      url: '/employee/:id',
+      result: ({ params, requestBody }) => {
+        const body = JSON.parse(requestBody);
+
+        employees.forEach((employee) => {
+          if (employee.id == params.id) {
+            employee.employee_name = body.employee_name;
+            employee.blood_type = body.employee_blood_type;
+            employee.role = body.employee_role;
+            employee.company_id = body.company_id;
+            employee.reg_num = body.employee_rn;
+            employee.birth_date = body.employee_birth_date;
+          }
+        });
+
+        return APIFailureWrapper({
+          content: null,
+          errorMessage: 'Erro ao editar funcionário',
         });
       },
     },
