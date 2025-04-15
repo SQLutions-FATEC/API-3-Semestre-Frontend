@@ -21,9 +21,10 @@ const roleRoutes = [
     {
       method: 'post',
       url: '/role',
-      result: (params) => {
-        console.log(params);
-        const newRole = { id: params.id, name: params.name };
+      result: ({ requestBody }) => {
+        const requestObj = JSON.parse(requestBody);
+
+        const newRole = { id: roles.length + 1, name: requestObj.role };
         roles.push(newRole);
 
         return APIFailureWrapper({

@@ -1,5 +1,5 @@
 <script>
-import { PlusOutlined } from '@ant-design/icons-vue';
+import { CloseOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import { onMounted, ref } from 'vue';
 import company from '@/services/company';
 import role from '@/services/role';
@@ -8,6 +8,7 @@ export default {
   name: 'Contracts',
 
   components: {
+    CloseOutlined,
     PlusOutlined,
   },
 
@@ -16,25 +17,40 @@ export default {
     const isRoleModalOpened = ref(false);
     const newRole = ref('');
     const roleOptions = ref([]);
-    const selectedCompany = ref('');
-    const selectedRole = ref('');
+    const selectedCompanyId = ref('');
+    const selectedCompanyData = ref({});
+    const selectedRoleId = ref('');
+    const selectedRoleData = ref({});
+    const selectedContracts = ref([]);
 
-    const addContract = () => {};
+    const addContract = () => {
+      console.log(selectedCompanyData.value);
+      if (selectedCompanyData.value && selectedRoleData.value) {
+        selectedContracts.value.push({
+          company: selectedCompanyData.value,
+          role: selectedRoleData.value,
+        });
+        selectedCompanyId.value = '';
+        selectedCompanyData.value = {};
+        selectedRoleId.value = '';
+        selectedRoleData.value = {};
+      }
+    };
 
     const addRole = async () => {
       if (newRole.value.trim()) {
         const params = {
-          role: newRole,
+          role: newRole.value,
         };
         try {
-          // parei aqui, ta dando loop
           await role.post(params);
+          newRole.value = '';
         } catch (error) {
           console.error(error);
         }
-        await fetchRoles();
-        newRole.value = '';
         isRoleModalOpened.value = false;
+        selectedRole.value = {};
+        await fetchRoles();
         ensureAddNewIsLast();
       }
     };
@@ -56,6 +72,8 @@ export default {
         companyOptions.value = response.data.map((item) => ({
           label: item.company_name,
           value: item.id,
+          data: item,
+          key: item.id,
         }));
       } catch (error) {
         console.error('Erro ao buscar empresas:', error);
@@ -66,8 +84,10 @@ export default {
       try {
         const response = await role.get();
         roleOptions.value = response.data.map((item) => ({
-          value: item.id,
           label: item.name,
+          value: item.id,
+          data: item,
+          key: item.id,
         }));
         ensureAddNewIsLast();
       } catch (error) {
@@ -75,20 +95,31 @@ export default {
       }
     };
 
-    const handleRoleChange = (value) => {
-      if (value != null) {
-        if (value.includes('add-new')) {
-          // employeeRole.value = [];
+    const handleCompanyChange = (value, selectedOptions) => {
+      if (value && selectedOptions.length > 0) {
+        selectedCompanyId.value = value;
+        selectedCompanyData.value = selectedOptions[0].data;
+      }
+    };
+
+    const handleRoleChange = (value, selectedOptions) => {
+      if (value && selectedOptions.length > 0) {
+        if (value === 'add-new') {
           openRoleModal();
           ensureAddNewIsLast();
         } else {
-          selectedRole.value = value[0];
+          selectedRoleId.value = value;
+          selectedRoleData.value = selectedOptions[0].data;
         }
       }
     };
 
     const openRoleModal = () => {
       isRoleModalOpened.value = true;
+    };
+
+    const removeContract = (index) => {
+      selectedContracts.value.splice(index, 1);
     };
 
     onMounted(async () => {
@@ -99,13 +130,18 @@ export default {
       addContract,
       addRole,
       companyOptions,
+      handleCompanyChange,
       handleRoleChange,
       isRoleModalOpened,
       newRole,
       openRoleModal,
+      removeContract,
       roleOptions,
-      selectedCompany,
-      selectedRole,
+      selectedCompanyId,
+      selectedCompanyData,
+      selectedContracts,
+      selectedRoleId,
+      selectedRoleData,
     };
   },
 };
@@ -116,7 +152,7 @@ export default {
     <h1>Contratos</h1>
     <div class="contracts__content">
       <a-cascader
-        v-model:value="selectedCompany"
+        v-model:value="selectedCompanyId"
         placeholder="Empresa"
         style="width: 100%"
         :options="companyOptions"
@@ -126,17 +162,21 @@ export default {
               option.label.toLowerCase().includes(inputValue.toLowerCase())
             ),
         }"
+        @change="handleCompanyChange"
       />
       <a-cascader
-        v-model:value="selectedRole"
+        v-model:value="selectedRoleId"
         placeholder="Função"
         style="width: 100%"
         :options="roleOptions"
         :showSearch="{
           filter: (inputValue, path) =>
-            path.some((option) =>
-              option.label.toLowerCase().includes(inputValue.toLowerCase())
-            ),
+            path.some((option) => {
+              if (option.value === 'add-new') return false;
+              return option.label
+                .toLowerCase()
+                .includes(inputValue.toLowerCase());
+            }),
         }"
         @change="handleRoleChange"
       />
@@ -145,6 +185,20 @@ export default {
           <plus-outlined />
         </template>
       </a-button>
+    </div>
+    <div class="contracts__list">
+      <div
+        v-for="(contract, index) in selectedContracts"
+        :key="index"
+        class="list"
+      >
+        <p>{{ contract.company.company_name }} - {{ contract.role.name }}</p>
+        <a-button type="primary" shape="circle" @click="removeContract(index)">
+          <template #icon>
+            <close-outlined />
+          </template>
+        </a-button>
+      </div>
     </div>
     <a-modal v-model:open="isRoleModalOpened" title="Nova Função" @ok="addRole">
       <a-input v-model:value="newRole" placeholder="Digite a nova função" />
@@ -165,6 +219,17 @@ export default {
   .contracts__content {
     display: flex;
     gap: $spacingXxl;
+  }
+  .contracts__list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacingLg;
+
+    .list {
+      display: flex;
+      align-items: center;
+      gap: $spacingXxl;
+    }
   }
 }
 </style>
