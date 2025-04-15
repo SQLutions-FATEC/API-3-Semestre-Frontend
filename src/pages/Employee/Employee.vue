@@ -28,14 +28,16 @@ export default {
     const route = useRoute();
     const router = useRouter();
     const dateFormatList = ['DD/MM/YYYY'];
+    const employeeContracts = [];
 
+    const contractsRef = ref(null);
     const employeeName = ref('');
     const employeeRN = ref('');
     const employeeBirthDate = ref('');
     const employeeBloodType = ref('');
-    const employeeRole = ref('');
+    // const employeeCompanyIds = ref([]);
+    // const employeeRoleIds = ref([]);
     const isConfirmationModalOpened = ref(false);
-    const companyId = ref('');
     const pageTitle = ref('Cadastro de funcionário');
     const buttonAction = ref('Cadastrar');
     const isEditing = ref(false);
@@ -44,14 +46,19 @@ export default {
       'https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg'
     );
 
+    const addContract = (contract) => {
+      employeeContracts.push(contract);
+    };
+
     const employeeAction = async () => {
       if (
         !employeeName.value ||
         !employeeBirthDate.value ||
         !employeeBloodType.value ||
-        !employeeRole.value ||
-        !companyId.value ||
-        !employeeRN.value
+        // !employeeRoleIds.value ||
+        // !employeeCompanyIds.value ||
+        !employeeRN.value ||
+        !employeeContracts.length
       ) {
         alert('Todos os campos são obrigatórios');
         return;
@@ -70,8 +77,9 @@ export default {
         employee_name: employeeName.value,
         employee_birth_date: formattedDate,
         employee_blood_type: employeeBloodType.value,
-        employee_Role: employeeRole.value,
-        company_id: companyId.value,
+        employee_contracts: employeeContracts,
+        // employee_role_ids: employeeRoleIds.value,
+        // employee_company_ids: employeeCompanyIds.value,
         employee_rn: employeeRN.value,
       };
 
@@ -117,11 +125,10 @@ export default {
         employeeName.value = data.employee_name;
         employeeBirthDate.value = dayjs(data.birth_date, 'DD/MM/YYYY');
         employeeBloodType.value = data.blood_type;
-        employeeRole.value = data.role_id;
-
-        companyId.value = data.company_id;
-
         employeeRN.value = String(data.reg_num);
+        // employeeCompanyIds.value = data.company_id;
+        // employeeRoleIds.value = data.role_id;
+
         pageTitle.value = `Editar ${employeeName.value}`;
       } catch (error) {
         console.error(error);
@@ -145,8 +152,6 @@ export default {
         buttonAction.value = 'Editar';
         isEditing.value = true;
         await getEmployee(employeeId);
-      } else {
-        clearFields();
       }
     });
 
@@ -180,9 +185,10 @@ export default {
       employeeBirthDate.value = '';
       employeeRN.value = '';
       employeeBloodType.value = '';
-      employeeRole.value = '';
-      companyId.value = '';
+      // employeeRole.value = '';
+      // companyId.value = '';
       employeeRN.value = '';
+      contractsRef.value.resetContracts();
     };
 
     const validateRNInput = (event) => {
@@ -199,16 +205,18 @@ export default {
     });
 
     return {
+      addContract,
       bloodTypeOptions,
       buttonAction,
-      companyId,
+      contractsRef,
+      // companyId,
       dateFormatList,
       deleteEmployee,
       employeeBirthDate,
       employeeBloodType,
       employeeName,
       employeeRN,
-      employeeRole,
+      // employeeRole,
       employeeAction,
       errorMessage,
       handleBloodTypeChange,
@@ -261,7 +269,7 @@ export default {
           <a-image :width="225" :height="225" :src="profileImage" />
         </div>
       </div>
-      <contracts />
+      <contracts ref="contractsRef" @add-contract="addContract" />
       <div class="content__action">
         <a-button
           v-if="showDeleteButton"

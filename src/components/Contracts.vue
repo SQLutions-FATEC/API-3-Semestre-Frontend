@@ -13,7 +13,7 @@ export default {
     PlusOutlined,
   },
 
-  setup() {
+  setup(props, { emit }) {
     const companyOptions = ref([]);
     const isRoleModalOpened = ref(false);
     const newRole = ref('');
@@ -30,6 +30,12 @@ export default {
           company: selectedCompanyData.value,
           role: selectedRoleData.value,
         });
+
+        emit('add-contract', {
+          company: selectedCompanyData,
+          role: selectedRoleData,
+        });
+
         selectedCompanyId.value = '';
         selectedCompanyData.value = {};
         selectedRoleId.value = '';
@@ -122,6 +128,10 @@ export default {
       selectedContracts.value.splice(index, 1);
     };
 
+    const resetContracts = () => {
+      selectedContracts.value = [];
+    };
+
     const companies = computed(() => {
       const selectedCompanyIds = selectedContracts.value.reduce(
         (acc, contract) => {
@@ -151,6 +161,7 @@ export default {
       newRole,
       openRoleModal,
       removeContract,
+      resetContracts,
       roleOptions,
       selectedCompanyId,
       selectedCompanyData,

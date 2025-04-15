@@ -1,30 +1,49 @@
+import { companies } from './companySeeds';
+import { roles } from './roleSeeds';
+
 const employees = [
   {
     id: 1,
     employee_name: 'José Amaral',
     blood_type: 'A+',
-    role_id: 1,
-    company_id: 1,
     reg_num: '54376523455',
     birth_date: '02/02/1993',
+    contracts: [
+      {
+        company_id: companies[0].id,
+        role: roles[0].id,
+      },
+    ],
   },
   {
     id: 2,
     employee_name: 'Robson Fernandes',
     blood_type: 'O+',
-    role_id: 3,
-    company_id: 2,
     reg_num: '98632165432',
     birth_date: '26/08/1974',
+    contracts: [
+      {
+        company_id: companies[0].id,
+        role: roles[1].id,
+      },
+      {
+        company_id: companies[1].id,
+        role: roles[1].id,
+      },
+    ],
   },
   {
     id: 3,
     employee_name: 'Welington',
     blood_type: 'B-',
-    role_id: 2,
-    company_id: 3,
     reg_num: '76542397833',
     birth_date: '12/11/1998',
+    contracts: [
+      {
+        company_id: companies[2].id,
+        role: roles[2].id,
+      },
+    ],
   },
 ];
 
