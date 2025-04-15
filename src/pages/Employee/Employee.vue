@@ -5,7 +5,6 @@ import { validateRN } from '@/utils/validations/registerNumber';
 import { useRoute, useRouter } from 'vue-router';
 import { computed } from 'vue';
 import dayjs from 'dayjs';
-import router from '../../router/router';
 import employee from '@/services/employee';
 import company from '@/services/company';
 import role from '@/services/role';
@@ -42,7 +41,7 @@ export default {
     const buttonAction = ref('Cadastrar');
     const isEditing = ref(false);
     const errorMessage = ref('');
-    const isRoleModalOpen = ref(false);
+    const isRoleModalOpened = ref(false);
     const newRole = ref('');
     const profileImage = ref(
       'https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg'
@@ -250,7 +249,7 @@ export default {
     };
 
     const openRoleModal = () => {
-      isRoleModalOpen.value = true;
+      isRoleModalOpened.value = true;
     };
 
     const addRole = () => {
@@ -261,7 +260,7 @@ export default {
         });
         employeeRole.value = newRole.value;
         newRole.value = '';
-        isRoleModalOpen.value = false;
+        isRoleModalOpened.value = false;
         ensureAddNewIsLast();
       }
     };
@@ -290,44 +289,32 @@ export default {
     });
 
     return {
+      addRole,
+      bloodTypeOptions,
+      buttonAction,
+      companyId,
+      companyOptions,
+      dateFormatList,
       deleteEmployee,
-      employeeName,
-      employeeRN,
       employeeBirthDate,
       employeeBloodType,
+      employeeName,
+      employeeRN,
       employeeRole,
-      isConfirmationModalOpened,
-      companyId,
-      buttonAction,
-      isEditing,
-      errorMessage,
-      profileImage,
-      createEmployee,
-      bloodTypeOptions,
-      roleOptions,
-      companyOptions,
-      handleBloodTypeChange,
-      handleRoleChange,
-      handleCompanyChange,
-      isRoleModalOpen,
-      newRole,
-      openRoleModal,
-      openConfirmationModal,
-      addRole,
-      handleDateChange,
-      dateFormatList,
-      ensureAddNewIsLast,
-      showDeleteButton,
-      clearFields,
-      validateRNInput,
-      verifyAge,
       employeeAction,
-      onMounted,
-      fetchCompanies,
-      getEmployee,
-      router,
-      route,
+      errorMessage,
+      handleBloodTypeChange,
+      handleCompanyChange,
+      handleDateChange,
+      handleRoleChange,
+      isConfirmationModalOpened,
+      isRoleModalOpened,
+      openConfirmationModal,
       pageTitle,
+      profileImage,
+      roleOptions,
+      showDeleteButton,
+      validateRNInput,
     };
   },
 };
@@ -336,17 +323,14 @@ export default {
   <div class="employee">
     <h1>{{ pageTitle }}</h1>
 
-    <div class="employee_content">
-      <div class="left_collumn" style="width: 40%">
-        <div class="content__input">
+    <div class="employee__content">
+      <div class="content__inputs">
+        <div class="left_column">
           <at-input
             v-model:value="employeeName"
             placeholder="Nome completo"
             text
           />
-        </div>
-
-        <div class="content__input">
           <at-number-input
             v-model:value="employeeRN"
             placeholder="Número de registro"
@@ -354,63 +338,54 @@ export default {
             :error-message="errorMessage"
             @input="validateRNInput"
           />
-        </div>
-
-        <div class="dropdown">
           <a-date-picker
             v-model:value="employeeBirthDate"
             placeholder="Data de nascimento"
             :format="dateFormatList"
             @change="handleDateChange"
           />
-        </div>
-
-        <div class="dropdown">
           <a-cascader
             v-model:value="employeeBloodType"
-            :options="bloodTypeOptions"
             placeholder="Tipo Sanguíneo"
+            style="width: 100%"
+            :options="bloodTypeOptions"
             @change="handleBloodTypeChange"
           />
-        </div>
-
-        <div class="dropdown">
           <a-cascader
             v-model:value="employeeRole"
-            :options="roleOptions"
             placeholder="Função"
-            @change="handleRoleChange"
+            style="width: 100%"
+            :options="roleOptions"
             :showSearch="{
               filter: (inputValue, path) =>
                 path.some((option) =>
                   option.label.toLowerCase().includes(inputValue.toLowerCase())
                 ),
             }"
+            @change="handleRoleChange"
           />
         </div>
-      </div>
 
-      <div class="right_collumn" style="width: 40%">
-        <div class="profile-picture" style="text-align: center">
-          <a-image :width="225" :height="225" :src="profileImage" />
-        </div>
+        <div class="right_column">
+          <div style="text-align: center">
+            <a-image :width="225" :height="225" :src="profileImage" />
+          </div>
 
-        <div class="dropdown">
           <a-cascader
             v-model:value="companyId"
-            :options="companyOptions"
             placeholder="Empresa"
-            @change="handleCompanyChange"
+            style="width: 100%"
+            :options="companyOptions"
             :showSearch="{
               filter: (inputValue, path) =>
                 path.some((option) =>
                   option.label.toLowerCase().includes(inputValue.toLowerCase())
                 ),
             }"
+            @change="handleCompanyChange"
           />
         </div>
       </div>
-
       <div class="content__action">
         <a-button
           v-if="showDeleteButton"
@@ -426,7 +401,7 @@ export default {
       </div>
     </div>
 
-    <a-modal v-model:open="isRoleModalOpen" title="Nova Função" @ok="addRole">
+    <a-modal v-model:open="isRoleModalOpened" title="Nova Função" @ok="addRole">
       <a-input v-model:value="newRole" placeholder="Digite a nova função" />
     </a-modal>
     <a-modal
@@ -445,35 +420,36 @@ export default {
 .employee {
   padding: $spacingXxl 0px;
 
-  .employee_content {
+  .employee__content {
     padding: $spacingXxl 0px;
     display: flex;
     flex-wrap: wrap;
     overflow: auto;
     gap: $spacingXxl;
 
-    .profile-picture {
-      margin-bottom: $spacingXxl;
-    }
+    .content__inputs {
+      display: flex;
+      gap: $spacingXxl;
+      flex: 1 1 calc(100% - $spacingXxl);
 
-    .content__input {
-      margin-bottom: $spacingXxl;
+      .left_column {
+        display: flex;
+        flex-direction: column;
+        gap: $spacingXxl;
+        flex: 1 1 auto;
+      }
+      .right_column {
+        display: flex;
+        flex-direction: column;
+        gap: $spacingXxl;
+        flex: 1 1 auto;
+      }
     }
-
     .content__action {
       flex: 0 0 100%;
       display: flex;
       justify-content: center;
-      gap: 12px;
-    }
-
-    .dropdown {
-      margin-bottom: $spacingXxl;
-
-      :deep(.ant-picker),
-      :deep(.ant-cascader) {
-        width: 100%;
-      }
+      gap: $spacingMd;
     }
   }
 }
