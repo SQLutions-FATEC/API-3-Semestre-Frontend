@@ -3,6 +3,8 @@ import { Button } from 'ant-design-vue';
 import { MenuOutlined } from '@ant-design/icons-vue';
 
 export default {
+  name: 'TopBar',
+  
   components: {
     'a-button': Button,
     MenuOutlined,

@@ -6,10 +6,9 @@ import { useRoute, useRouter } from 'vue-router';
 import { computed } from 'vue';
 import dayjs from 'dayjs';
 import employee from '@/services/employee';
-import company from '@/services/company';
-import role from '@/services/role';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import AtInput from '@/components/Input/AtInput.vue';
+import Contracts from '@/components/Contracts.vue';
 
 export default {
   name: 'Employee',
@@ -22,12 +21,14 @@ export default {
     'at-input': AtInput,
     'at-number-input': AtNumberInput,
     'a-image': Image,
+    contracts: Contracts,
   },
 
   setup() {
     const route = useRoute();
     const router = useRouter();
     const dateFormatList = ['DD/MM/YYYY'];
+
     const employeeName = ref('');
     const employeeRN = ref('');
     const employeeBirthDate = ref('');
@@ -35,14 +36,10 @@ export default {
     const employeeRole = ref('');
     const isConfirmationModalOpened = ref(false);
     const companyId = ref('');
-    const companyOptions = ref([]);
-    const roleOptions = ref([]);
     const pageTitle = ref('Cadastro de funcionário');
     const buttonAction = ref('Cadastrar');
     const isEditing = ref(false);
     const errorMessage = ref('');
-    const isRoleModalOpened = ref(false);
-    const newRole = ref('');
     const profileImage = ref(
       'https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg'
     );
@@ -122,21 +119,7 @@ export default {
         employeeBloodType.value = data.blood_type;
         employeeRole.value = data.role_id;
 
-        const foundRole = roleOptions.value.find(
-          (role) => role.value === data.role_id
-        );
-        if (foundRole) {
-          employeeRole.label = role.label;
-        }
-
         companyId.value = data.company_id;
-
-        const company = companyOptions.value.find(
-          (c) => c.value === data.company_id
-        );
-        if (company) {
-          companyId.label = company.label;
-        }
 
         employeeRN.value = String(data.reg_num);
         pageTitle.value = `Editar ${employeeName.value}`;
@@ -156,34 +139,7 @@ export default {
       { value: 'O-', label: 'O-' },
     ];
 
-    const fetchCompanies = async () => {
-      try {
-        const response = await company.get();
-        companyOptions.value = response.data.map((item) => ({
-          value: item.id,
-          label: item.company_name,
-        }));
-      } catch (error) {
-        console.error('Erro ao buscar empresas:', error);
-      }
-    };
-
-    const fetchRoles = async () => {
-      try {
-        const response = await role.get();
-        roleOptions.value = response.data.map((item) => ({
-          value: item.id,
-          label: item.name,
-        }));
-        ensureAddNewIsLast();
-      } catch (error) {
-        console.error('Erro ao buscar funções:', error);
-      }
-    };
-
     onMounted(async () => {
-      fetchCompanies();
-      fetchRoles();
       const employeeId = route.params.id;
       if (!!employeeId) {
         buttonAction.value = 'Editar';
@@ -215,54 +171,8 @@ export default {
       }
     };
 
-    const handleRoleChange = (value) => {
-      if (value != null) {
-        if (value.includes('add-new')) {
-          employeeRole.value = [];
-          openRoleModal();
-          ensureAddNewIsLast();
-        } else {
-          employeeRole.value = value[0];
-        }
-      }
-    };
-
-    const handleCompanyChange = (value) => {
-      if (value != null) {
-        companyId.value = value[0];
-      }
-    };
-
     const handleDateChange = (date) => {
       employeeBirthDate.value = date;
-    };
-
-    const ensureAddNewIsLast = () => {
-      const regularOptions = roleOptions.value.filter(
-        (opt) => opt.value !== 'add-new'
-      );
-
-      roleOptions.value = [
-        ...regularOptions,
-        { value: 'add-new', label: '➕ Adicionar Função' },
-      ];
-    };
-
-    const openRoleModal = () => {
-      isRoleModalOpened.value = true;
-    };
-
-    const addRole = () => {
-      if (newRole.value.trim()) {
-        roleOptions.value.push({
-          value: newRole.value,
-          label: newRole.value,
-        });
-        employeeRole.value = newRole.value;
-        newRole.value = '';
-        isRoleModalOpened.value = false;
-        ensureAddNewIsLast();
-      }
     };
 
     const clearFields = () => {
@@ -289,11 +199,9 @@ export default {
     });
 
     return {
-      addRole,
       bloodTypeOptions,
       buttonAction,
       companyId,
-      companyOptions,
       dateFormatList,
       deleteEmployee,
       employeeBirthDate,
@@ -304,15 +212,11 @@ export default {
       employeeAction,
       errorMessage,
       handleBloodTypeChange,
-      handleCompanyChange,
       handleDateChange,
-      handleRoleChange,
       isConfirmationModalOpened,
-      isRoleModalOpened,
       openConfirmationModal,
       pageTitle,
       profileImage,
-      roleOptions,
       showDeleteButton,
       validateRNInput,
     };
@@ -325,7 +229,7 @@ export default {
 
     <div class="employee__content">
       <div class="content__inputs">
-        <div class="left_column">
+        <div class="left-column">
           <at-input
             v-model:value="employeeName"
             placeholder="Nome completo"
@@ -351,41 +255,13 @@ export default {
             :options="bloodTypeOptions"
             @change="handleBloodTypeChange"
           />
-          <a-cascader
-            v-model:value="employeeRole"
-            placeholder="Função"
-            style="width: 100%"
-            :options="roleOptions"
-            :showSearch="{
-              filter: (inputValue, path) =>
-                path.some((option) =>
-                  option.label.toLowerCase().includes(inputValue.toLowerCase())
-                ),
-            }"
-            @change="handleRoleChange"
-          />
         </div>
 
-        <div class="right_column">
-          <div style="text-align: center">
-            <a-image :width="225" :height="225" :src="profileImage" />
-          </div>
-
-          <a-cascader
-            v-model:value="companyId"
-            placeholder="Empresa"
-            style="width: 100%"
-            :options="companyOptions"
-            :showSearch="{
-              filter: (inputValue, path) =>
-                path.some((option) =>
-                  option.label.toLowerCase().includes(inputValue.toLowerCase())
-                ),
-            }"
-            @change="handleCompanyChange"
-          />
+        <div class="right-column">
+          <a-image :width="225" :height="225" :src="profileImage" />
         </div>
       </div>
+      <contracts />
       <div class="content__action">
         <a-button
           v-if="showDeleteButton"
@@ -401,9 +277,6 @@ export default {
       </div>
     </div>
 
-    <a-modal v-model:open="isRoleModalOpened" title="Nova Função" @ok="addRole">
-      <a-input v-model:value="newRole" placeholder="Digite a nova função" />
-    </a-modal>
     <a-modal
       v-model:open="isConfirmationModalOpened"
       title="Deletar funcionário"
@@ -432,18 +305,21 @@ export default {
       gap: $spacingXxl;
       flex: 1 1 calc(100% - $spacingXxl);
 
-      .left_column {
+      .left-column {
         display: flex;
         flex-direction: column;
         gap: $spacingXxl;
-        flex: 1 1 auto;
+        flex: 1 1 calc(50% - $spacingXxl/2);
       }
-      .right_column {
-        display: flex;
-        flex-direction: column;
-        gap: $spacingXxl;
-        flex: 1 1 auto;
+      .right-column {
+        flex: 1 1 calc(50% - $spacingXxl/2);
+        text-align: center;
       }
+    }
+    .content__contracts {
+      display: flex;
+      flex: 1 1 auto;
+      gap: $spacingXxl;
     }
     .content__action {
       flex: 0 0 100%;
