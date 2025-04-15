@@ -3,6 +3,7 @@ import { CloseOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import { onMounted, ref } from 'vue';
 import company from '@/services/company';
 import role from '@/services/role';
+import { computed } from 'vue';
 
 export default {
   name: 'Contracts',
@@ -24,7 +25,6 @@ export default {
     const selectedContracts = ref([]);
 
     const addContract = () => {
-      console.log(selectedCompanyData.value);
       if (selectedCompanyData.value && selectedRoleData.value) {
         selectedContracts.value.push({
           company: selectedCompanyData.value,
@@ -122,6 +122,20 @@ export default {
       selectedContracts.value.splice(index, 1);
     };
 
+    const companies = computed(() => {
+      const selectedCompanyIds = selectedContracts.value.reduce(
+        (acc, contract) => {
+          acc.push(contract.company.id);
+          return acc;
+        },
+        []
+      );
+
+      return companyOptions.value.filter(
+        (company) => !selectedCompanyIds.includes(company.value)
+      );
+    });
+
     onMounted(async () => {
       await Promise.all([fetchCompanies(), fetchRoles()]);
     });
@@ -129,6 +143,7 @@ export default {
     return {
       addContract,
       addRole,
+      companies,
       companyOptions,
       handleCompanyChange,
       handleRoleChange,
@@ -155,7 +170,7 @@ export default {
         v-model:value="selectedCompanyId"
         placeholder="Empresa"
         style="width: 100%"
-        :options="companyOptions"
+        :options="companies"
         :showSearch="{
           filter: (inputValue, path) =>
             path.some((option) =>
