@@ -4,7 +4,7 @@ import { roles } from './roleSeeds';
 const employees = [
   {
     id: 1,
-    employee_name: 'José Amaral',
+    name: 'José Amaral',
     blood_type: 'A+',
     reg_num: '54376523455',
     birth_date: '02/02/1993',
@@ -17,7 +17,7 @@ const employees = [
   },
   {
     id: 2,
-    employee_name: 'Robson Fernandes',
+    name: 'Robson Fernandes',
     blood_type: 'O+',
     reg_num: '98632165432',
     birth_date: '26/08/1974',
@@ -34,7 +34,7 @@ const employees = [
   },
   {
     id: 3,
-    employee_name: 'Welington',
+    name: 'Welington',
     blood_type: 'B-',
     reg_num: '76542397833',
     birth_date: '12/11/1998',

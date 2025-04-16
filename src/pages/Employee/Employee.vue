@@ -69,12 +69,12 @@ export default {
       const formattedDate = employeeBirthDate.value.format('DD/MM/YYYY');
 
       const payload = {
-        employee_id: route.params.id,
-        employee_name: employeeName.value,
-        employee_birth_date: formattedDate,
-        employee_blood_type: employeeBloodType.value,
-        employee_contracts: employeeContracts,
-        employee_rn: employeeRN.value,
+        id: route.params.id,
+        name: employeeName.value,
+        blood_type: employeeBloodType.value,
+        birth_date: formattedDate,
+        reg_num: employeeRN.value,
+        contracts: employeeContracts,
       };
 
       if (isEditing.value) {
@@ -116,7 +116,7 @@ export default {
     const getEmployee = async (employeeId) => {
       try {
         const { data } = await employee.get(employeeId);
-        employeeName.value = data.employee_name;
+        employeeName.value = data.name;
         employeeBirthDate.value = dayjs(data.birth_date, 'DD/MM/YYYY');
         employeeBloodType.value = data.blood_type;
         employeeRN.value = String(data.reg_num);

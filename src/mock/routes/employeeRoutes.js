@@ -42,10 +42,10 @@ const employeeRoutes = [
 
         const newEmployee = {
           id: employees.length + 1,
-          employee_name: body.employee_name,
-          blood_type: body.employee_birth_date,
-          reg_num: body.employee_blood_type,
-          birth_date: body.employee_role,
+          name: body.name,
+          blood_type: body.blood_type,
+          reg_num: body.reg_num,
+          birth_date: body.birth_date,
           contracts: body.contracts,
         };
         employees.push(newEmployee);
@@ -67,12 +67,11 @@ const employeeRoutes = [
 
         employees.forEach((employee) => {
           if (employee.id == params.id) {
-            employee.employee_name = body.employee_name;
-            employee.blood_type = body.employee_blood_type;
-            employee.role = body.employee_role;
-            employee.company_id = body.company_id;
-            employee.reg_num = body.employee_rn;
-            employee.birth_date = body.employee_birth_date;
+            employee.name = body.name;
+            employee.blood_type = body.blood_type;
+            employee.reg_num = body.reg_num;
+            employee.birth_date = body.birth_date;
+            employee.contracts = body.contracts;
           }
         });
 
