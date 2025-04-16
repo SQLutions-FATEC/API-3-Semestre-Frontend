@@ -43,11 +43,10 @@ const employeeRoutes = [
         const newEmployee = {
           id: employees.length + 1,
           employee_name: body.employee_name,
-          employee_birth_date: body.employee_birth_date,
-          employee_blood_type: body.employee_blood_type,
-          employee_role: body.employee_role,
-          company_id: body.company_id,
-          employee_rn: body.employee_rn,
+          blood_type: body.employee_birth_date,
+          reg_num: body.employee_blood_type,
+          birth_date: body.employee_role,
+          contracts: body.contracts,
         };
         employees.push(newEmployee);
 

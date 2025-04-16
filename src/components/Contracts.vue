@@ -48,8 +48,8 @@ export default {
       });
 
       emit('add-contract', {
-        company: selectedCompanyData,
-        role: selectedRoleData,
+        company_id: selectedCompanyData.value.id,
+        role_id: selectedRoleData.value.id,
         datetime_start: selectedDatetime.value[0],
         datetime_end: selectedDatetime.value[0],
       });

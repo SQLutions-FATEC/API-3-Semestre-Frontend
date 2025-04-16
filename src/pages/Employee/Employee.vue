@@ -35,8 +35,6 @@ export default {
     const employeeRN = ref('');
     const employeeBirthDate = ref('');
     const employeeBloodType = ref('');
-    // const employeeCompanyIds = ref([]);
-    // const employeeRoleIds = ref([]);
     const isConfirmationModalOpened = ref(false);
     const pageTitle = ref('Cadastro de funcionário');
     const buttonAction = ref('Cadastrar');
@@ -55,8 +53,6 @@ export default {
         !employeeName.value ||
         !employeeBirthDate.value ||
         !employeeBloodType.value ||
-        // !employeeRoleIds.value ||
-        // !employeeCompanyIds.value ||
         !employeeRN.value ||
         !employeeContracts.length
       ) {
@@ -78,8 +74,6 @@ export default {
         employee_birth_date: formattedDate,
         employee_blood_type: employeeBloodType.value,
         employee_contracts: employeeContracts,
-        // employee_role_ids: employeeRoleIds.value,
-        // employee_company_ids: employeeCompanyIds.value,
         employee_rn: employeeRN.value,
       };
 
@@ -126,8 +120,6 @@ export default {
         employeeBirthDate.value = dayjs(data.birth_date, 'DD/MM/YYYY');
         employeeBloodType.value = data.blood_type;
         employeeRN.value = String(data.reg_num);
-        // employeeCompanyIds.value = data.company_id;
-        // employeeRoleIds.value = data.role_id;
 
         pageTitle.value = `Editar ${employeeName.value}`;
       } catch (error) {
@@ -185,8 +177,6 @@ export default {
       employeeBirthDate.value = '';
       employeeRN.value = '';
       employeeBloodType.value = '';
-      // employeeRole.value = '';
-      // companyId.value = '';
       employeeRN.value = '';
       contractsRef.value.resetContracts();
     };
@@ -209,14 +199,12 @@ export default {
       bloodTypeOptions,
       buttonAction,
       contractsRef,
-      // companyId,
       dateFormatList,
       deleteEmployee,
       employeeBirthDate,
       employeeBloodType,
       employeeName,
       employeeRN,
-      // employeeRole,
       employeeAction,
       errorMessage,
       handleBloodTypeChange,
