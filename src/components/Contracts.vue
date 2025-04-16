@@ -40,16 +40,16 @@ export default {
           'Empresa, função e datas de contrato devem estar preenchidos'
         );
       }
-      selectedContracts.value.push({
-        company: selectedCompanyData.value,
-        role: selectedRoleData.value,
-        datetime_start: selectedDatetime.value[0],
-        datetime_end: selectedDatetime.value[0],
-      });
 
       emit('add-contract', {
-        company_id: selectedCompanyData.value.id,
-        role_id: selectedRoleData.value.id,
+        company: {
+          id: selectedCompanyData.value.id,
+          name: selectedCompanyData.value.name,
+        },
+        role: {
+          id: selectedRoleData.value.id,
+          name: selectedRoleData.value.name,
+        },
         datetime_start: selectedDatetime.value[0],
         datetime_end: selectedDatetime.value[0],
       });

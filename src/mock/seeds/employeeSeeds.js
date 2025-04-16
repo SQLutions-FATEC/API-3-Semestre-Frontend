@@ -10,8 +10,8 @@ const employees = [
     birth_date: '02/02/1993',
     contracts: [
       {
-        company_id: companies[0].id,
-        role_id: roles[0].id,
+        company: { id: companies[0].id, name: companies[0].name },
+        role: { id: roles[0].id, name: roles[0].name },
         datetime_start: '2025-04-16T19:48:05.652Z',
         datetime_end: '2025-04-26T19:48:05.652Z',
       },
@@ -25,14 +25,14 @@ const employees = [
     birth_date: '26/08/1974',
     contracts: [
       {
-        company_id: companies[0].id,
-        role_id: roles[1].id,
+        company: { id: companies[0].id, name: companies[0].name },
+        role: { id: roles[1].id, name: roles[1].name },
         datetime_start: '2025-04-16T19:48:05.652Z',
         datetime_end: '2025-04-26T19:48:05.652Z',
       },
       {
-        company_id: companies[1].id,
-        role_id: roles[1].id,
+        company: { id: companies[1].id, name: companies[1].name },
+        role: { id: roles[1].id, name: roles[1].name },
         datetime_start: '2025-04-16T19:48:05.652Z',
         datetime_end: '2025-04-26T19:48:05.652Z',
       },
@@ -46,8 +46,8 @@ const employees = [
     birth_date: '12/11/1998',
     contracts: [
       {
-        company_id: companies[2].id,
-        role_id: roles[2].id,
+        company: { id: companies[2].id, name: companies[2].name },
+        role: { id: roles[2].id, name: roles[2].name },
         datetime_start: '2025-04-16T19:48:05.652Z',
         datetime_end: '2025-04-26T19:48:05.652Z',
       },
@@ -61,8 +61,8 @@ const employees = [
     birth_date: '22/09/1975',
     contracts: [
       {
-        company_id: companies[0].id,
-        role_id: roles[0].id,
+        company: { id: companies[0].id, name: companies[0].name },
+        role: { id: roles[0].id, name: roles[0].name },
         datetime_start: '2025-04-16T19:48:05.652Z',
         datetime_end: '2025-04-26T19:48:05.652Z',
       },
@@ -76,8 +76,8 @@ const employees = [
     birth_date: '12/04/1972',
     contracts: [
       {
-        company_id: companies[0].id,
-        role_id: roles[0].id,
+        company: { id: companies[0].id, name: companies[0].name },
+        role: { id: roles[0].id, name: roles[0].name },
         datetime_start: '2025-04-16T19:48:05.652Z',
         datetime_end: '2025-04-26T19:48:05.652Z',
       },
@@ -91,8 +91,8 @@ const employees = [
     birth_date: '15/05/1970',
     contracts: [
       {
-        company_id: companies[0].id,
-        role_id: roles[0].id,
+        company: { id: companies[0].id, name: companies[0].name },
+        role: { id: roles[0].id, name: roles[0].name },
         datetime_start: '2025-04-16T19:48:05.652Z',
         datetime_end: '2025-04-26T19:48:05.652Z',
       },
@@ -106,8 +106,8 @@ const employees = [
     birth_date: '22/10/1980',
     contracts: [
       {
-        company_id: companies[0].id,
-        role_id: roles[0].id,
+        company: { id: companies[0].id, name: companies[0].name },
+        role: { id: roles[0].id, name: roles[0].name },
         datetime_start: '2025-04-16T19:48:05.652Z',
         datetime_end: '2025-04-26T19:48:05.652Z',
       },
@@ -121,8 +121,8 @@ const employees = [
     birth_date: '21/12/1982',
     contracts: [
       {
-        company_id: companies[0].id,
-        role_id: roles[0].id,
+        company: { id: companies[0].id, name: companies[0].name },
+        role: { id: roles[0].id, name: roles[0].name },
         datetime_start: '2025-04-16T19:48:05.652Z',
         datetime_end: '2025-04-26T19:48:05.652Z',
       },
@@ -136,8 +136,8 @@ const employees = [
     birth_date: '04/02/1984',
     contracts: [
       {
-        company_id: companies[0].id,
-        role_id: roles[0].id,
+        company: { id: companies[0].id, name: companies[0].name },
+        role: { id: roles[0].id, name: roles[0].name },
         datetime_start: '2025-04-16T19:48:05.652Z',
         datetime_end: '2025-04-26T19:48:05.652Z',
       },
@@ -151,8 +151,8 @@ const employees = [
     birth_date: '22/06/1990',
     contracts: [
       {
-        company_id: companies[0].id,
-        role_id: roles[0].id,
+        company: { id: companies[0].id, name: companies[0].name },
+        role: { id: roles[0].id, name: roles[0].name },
         datetime_start: '2025-04-16T19:48:05.652Z',
         datetime_end: '2025-04-26T19:48:05.652Z',
       },

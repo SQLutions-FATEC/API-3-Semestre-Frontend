@@ -36,11 +36,12 @@ const employeeRoutes = [
           reg_num: employee.reg_num,
           contracts: employee.contracts.map((contract) => {
             const selectedCompany = companies.find(
-              (company) => company.id == contract.company_id
+              (company) => company.id == contract.company.id
             );
             const selectedRole = roles.find(
-              (role) => role.id == contract.role_id
+              (role) => role.id == contract.role.id
             );
+
             return {
               company: {
                 id: selectedCompany.id,
