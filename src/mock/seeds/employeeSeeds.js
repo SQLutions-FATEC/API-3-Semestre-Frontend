@@ -11,7 +11,9 @@ const employees = [
     contracts: [
       {
         company_id: companies[0].id,
-        role: roles[0].id,
+        role_id: roles[0].id,
+        datetime_start: '2025-04-16T19:48:05.652Z',
+        datetime_end: '2025-04-26T19:48:05.652Z',
       },
     ],
   },
@@ -24,11 +26,15 @@ const employees = [
     contracts: [
       {
         company_id: companies[0].id,
-        role: roles[1].id,
+        role_id: roles[1].id,
+        datetime_start: '2025-04-16T19:48:05.652Z',
+        datetime_end: '2025-04-26T19:48:05.652Z',
       },
       {
         company_id: companies[1].id,
-        role: roles[1].id,
+        role_id: roles[1].id,
+        datetime_start: '2025-04-16T19:48:05.652Z',
+        datetime_end: '2025-04-26T19:48:05.652Z',
       },
     ],
   },
@@ -41,7 +47,9 @@ const employees = [
     contracts: [
       {
         company_id: companies[2].id,
-        role: roles[2].id,
+        role_id: roles[2].id,
+        datetime_start: '2025-04-16T19:48:05.652Z',
+        datetime_end: '2025-04-26T19:48:05.652Z',
       },
     ],
   },

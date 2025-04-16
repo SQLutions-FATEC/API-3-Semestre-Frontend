@@ -1,6 +1,8 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import { employees } from '@/mock/seeds/employeeSeeds';
 import { clockInOut } from '@/mock/seeds/clockInOutSeeds';
+import { companies } from '@/mock/seeds/companySeeds';
+import { roles } from '@/mock/seeds/roleSeeds';
 
 const employeeRoutes = [
   mockFlag(
@@ -23,7 +25,37 @@ const employeeRoutes = [
       method: 'get',
       url: '/employee/:id',
       result: ({ params }) => {
-        const response = employees.find((employee) => employee.id == params.id);
+        const employee = employees.find((employee) => employee.id == params.id);
+
+        if (!employee) return null;
+
+        const response = {
+          name: employee.name,
+          birth_date: employee.birth_date,
+          blood_type: employee.blood_type,
+          reg_num: employee.reg_num,
+          contracts: employee.contracts.map((contract) => {
+            const selectedCompany = companies.find(
+              (company) => company.id == contract.company_id
+            );
+            console.log('selectedCompany', selectedCompany);
+            const selectedRole = roles.find(
+              (role) => role.id == contract.role_id
+            );
+            return {
+              company: {
+                id: selectedCompany.id,
+                company_name: selectedCompany.company_name,
+              },
+              role: {
+                id: selectedRole.id,
+                name: selectedRole.name,
+              },
+              datetime_start: contract.datetime_start,
+              datetime_end: contract.datetime_end,
+            };
+          }),
+        };
 
         return APIFailureWrapper({
           content: response,

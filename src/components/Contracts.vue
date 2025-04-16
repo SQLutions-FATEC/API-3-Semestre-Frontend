@@ -120,6 +120,18 @@ export default {
       }
     };
 
+    const fillContracts = (contracts) => {
+      console.log(contracts)
+      contracts.forEach((contract) => {
+        selectedContracts.value.push({
+          company: contract.company,
+          role: contract.role,
+          datetime_start: contract.datetime_start,
+          datetime_end: contract.datetime_end,
+        });
+      })
+    }
+
     const handleCompanyChange = (value, selectedOptions) => {
       if (value && selectedOptions.length) {
         selectedCompanyId.value = value;
@@ -160,6 +172,7 @@ export default {
       addRole,
       companyOptions,
       dateFormatList,
+      fillContracts,
       handleCompanyChange,
       handleRoleChange,
       isRoleModalOpened,

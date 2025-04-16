@@ -120,6 +120,7 @@ export default {
         employeeBirthDate.value = dayjs(data.birth_date, 'DD/MM/YYYY');
         employeeBloodType.value = data.blood_type;
         employeeRN.value = String(data.reg_num);
+        contractsRef.value.fillContracts(data.contracts)
 
         pageTitle.value = `Editar ${employeeName.value}`;
       } catch (error) {
