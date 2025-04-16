@@ -1,46 +1,64 @@
 <script>
+import { DatePicker } from 'ant-design-vue';
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import { onMounted, ref } from 'vue';
 import company from '@/services/company';
 import role from '@/services/role';
-import { computed } from 'vue';
 
 export default {
   name: 'Contracts',
 
   components: {
+    'a-range-picker': DatePicker.RangePicker,
     CloseOutlined,
     PlusOutlined,
   },
 
   setup(props, { emit }) {
+    const dateFormatList = 'DD/MM/YYYY HH:mm';
+
     const companyOptions = ref([]);
     const isRoleModalOpened = ref(false);
     const newRole = ref('');
     const roleOptions = ref([]);
     const selectedCompanyId = ref('');
     const selectedCompanyData = ref({});
+    const selectedDatetime = ref([]);
     const selectedRoleId = ref('');
     const selectedRoleData = ref({});
     const selectedContracts = ref([]);
 
     const addContract = () => {
-      if (selectedCompanyData.value && selectedRoleData.value) {
-        selectedContracts.value.push({
-          company: selectedCompanyData.value,
-          role: selectedRoleData.value,
-        });
-
-        emit('add-contract', {
-          company: selectedCompanyData,
-          role: selectedRoleData,
-        });
-
-        selectedCompanyId.value = '';
-        selectedCompanyData.value = {};
-        selectedRoleId.value = '';
-        selectedRoleData.value = {};
+      if (
+        !(
+          selectedCompanyData.value && Object.keys(selectedCompanyData.value)
+        ) ||
+        !(selectedRoleData.value && Object.keys(selectedRoleData.value)) ||
+        !selectedDatetime.value.length
+      ) {
+        return alert(
+          'Empresa, função e datas de contrato devem estar preenchidos'
+        );
       }
+      selectedContracts.value.push({
+        company: selectedCompanyData.value,
+        role: selectedRoleData.value,
+        datetime_start: selectedDatetime.value[0],
+        datetime_end: selectedDatetime.value[0],
+      });
+
+      emit('add-contract', {
+        company: selectedCompanyData,
+        role: selectedRoleData,
+        datetime_start: selectedDatetime.value[0],
+        datetime_end: selectedDatetime.value[0],
+      });
+
+      selectedCompanyId.value = '';
+      selectedCompanyData.value = {};
+      selectedRoleId.value = '';
+      selectedRoleData.value = {};
+      selectedDatetime.value = [];
     };
 
     const addRole = async () => {
@@ -55,7 +73,8 @@ export default {
           console.error(error);
         }
         isRoleModalOpened.value = false;
-        selectedRole.value = {};
+        selectedRoleId.value = '';
+        selectedRoleData.value = {};
         await fetchRoles();
         ensureAddNewIsLast();
       }
@@ -102,15 +121,15 @@ export default {
     };
 
     const handleCompanyChange = (value, selectedOptions) => {
-      if (value && selectedOptions.length > 0) {
+      if (value && selectedOptions.length) {
         selectedCompanyId.value = value;
         selectedCompanyData.value = selectedOptions[0].data;
       }
     };
 
     const handleRoleChange = (value, selectedOptions) => {
-      if (value && selectedOptions.length > 0) {
-        if (value === 'add-new') {
+      if (value && selectedOptions.length) {
+        if (value.includes('add-new')) {
           openRoleModal();
           ensureAddNewIsLast();
         } else {
@@ -132,20 +151,6 @@ export default {
       selectedContracts.value = [];
     };
 
-    const companies = computed(() => {
-      const selectedCompanyIds = selectedContracts.value.reduce(
-        (acc, contract) => {
-          acc.push(contract.company.id);
-          return acc;
-        },
-        []
-      );
-
-      return companyOptions.value.filter(
-        (company) => !selectedCompanyIds.includes(company.value)
-      );
-    });
-
     onMounted(async () => {
       await Promise.all([fetchCompanies(), fetchRoles()]);
     });
@@ -153,8 +158,8 @@ export default {
     return {
       addContract,
       addRole,
-      companies,
       companyOptions,
+      dateFormatList,
       handleCompanyChange,
       handleRoleChange,
       isRoleModalOpened,
@@ -166,6 +171,7 @@ export default {
       selectedCompanyId,
       selectedCompanyData,
       selectedContracts,
+      selectedDatetime,
       selectedRoleId,
       selectedRoleData,
     };
@@ -181,7 +187,7 @@ export default {
         v-model:value="selectedCompanyId"
         placeholder="Empresa"
         style="width: 100%"
-        :options="companies"
+        :options="companyOptions"
         :showSearch="{
           filter: (inputValue, path) =>
             path.some((option) =>
@@ -206,6 +212,14 @@ export default {
         }"
         @change="handleRoleChange"
       />
+      <a-range-picker
+        v-model:value="selectedDatetime"
+        style="width: 100%"
+        show-time
+        :format="dateFormatList"
+        :placeholder="['Data início', 'Data fim']"
+        :time-picker-props="{ format: 'HH:mm' }"
+      />
       <a-button type="primary" shape="circle" @click="addContract">
         <template #icon>
           <plus-outlined />
@@ -218,7 +232,12 @@ export default {
         :key="index"
         class="list"
       >
-        <p>{{ contract.company.company_name }} - {{ contract.role.name }}</p>
+        <p>
+          Empresa: {{ contract.company.company_name }} / Função:
+          {{ contract.role.name }} / Início: {{ contract.datetime_start }} /
+          Fim:
+          {{ contract.datetime_end }}
+        </p>
         <a-button type="primary" shape="circle" @click="removeContract(index)">
           <template #icon>
             <close-outlined />
