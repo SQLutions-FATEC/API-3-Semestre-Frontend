@@ -38,14 +38,13 @@ const employeeRoutes = [
             const selectedCompany = companies.find(
               (company) => company.id == contract.company_id
             );
-            console.log('selectedCompany', selectedCompany);
             const selectedRole = roles.find(
               (role) => role.id == contract.role_id
             );
             return {
               company: {
                 id: selectedCompany.id,
-                company_name: selectedCompany.company_name,
+                name: selectedCompany.name,
               },
               role: {
                 id: selectedRole.id,
@@ -96,6 +95,7 @@ const employeeRoutes = [
       url: '/employee/:id',
       result: ({ params, requestBody }) => {
         const body = JSON.parse(requestBody);
+        // parei aqui, falta ajustar edição com os contratos
 
         employees.forEach((employee) => {
           if (employee.id == params.id) {

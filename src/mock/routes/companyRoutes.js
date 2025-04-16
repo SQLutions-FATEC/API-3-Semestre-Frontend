@@ -42,7 +42,7 @@ const companyRoutes = [
 
         const newCompany = {
           id: companies.length + 1,
-          company_name: body.company_name,
+          name: body.name,
           cnpj: body.cnpj,
           trade_name: body.trade_name,
         };
@@ -67,7 +67,7 @@ const companyRoutes = [
           (company) => company.id == params.id
         );
 
-        companyToEdit.company_name = body.company_name;
+        companyToEdit.name = body.name;
         companyToEdit.cnpj = body.cnpj;
         companyToEdit.trade_name = body.trade_name;
 

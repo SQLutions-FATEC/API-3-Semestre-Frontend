@@ -39,21 +39,21 @@ export default {
         alert('Corrija o CNPJ');
         return;
       }
-      const payload = {
-        company_name: companyName.value,
+      const params = {
+        name: companyName.value,
         cnpj: cnpj.value,
         trade_name: tradeName.value,
       };
       if (isEditing.value) {
-        await editCompany(payload);
+        await editCompany(params);
       } else {
-        await createCompany(payload);
+        await createCompany(params);
       }
     };
 
-    const createCompany = async (payload) => {
+    const createCompany = async (params) => {
       try {
-        await company.create(payload);
+        await company.create(params);
         alert(`Empresa ${tradeName.value} criada`);
         resetInputs();
       } catch (error) {
@@ -72,10 +72,10 @@ export default {
       }
     };
 
-    const editCompany = async (payload) => {
+    const editCompany = async (params) => {
       try {
-        payload.company_id = route.params.id;
-        await company.edit(payload);
+        params.company_id = route.params.id;
+        await company.edit(params);
         alert(`Empresa ${tradeName.value} editada`);
       } catch (error) {
         console.error(error);
@@ -85,7 +85,7 @@ export default {
     const getCompany = async (companyId) => {
       try {
         const { data } = await company.getById(companyId);
-        companyName.value = data.company_name;
+        companyName.value = data.name;
         cnpj.value = String(data.cnpj);
         tradeName.value = data.trade_name;
         pageTitle.value = `Editar ${tradeName.value}`;

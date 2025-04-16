@@ -95,7 +95,7 @@ export default {
       try {
         const response = await company.get();
         companyOptions.value = response.data.map((item) => ({
-          label: item.company_name,
+          label: item.name,
           value: item.id,
           data: item,
           key: item.id,
@@ -121,7 +121,6 @@ export default {
     };
 
     const fillContracts = (contracts) => {
-      console.log(contracts)
       contracts.forEach((contract) => {
         selectedContracts.value.push({
           company: contract.company,
@@ -246,7 +245,7 @@ export default {
         class="list"
       >
         <p>
-          Empresa: {{ contract.company.company_name }} / Função:
+          Empresa: {{ contract.company.name }} / Função:
           {{ contract.role.name }} / Início: {{ contract.datetime_start }} /
           Fim:
           {{ contract.datetime_end }}
