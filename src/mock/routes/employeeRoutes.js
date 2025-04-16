@@ -1,8 +1,9 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import { employees } from '@/mock/seeds/employeeSeeds';
-import { generateClockInOut } from '@/mock/seeds/clockInOutSeeds';
+import { getClockInOut } from '@/mock/seeds/clockInOutSeeds';
 import { companies } from '@/mock/seeds/companySeeds';
 import { roles } from '@/mock/seeds/roleSeeds';
+import { deleteClockInOut } from '../seeds/clockInOutSeeds';
 
 const employeeRoutes = [
   mockFlag(
@@ -122,22 +123,22 @@ const employeeRoutes = [
       result: ({ params }) => {
         let employeeToDelete = {};
 
+        const clockInOut = getClockInOut();
+        for (let index = clockInOut.length - 1; index >= 0; index--) {
+          if (clockInOut[index].employee.id == params.id) {
+            deleteClockInOut(clockInOut[index].employee.id);
+          }
+        }
+
         for (let index = 0; index < employees.length; index++) {
           if (employees[index].id == params.id) {
             employeeToDelete = employees.splice(index, 1)[0];
           }
         }
 
-        const clockInOut = generateClockInOut();
-        for (let index = clockInOut.length - 1; index >= 0; index--) {
-          if (clockInOut[index].employee.id == params.id) {
-            clockInOut.splice(index, 1);
-          }
-        }
-
         return APIFailureWrapper({
           content: employeeToDelete,
-          errorMessage: 'Erro ao deletar empresa',
+          errorMessage: 'Erro ao deletar funcionário',
         });
       },
     },

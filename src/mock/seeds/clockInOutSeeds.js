@@ -1,7 +1,7 @@
 import { companies } from '@/mock/seeds/companySeeds';
 import { employees } from '@/mock/seeds/employeeSeeds';
 
-const generateClockInOut = () => [
+const initialClockInOut = [
   {
     id: 1,
     register_number: '20230001',
@@ -139,4 +139,30 @@ const generateClockInOut = () => [
   },
 ];
 
-export { generateClockInOut };
+let clockInOutData = [...initialClockInOut];
+let deletedIds = new Set();
+
+const resetClockInOut = () => {
+  clockInOutData = [...initialClockInOut];
+  deletedIds = new Set();
+};
+
+const getClockInOut = () => {
+  return clockInOutData.filter((record) => !deletedIds.has(record.id));
+};
+
+const deleteClockInOut = (id) => {
+  if (clockInOutData.some((record) => record.id === id)) {
+    deletedIds.add(id);
+    return true;
+  }
+  return false;
+};
+
+const addClockInOut = (newRecord) => {
+  const newId = Math.max(...clockInOutData.map((r) => r.id), 0) + 1;
+  clockInOutData.push({ ...newRecord, id: newId });
+  return newId;
+};
+
+export { addClockInOut, deleteClockInOut, getClockInOut, resetClockInOut };
