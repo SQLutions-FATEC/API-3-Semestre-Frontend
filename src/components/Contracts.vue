@@ -121,15 +121,8 @@ export default {
     };
 
     const fillContracts = (contracts) => {
-      contracts.forEach((contract) => {
-        selectedContracts.value.push({
-          company: contract.company,
-          role: contract.role,
-          datetime_start: contract.datetime_start,
-          datetime_end: contract.datetime_end,
-        });
-      })
-    }
+      selectedContracts.value = contracts;
+    };
 
     const handleCompanyChange = (value, selectedOptions) => {
       if (value && selectedOptions.length) {

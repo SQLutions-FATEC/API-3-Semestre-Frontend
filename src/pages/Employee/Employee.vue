@@ -28,7 +28,7 @@ export default {
     const route = useRoute();
     const router = useRouter();
     const dateFormatList = ['DD/MM/YYYY'];
-    const employeeContracts = [];
+    let employeeContracts = [];
 
     const contractsRef = ref(null);
     const employeeName = ref('');
@@ -49,6 +49,11 @@ export default {
     };
 
     const employeeAction = async () => {
+      console.log(employeeName.value);
+      console.log(employeeBirthDate.value);
+      console.log(employeeBloodType.value);
+      console.log(employeeRN.value);
+      console.log(employeeContracts);
       if (
         !employeeName.value ||
         !employeeBirthDate.value ||
@@ -113,6 +118,20 @@ export default {
       }
     };
 
+    const fillContracts = (contracts) => {
+      const formattedContracts = [];
+      contracts.forEach((contract) => {
+        formattedContracts.push({
+          company: contract.company,
+          role: contract.role,
+          datetime_start: contract.datetime_start,
+          datetime_end: contract.datetime_end,
+        });
+      });
+      employeeContracts = formattedContracts;
+      contractsRef.value.fillContracts(formattedContracts);
+    };
+
     const getEmployee = async (employeeId) => {
       try {
         const { data } = await employee.get(employeeId);
@@ -120,7 +139,7 @@ export default {
         employeeBirthDate.value = dayjs(data.birth_date, 'DD/MM/YYYY');
         employeeBloodType.value = data.blood_type;
         employeeRN.value = String(data.reg_num);
-        contractsRef.value.fillContracts(data.contracts)
+        fillContracts(data.contracts);
 
         pageTitle.value = `Editar ${employeeName.value}`;
       } catch (error) {
