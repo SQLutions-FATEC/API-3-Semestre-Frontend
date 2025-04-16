@@ -1,7 +1,7 @@
 import { companies } from '@/mock/seeds/companySeeds';
 import { employees } from '@/mock/seeds/employeeSeeds';
 
-const clockInOut = [
+const generateClockInOut = () => [
   {
     id: 1,
     register_number: '20230001',
@@ -139,4 +139,4 @@ const clockInOut = [
   },
 ];
 
-export { clockInOut };
+export { generateClockInOut };

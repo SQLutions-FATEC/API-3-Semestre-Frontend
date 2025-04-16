@@ -49,11 +49,6 @@ export default {
     };
 
     const employeeAction = async () => {
-      console.log(employeeName.value);
-      console.log(employeeBirthDate.value);
-      console.log(employeeBloodType.value);
-      console.log(employeeRN.value);
-      console.log(employeeContracts);
       if (
         !employeeName.value ||
         !employeeBirthDate.value ||
@@ -73,7 +68,7 @@ export default {
 
       const formattedDate = employeeBirthDate.value.format('DD/MM/YYYY');
 
-      const payload = {
+      const params = {
         id: route.params.id,
         name: employeeName.value,
         blood_type: employeeBloodType.value,
@@ -83,15 +78,15 @@ export default {
       };
 
       if (isEditing.value) {
-        await editEmployee(payload);
+        await editEmployee(params);
       } else {
-        await createEmployee(payload);
+        await createEmployee(params);
       }
     };
 
-    const createEmployee = async (payload) => {
+    const createEmployee = async (params) => {
       try {
-        await employee.create(payload);
+        await employee.create(params);
         alert(`Usuario ${employeeName.value} cadastrado com sucesso`);
         clearFields();
       } catch (error) {
@@ -104,9 +99,9 @@ export default {
       }
     };
 
-    const editEmployee = async (payload) => {
+    const editEmployee = async (params) => {
       try {
-        await employee.edit(payload);
+        await employee.edit(params);
         alert(`Usuario ${employeeName.value} foi editado`);
       } catch (error) {
         console.error('Erro completo:', {

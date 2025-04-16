@@ -1,6 +1,6 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import { companies } from '@/mock/seeds/companySeeds';
-import { clockInOut } from '@/mock/seeds/clockInOutSeeds';
+import { generateClockInOut } from '@/mock/seeds/clockInOutSeeds';
 
 const companyRoutes = [
   mockFlag(
@@ -92,6 +92,7 @@ const companyRoutes = [
           }
         }
 
+        const clockInOut = generateClockInOut();
         for (let index = clockInOut.length - 1; index >= 0; index--) {
           if (clockInOut[index].company.id == params.id) {
             clockInOut.splice(index, 1);

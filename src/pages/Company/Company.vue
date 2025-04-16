@@ -2,7 +2,7 @@
 import { Button, Modal } from 'ant-design-vue';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { validateCnpj } from '@/utils/validations/cnpj'; 
+import { validateCnpj } from '@/utils/validations/cnpj';
 import company from '@/services/company';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import AtInput from '@/components/Input/AtInput.vue';
@@ -40,6 +40,7 @@ export default {
         return;
       }
       const params = {
+        id: route.params.id,
         name: companyName.value,
         cnpj: cnpj.value,
         trade_name: tradeName.value,
@@ -121,8 +122,8 @@ export default {
     });
 
     const showDeleteButton = computed(() => {
-      return isEditing.value
-    })
+      return isEditing.value;
+    });
 
     return {
       buttonAction,
@@ -162,7 +163,12 @@ export default {
         <at-input v-model:value="tradeName" placeholder="Nome fantasia" text />
       </div>
       <div class="content__action">
-        <a-button v-if="showDeleteButton" danger style="width: 250px" @click="openConfirmationModal">
+        <a-button
+          v-if="showDeleteButton"
+          danger
+          style="width: 250px"
+          @click="openConfirmationModal"
+        >
           Deletar empresa
         </a-button>
         <a-button

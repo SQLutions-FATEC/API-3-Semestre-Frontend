@@ -1,6 +1,6 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import { employees } from '@/mock/seeds/employeeSeeds';
-import { clockInOut } from '@/mock/seeds/clockInOutSeeds';
+import { generateClockInOut } from '@/mock/seeds/clockInOutSeeds';
 import { companies } from '@/mock/seeds/companySeeds';
 import { roles } from '@/mock/seeds/roleSeeds';
 
@@ -95,7 +95,6 @@ const employeeRoutes = [
       url: '/employee/:id',
       result: ({ params, requestBody }) => {
         const body = JSON.parse(requestBody);
-        console.log(body);
 
         employees.forEach((employee) => {
           if (employee.id == params.id) {
@@ -128,6 +127,7 @@ const employeeRoutes = [
           }
         }
 
+        const clockInOut = generateClockInOut();
         for (let index = clockInOut.length - 1; index >= 0; index--) {
           if (clockInOut[index].employee.id == params.id) {
             clockInOut.splice(index, 1);
