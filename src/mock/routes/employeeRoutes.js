@@ -95,7 +95,7 @@ const employeeRoutes = [
       url: '/employee/:id',
       result: ({ params, requestBody }) => {
         const body = JSON.parse(requestBody);
-        // parei aqui, falta ajustar edição com os contratos
+        console.log(body);
 
         employees.forEach((employee) => {
           if (employee.id == params.id) {

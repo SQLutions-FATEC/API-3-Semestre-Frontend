@@ -74,6 +74,7 @@ export default {
           employee: info.employee.name,
           employeeId: info.employee.id,
           company: info.company.name,
+          companyId: info.company.id,
           role: info.role_name,
           datetime: info.date_time,
           clocked: info.direction,
@@ -120,6 +121,16 @@ export default {
         title: 'Funcionário',
         dataIndex: 'employee',
         key: 'employee',
+        customRender: ({ text, record }) => {
+          return h(
+            RouterLink,
+            {
+              to: { path: `/employee/${record.employeeId}` },
+              style: { color: 'inherit', textDecoration: 'underline' },
+            },
+            () => text
+          );
+        },
       },
       {
         title: 'Empresa',
@@ -129,7 +140,7 @@ export default {
           return h(
             RouterLink,
             {
-              to: { path: `/company/${record.employeeId}` },
+              to: { path: `/company/${record.companyId}` },
               style: { color: 'inherit', textDecoration: 'underline' },
             },
             () => text
