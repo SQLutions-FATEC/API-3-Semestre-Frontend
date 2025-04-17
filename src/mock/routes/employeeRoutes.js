@@ -3,7 +3,10 @@ import { employees } from '@/mock/seeds/employeeSeeds';
 import { getClockInOut } from '@/mock/seeds/clockInOutSeeds';
 import { companies } from '@/mock/seeds/companySeeds';
 import { roles } from '@/mock/seeds/roleSeeds';
-import { deleteClockInOut } from '../seeds/clockInOutSeeds';
+import {
+  deleteClockInOut,
+  updateEmployeeInClockInOut,
+} from '../seeds/clockInOutSeeds';
 
 const employeeRoutes = [
   mockFlag(
@@ -105,6 +108,7 @@ const employeeRoutes = [
             employee.reg_num = body.reg_num;
             employee.birth_date = body.birth_date;
             employee.contracts = body.contracts;
+            updateEmployeeInClockInOut(params.id, body.name);
           }
         });
 

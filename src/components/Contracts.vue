@@ -51,7 +51,7 @@ export default {
           name: selectedRoleData.value.name,
         },
         datetime_start: selectedDatetime.value[0],
-        datetime_end: selectedDatetime.value[0],
+        datetime_end: selectedDatetime.value[1],
       });
 
       selectedCompanyId.value = '';

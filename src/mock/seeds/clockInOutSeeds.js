@@ -152,7 +152,7 @@ const getClockInOut = () => {
 };
 
 const deleteClockInOut = (id) => {
-  if (clockInOutData.some((record) => record.id === id)) {
+  if (clockInOutData.some((record) => record.id == id)) {
     deletedIds.add(id);
     return true;
   }
@@ -165,4 +165,18 @@ const addClockInOut = (newRecord) => {
   return newId;
 };
 
-export { addClockInOut, deleteClockInOut, getClockInOut, resetClockInOut };
+const updateEmployeeInClockInOut = (employeeId, newName) => {
+  clockInOutData.forEach((record) => {
+    if (record.employee.id == employeeId) {
+      record.employee.name = newName;
+    }
+  });
+};
+
+export {
+  addClockInOut,
+  deleteClockInOut,
+  getClockInOut,
+  resetClockInOut,
+  updateEmployeeInClockInOut,
+};
