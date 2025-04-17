@@ -1,6 +1,10 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import { companies } from '@/mock/seeds/companySeeds';
 import { getClockInOut } from '@/mock/seeds/clockInOutSeeds';
+import {
+  deleteClockInOut,
+  updateCompanyInClockInOut,
+} from '../seeds/clockInOutSeeds';
 
 const companyRoutes = [
   mockFlag(
@@ -70,6 +74,7 @@ const companyRoutes = [
         companyToEdit.name = body.name;
         companyToEdit.cnpj = body.cnpj;
         companyToEdit.trade_name = body.trade_name;
+        updateCompanyInClockInOut(params.id, body.name);
 
         return APIFailureWrapper({
           content: companyToEdit,
@@ -86,16 +91,16 @@ const companyRoutes = [
       result: ({ params }) => {
         let companyToDelete = {};
 
-        for (let index = 0; index < companies.length; index++) {
-          if (companies[index].id == params.id) {
-            companyToDelete = companies.splice(index, 1)[0];
-          }
-        }
-
         const clockInOut = getClockInOut();
         for (let index = clockInOut.length - 1; index >= 0; index--) {
           if (clockInOut[index].company.id == params.id) {
-            clockInOut.splice(index, 1);
+            deleteClockInOut(clockInOut[index].id);
+          }
+        }
+
+        for (let index = 0; index < companies.length; index++) {
+          if (companies[index].id == params.id) {
+            companyToDelete = companies.splice(index, 1)[0];
           }
         }
 

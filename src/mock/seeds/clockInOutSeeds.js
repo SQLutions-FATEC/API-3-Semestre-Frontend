@@ -173,10 +173,19 @@ const updateEmployeeInClockInOut = (employeeId, newName) => {
   });
 };
 
+const updateCompanyInClockInOut = (companyId, newName) => {
+  clockInOutData.forEach((record) => {
+    if (record.company.id == companyId) {
+      record.company.name = newName;
+    }
+  });
+};
+
 export {
   addClockInOut,
   deleteClockInOut,
   getClockInOut,
   resetClockInOut,
+  updateCompanyInClockInOut,
   updateEmployeeInClockInOut,
 };

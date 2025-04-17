@@ -130,7 +130,7 @@ const employeeRoutes = [
         const clockInOut = getClockInOut();
         for (let index = clockInOut.length - 1; index >= 0; index--) {
           if (clockInOut[index].employee.id == params.id) {
-            deleteClockInOut(clockInOut[index].employee.id);
+            deleteClockInOut(clockInOut[index].id);
           }
         }
 
