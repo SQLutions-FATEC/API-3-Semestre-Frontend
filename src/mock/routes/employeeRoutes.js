@@ -1,7 +1,5 @@
-import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import { employees } from '@/mock/seeds/employeeSeeds';
-import { errorMessages } from 'vue/compiler-sfc';
-import { clockInOut } from '@/mock/seeds/clockInOutSeeds';
+import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 
 const employeeRoutes = [
   mockFlag(
@@ -43,12 +41,12 @@ const employeeRoutes = [
 
         const newEmployee = {
           id: employees.length + 1,
-          employee_name: body.employee_name,
-          employee_birth_date: body.employee_birth_date,
-          employee_blood_type: body.employee_blood_type,
-          employee_role: body.employee_role,
+          name: body.name,
+          birth_date: body.birth_date,
+          blood_type: body.blood_type,
+          role: body.role,
           company_id: body.company_id,
-          employee_rn: body.employee_rn,
+          reg_num: body.reg_num,
         };
         employees.push(newEmployee);
 
@@ -67,19 +65,18 @@ const employeeRoutes = [
       result: ({ params, requestBody }) => {
         const body = JSON.parse(requestBody);
 
-        const employeeToEdit = employees.find(
-          (employee) => employee.id == params.id
-        );
-
-        employeeToEdit.employee_name = body.employee_name;
-        employeeToEdit.employee_blood_type = body.employee_blood_type;
-        employeeToEdit.employee_role = body.employee_role;
-        employeeToEdit.company_id = body.company_id;
-        employeeToEdit.employee_rn = body.employee_rn;
-        employeeToEdit.employee_birth_date = body.employee_birth_date;
+        employees.forEach((employee) => {
+          if (employee.id == params.id) {
+            employee.name = body.name;
+            employee.blood_type = body.blood_type;
+            employee.reg_num = body.reg_num;
+            employee.birth_date = body.birth_date;
+            updateEmployeeInClockInOut(params.id, body.name);
+          }
+        });
 
         return APIFailureWrapper({
-          content: employeeToEdit,
+          content: null,
           errorMessage: 'Erro ao editar funcionário',
         });
       },
@@ -93,27 +90,27 @@ const employeeRoutes = [
       result: ({ params }) => {
         let employeeToDelete = {};
 
+        const clockInOut = getClockInOut();
+        for (let index = clockInOut.length - 1; index >= 0; index--) {
+          if (clockInOut[index].employee.id == params.id) {
+            deleteClockInOut(clockInOut[index].id);
+          }
+        }
+
         for (let index = 0; index < employees.length; index++) {
           if (employees[index].id == params.id) {
             employeeToDelete = employees.splice(index, 1)[0];
           }
         }
 
-        for (let index = clockInOut.length - 1; index >= 0; index--) {
-          if (clockInOut[index].employee.id == params.id) {
-            clockInOut.splice(index, 1);
-          }
-        }
-
         return APIFailureWrapper({
           content: employeeToDelete,
-          errorMessage: 'Erro ao deletar empresa',
+          errorMessage: 'Erro ao deletar funcionário',
         });
       },
     },
     'on'
   ),
-  
 ];
 
 export default employeeRoutes;
