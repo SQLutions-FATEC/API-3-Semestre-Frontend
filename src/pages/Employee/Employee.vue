@@ -1,16 +1,14 @@
 <script>
-import { Button, Cascader, DatePicker, Image, Modal } from 'ant-design-vue';
-import { onMounted, ref } from 'vue';
-import { validateRN } from '@/utils/validations/registerNumber';
-import { useRoute, useRouter } from 'vue-router';
-import { computed } from 'vue';
-import dayjs from 'dayjs';
-import router from '../../router/router';
-import employee from '@/services/employee';
-import company from '@/services/company';
-import role from '@/services/role';
-import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import AtInput from '@/components/Input/AtInput.vue';
+import AtNumberInput from '@/components/Input/AtNumberInput.vue';
+import company from '@/services/company';
+import employee from '@/services/employee';
+import role from '@/services/role';
+import { validateRN } from '@/utils/validations/registerNumber';
+import { Button, Cascader, DatePicker, Image, Modal } from 'ant-design-vue';
+import dayjs from 'dayjs';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 export default {
   name: 'Employee',
@@ -69,26 +67,26 @@ export default {
 
       const formattedDate = employeeBirthDate.value.format('DD/MM/YYYY');
 
-      const payload = {
-        employee_id: route.params.id,
+      const params = {
+        id: route.params.id,
         employee_name: employeeName.value,
-        employee_birth_date: formattedDate,
-        employee_blood_type: employeeBloodType.value,
+        birth_date: formattedDate,
+        blood_type: employeeBloodType.value,
         employee_Role: employeeRole.value,
         company_id: companyId.value,
-        employee_rn: employeeRN.value,
+        reg_num: employeeRN.value,
       };
 
       if (isEditing.value) {
-        await editEmployee(payload);
+        await editEmployee(params);
       } else {
-        await createEmployee(payload);
+        await createEmployee(params);
       }
     };
 
-    const createEmployee = async (payload) => {
+    const createEmployee = async (params) => {
       try {
-        await employee.create(payload);
+        await employee.create(params);
         alert(`Usuario ${employeeName.value} cadastrado com sucesso`);
         clearFields();
       } catch (error) {
@@ -101,9 +99,9 @@ export default {
       }
     };
 
-    const editEmployee = async (payload) => {
+    const editEmployee = async (params) => {
       try {
-        await employee.edit(payload);
+        await employee.edit(params);
         alert(`Usuario ${employeeName.value} foi editado`);
       } catch (error) {
         console.error('Erro completo:', {
@@ -121,7 +119,9 @@ export default {
         employeeName.value = data.employee_name;
         employeeBirthDate.value = dayjs(data.birth_date, 'DD/MM/YYYY');
         employeeBloodType.value = data.blood_type;
+        employeeRN.value = String(data.reg_num);
         employeeRole.value = data.role_id;
+        pageTitle.value = `Editar ${employeeName.value}`;
 
         const foundRole = roleOptions.value.find(
           (role) => role.value === data.role_id
@@ -138,9 +138,6 @@ export default {
         if (company) {
           companyId.label = company.label;
         }
-
-        employeeRN.value = String(data.reg_num);
-        pageTitle.value = `Editar ${employeeName.value}`;
       } catch (error) {
         console.error(error);
       }
