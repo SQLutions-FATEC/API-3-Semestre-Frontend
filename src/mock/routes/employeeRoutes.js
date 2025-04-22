@@ -1,5 +1,10 @@
+import { getClockInOut } from '@/mock/seeds/clockInOutSeeds';
 import { employees } from '@/mock/seeds/employeeSeeds';
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
+import {
+  deleteClockInOut,
+  updateEmployeeInClockInOut,
+} from '../seeds/clockInOutSeeds';
 
 const employeeRoutes = [
   mockFlag(
