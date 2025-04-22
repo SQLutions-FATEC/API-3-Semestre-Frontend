@@ -283,7 +283,6 @@ export default {
     };
 
     const showDeleteButton = computed(() => {
-      // enquanto nao refatora tela de edit pra ser a mesma que essa, deixei sempre true
       return isEditing.value || true;
     });
 
