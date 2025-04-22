@@ -1,7 +1,7 @@
 const employees = [
   {
     id: 1,
-    employee_name: "José Amaral",
+    name: "José Amaral",
     blood_type: "A+",
     role_id: 1,
     company_id: 1,
@@ -10,7 +10,7 @@ const employees = [
   },
   {
     id: 2,
-    employee_name: "Robson Fernandes",
+    name: "Robson Fernandes",
     blood_type: "O+",
     role_id: 3,
     company_id: 2,
@@ -19,7 +19,7 @@ const employees = [
   },
   {
     id: 3,
-    employee_name: "Welington",
+    name: "Welington",
     blood_type: "B-",
     role_id: 2,
     company_id: 3,
@@ -28,7 +28,7 @@ const employees = [
   },
   {
     id: 4,
-    employee_name: "Pedro Ribeiro",
+    name: "Pedro Ribeiro",
     blood_type: "AB+",
     role_id: 3,
     company_id: 4,
@@ -37,7 +37,7 @@ const employees = [
   },
   {
     id: 5,
-    employee_name: "Jonas Fernandes",
+    name: "Jonas Fernandes",
     blood_type: "A+",
     role_id: 1,
     company_id: 5,
@@ -46,7 +46,7 @@ const employees = [
   },
   {
     id: 6,
-    employee_name: "Marco Alcântara",
+    name: "Marco Alcântara",
     blood_type: "B+",
     role_id: 3,
     company_id: 2,
@@ -55,7 +55,7 @@ const employees = [
   },
   {
     id: 7,
-    employee_name: "Matheus Paulista",
+    name: "Matheus Paulista",
     blood_type: "O-",
     role_id: 2,
     company_id: 1,
@@ -64,7 +64,7 @@ const employees = [
   },
   {
     id: 8,
-    employee_name: "Miguel Silva",
+    name: "Miguel Silva",
     blood_type: "AB-",
     role_id: 1,
     company_id: 4,
@@ -73,7 +73,7 @@ const employees = [
   },
   {
     id: 9,
-    employee_name: "Thiago Rocha",
+    name: "Thiago Rocha",
     blood_type: "A+",
     role_id: 2,
     company_id: 5,
@@ -82,7 +82,7 @@ const employees = [
   },
   {
     id: 10,
-    employee_name: "Maria Santos",
+    name: "Maria Santos",
     blood_type: "O-",
     role_id: 3,
     company_id: 1,
@@ -92,3 +92,4 @@ const employees = [
 ];
 
 export { employees };
+
