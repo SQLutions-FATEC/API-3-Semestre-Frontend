@@ -1,5 +1,6 @@
 <script>
-import { Button, Cascader, DatePicker, Image, Modal } from 'ant-design-vue';
+import { Button, Cascader, DatePicker, Image, Modal, Upload, message } from 'ant-design-vue';
+import { CameraOutlined } from '@ant-design/icons-vue';
 import { onMounted, ref } from 'vue';
 import { validateRN } from '@/utils/validations/registerNumber';
 import { useRoute, useRouter } from 'vue-router';
@@ -23,6 +24,8 @@ export default {
     'at-input': AtInput,
     'at-number-input': AtNumberInput,
     'a-image': Image,
+    'a-upload': Upload,
+    CameraOutlined,
   },
 
   setup() {
@@ -44,9 +47,54 @@ export default {
     const errorMessage = ref('');
     const isRoleModalOpen = ref(false);
     const newRole = ref('');
-    const profileImage = ref(
-      'https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg'
-    );
+    const defaultProfileImage = 'https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg';
+    const profileImage = ref(defaultProfileImage);
+    const fileList = ref([]);
+    const uploading = ref(false);
+
+    const beforeUpload = (file) => {
+      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+      if (!isJpgOrPng) {
+        message.error('Você só pode enviar arquivos JPG/PNG!');
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        message.error('A imagem deve ser menor que 2MB!');
+      }
+      return isJpgOrPng && isLt2M;
+    };
+
+    const handleImageChange = (info) => {
+      if (info.file.status === 'uploading') {
+        uploading.value = true;
+        return;
+      }
+      if (info.file.status === 'done') {
+        message.success(`${info.file.name} carregado com sucesso`);
+        uploading.value = false;
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} falhou no upload.`);
+        uploading.value = false;
+      }
+    };
+
+const customRequest = ({ file, onSuccess, onError }) => {
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    // Armazena apenas a representação em base64 da imagem
+    const base64String = reader.result.split(',')[1];
+    profileImage.value = `data:image/jpeg;base64,${base64String}`;
+    onSuccess("Imagem carregada com sucesso", file);
+  };
+
+  reader.onerror = (error) => {
+    onError(error);
+  };
+
+  reader.readAsDataURL(file);
+};
+
 
     const employeeAction = async () => {
       if (
@@ -57,13 +105,13 @@ export default {
         !companyId.value ||
         !employeeRN.value
       ) {
-        alert('Todos os campos são obrigatórios');
+        message.error('Todos os campos são obrigatórios');
         return;
       }
       const age = verifyAge(employeeBirthDate.value);
 
       if (age < 16 || age > 100) {
-        alert('Não é possivel cadastrar usuários com esta idades');
+        message.error('Não é possivel cadastrar usuários com esta idade');
         return;
       }
 
@@ -74,10 +122,15 @@ export default {
         employee_name: employeeName.value,
         employee_birth_date: formattedDate,
         employee_blood_type: employeeBloodType.value,
-        employee_Role: employeeRole.value,
+        employee_role: employeeRole.value,
         company_id: companyId.value,
         employee_rn: employeeRN.value,
       };
+
+  if (profileImage.value && profileImage.value !== defaultProfileImage) {
+    const base64Data = profileImage.value.split(',')[1];
+    payload.profile_image_base64 = base64Data;
+  }
 
       if (isEditing.value) {
         await editEmployee(payload);
@@ -89,8 +142,9 @@ export default {
     const createEmployee = async (payload) => {
       try {
         await employee.create(payload);
-        alert(`Usuario ${employeeName.value} cadastrado com sucesso`);
+        message.success(`Usuário ${employeeName.value} cadastrado com sucesso`);
         clearFields();
+        router.push({ name: 'Home' });
       } catch (error) {
         console.error('Erro completo:', {
           message: error.message,
@@ -98,13 +152,15 @@ export default {
           status: error.response?.status,
           config: error.config,
         });
+        message.error('Erro ao cadastrar funcionário');
       }
     };
 
     const editEmployee = async (payload) => {
       try {
         await employee.edit(payload);
-        alert(`Usuario ${employeeName.value} foi editado`);
+        message.success(`Usuário ${employeeName.value} foi editado com sucesso`);
+        router.push({ name: 'Home' });
       } catch (error) {
         console.error('Erro completo:', {
           message: error.message,
@@ -112,6 +168,7 @@ export default {
           status: error.response?.status,
           config: error.config,
         });
+        message.error('Erro ao editar funcionário');
       }
     };
 
@@ -122,6 +179,10 @@ export default {
         employeeBirthDate.value = dayjs(data.birth_date, 'DD/MM/YYYY');
         employeeBloodType.value = data.blood_type;
         employeeRole.value = data.role_id;
+
+        if (data.profile_image) {
+          profileImage.value = data.profile_image;
+        }
 
         const foundRole = roleOptions.value.find(
           (role) => role.value === data.role_id
@@ -143,6 +204,7 @@ export default {
         pageTitle.value = `Editar ${employeeName.value}`;
       } catch (error) {
         console.error(error);
+        message.error('Erro ao carregar dados do funcionário');
       }
     };
 
@@ -166,6 +228,7 @@ export default {
         }));
       } catch (error) {
         console.error('Erro ao buscar empresas:', error);
+        message.error('Erro ao carregar empresas');
       }
     };
 
@@ -179,6 +242,7 @@ export default {
         ensureAddNewIsLast();
       } catch (error) {
         console.error('Erro ao buscar funções:', error);
+        message.error('Erro ao carregar funções');
       }
     };
 
@@ -200,9 +264,11 @@ export default {
         const employeeId = route.params.id;
         await employee.delete(employeeId);
         isConfirmationModalOpened.value = false;
+        message.success('Funcionário deletado com sucesso');
         router.push({ name: 'Home' });
       } catch (error) {
         console.error(error);
+        message.error('Erro ao deletar funcionário');
       }
     };
 
@@ -274,6 +340,8 @@ export default {
       employeeRole.value = '';
       companyId.value = '';
       employeeRN.value = '';
+      profileImage.value = defaultProfileImage;
+      fileList.value = [];
     };
 
     const validateRNInput = (event) => {
@@ -302,6 +370,7 @@ export default {
       isEditing,
       errorMessage,
       profileImage,
+      defaultProfileImage,
       createEmployee,
       bloodTypeOptions,
       roleOptions,
@@ -328,10 +397,16 @@ export default {
       router,
       route,
       pageTitle,
+      beforeUpload,
+      handleImageChange,
+      customRequest,
+      fileList,
+      uploading,
     };
   },
 };
 </script>
+
 <template>
   <div class="employee">
     <h1>{{ pageTitle }}</h1>
@@ -392,7 +467,28 @@ export default {
 
       <div class="right_collumn" style="width: 40%">
         <div class="profile-picture" style="text-align: center">
-          <a-image :width="225" :height="225" :src="profileImage" />
+          <a-upload
+            name="avatar"
+            list-type="picture-card"
+            class="avatar-uploader"
+            :show-upload-list="false"
+            :before-upload="beforeUpload"
+            :custom-request="customRequest"
+            @change="handleImageChange"
+          >
+            <template v-if="profileImage === defaultProfileImage">
+              <div class="upload-placeholder">
+                <camera-outlined />
+                <div class="upload-text">Adicionar Foto</div>
+              </div>
+            </template>
+            <img
+              v-else
+              :src="profileImage"
+              alt="Foto do Funcionário"
+              class="profile-image"
+            />
+          </a-upload>
         </div>
 
         <div class="dropdown">
@@ -420,7 +516,7 @@ export default {
         >
           Deletar funcionario
         </a-button>
-        <a-button type="primary" style="width: 250px" @click="employeeAction">
+        <a-button type="primary" style="width: 250px" @click="employeeAction" :loading="uploading">
           {{ buttonAction }}
         </a-button>
       </div>
@@ -454,6 +550,52 @@ export default {
 
     .profile-picture {
       margin-bottom: $spacingXxl;
+
+      :deep(.avatar-uploader) {
+        width: 225px;
+        height: 225px;
+
+        .ant-upload {
+          width: 100% !important;
+          height: 100% !important;
+          margin: 0;
+          padding: 0;
+          border-radius: 8px;
+          border: 1px dashed #d9d9d9;
+          background: #fafafa;
+          transition: border-color 0.3s;
+
+          &:hover {
+            border-color: #1890ff;
+          }
+
+          .upload-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #666;
+
+            .anticon {
+              font-size: 32px;
+              margin-bottom: 12px;
+              color: #999;
+            }
+
+            .upload-text {
+              font-size: 14px;
+            }
+          }
+
+          img.profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+          }
+        }
+      }
     }
 
     .content__input {

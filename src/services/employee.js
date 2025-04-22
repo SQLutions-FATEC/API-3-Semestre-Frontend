@@ -1,18 +1,31 @@
 import api from './api';
 
 const employee = {
-  get: () => api.get('/employee'),
   get: (employeeId) => api.get(`/employee/${employeeId}`),
-  create: (payload) =>
-    api.post('/employee', {
-      employee_name: payload.employee_name,
-      employee_birth_date: payload.employee_birth_date,
-      employee_blood_type: payload.employee_blood_type,
-      employee_role: payload.employee_role,
-      company_id: payload.company_id,
-      employee_rn: payload.employee_rn,
-    }),
-  edit: (payload) => api.put(`/employee/${payload.employee_id}`, payload),
+  getAll: () => api.get('/employee'),
+  create: (payload) => {
+    const formData = new FormData();
+    Object.keys(payload).forEach(key => {
+      if (key === 'profile_image_base64') {
+        const byteString = atob(payload[key]);
+        const mimeString = 'image/jpeg';
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+        }
+        const blob = new Blob([ab], {type: mimeString});
+        formData.append('profile_image', blob, 'profile.jpg');
+      } else if (key !== 'profile_image_base64') {
+        formData.append(key, payload[key]);
+      }
+    });
+    return api.post('/employee', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  },
   delete: (employeeId) => api.delete(`/employee/${employeeId}`),
 };
 

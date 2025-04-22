@@ -1,7 +1,11 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
-import { employees } from '@/mock/seeds/employeeSeeds';
-import { errorMessages } from 'vue/compiler-sfc';
 import { clockInOut } from '@/mock/seeds/clockInOutSeeds';
+
+let employees = JSON.parse(localStorage.getItem('mock-employees')) || [];
+
+function saveToLocalStorage() {
+  localStorage.setItem('mock-employees', JSON.stringify(employees));
+}
 
 const employeeRoutes = [
   mockFlag(
@@ -9,7 +13,10 @@ const employeeRoutes = [
       method: 'get',
       url: '/employee',
       result: () => {
-        const response = employees;
+        const response = employees.map(emp => ({
+          ...emp,
+          profile_image: (emp.profile_image && !emp.profile_image.startsWith('data:')) ? emp.profile_image : null
+        }));
 
         return APIFailureWrapper({
           content: response,
@@ -25,10 +32,19 @@ const employeeRoutes = [
       url: '/employee/:id',
       result: ({ params }) => {
         const response = employees.find((employee) => employee.id == params.id);
-
+        if (response) {
+          return APIFailureWrapper({
+            content: {
+              ...response,
+              profile_image: (response.profile_image && !response.profile_image.startsWith('data:')) ? response.profile_image : null
+            },
+            errorMessage: 'Erro ao listar funcionário',
+          });
+        }
         return APIFailureWrapper({
-          content: response,
-          errorMessage: 'Erro ao listar funcionário',
+          content: null,
+          errorMessage: 'Funcionário não encontrado',
+          status: 404
         });
       },
     },
@@ -39,47 +55,71 @@ const employeeRoutes = [
       method: 'post',
       url: '/employee',
       result: ({ requestBody }) => {
-        const body = JSON.parse(requestBody);
+        const formData = requestBody;
+        const body = Object.fromEntries(formData.entries());
+
+        const newId = employees.length > 0 ? Math.max(...employees.map(e => e.id)) + 1 : 1;
 
         const newEmployee = {
-          id: employees.length + 1,
+          id: newId,
           employee_name: body.employee_name,
           employee_birth_date: body.employee_birth_date,
           employee_blood_type: body.employee_blood_type,
           employee_role: body.employee_role,
           company_id: body.company_id,
           employee_rn: body.employee_rn,
+          profile_image: body.profile_image ? `employee_${newId}_profile.jpg` : null,
+          reg_num: body.employee_rn,
+          birth_date: body.employee_birth_date,
+          blood_type: body.employee_blood_type,
+          role_id: body.employee_role
         };
+
         employees.push(newEmployee);
+        saveToLocalStorage();
 
         return APIFailureWrapper({
           content: newEmployee,
-          errorMessage: 'Erro ao cadastrar funcionário',
+          errorMessage: null,
+          status: 201
         });
       },
     },
     'on'
-  ),
+),
+
   mockFlag(
     {
       method: 'put',
       url: '/employee/:id',
       result: ({ params, requestBody }) => {
-        const body = JSON.parse(requestBody);
+        const formData = requestBody;
+        const body = Object.fromEntries(formData.entries());
+
+        let updatedEmployee = null;
 
         employees.forEach((employee) => {
           if (employee.id == params.id) {
             employee.employee_name = body.employee_name;
             employee.blood_type = body.employee_blood_type;
             employee.role = body.employee_role;
+            employee.role_id = body.employee_role;
             employee.company_id = body.company_id;
             employee.reg_num = body.employee_rn;
+            employee.employee_rn = body.employee_rn;
             employee.birth_date = body.employee_birth_date;
+            employee.employee_birth_date = body.employee_birth_date;
+
+            if (body.profile_image) {
+              employee.profile_image = URL.createObjectURL(body.profile_image);
+            }
+
+            updatedEmployee = employee;
           }
         });
 
         return APIFailureWrapper({
-          content: null,
+          content: updatedEmployee,
           errorMessage: 'Erro ao editar funcionário',
         });
       },
@@ -107,7 +147,7 @@ const employeeRoutes = [
 
         return APIFailureWrapper({
           content: employeeToDelete,
-          errorMessage: 'Erro ao deletar empresa',
+          errorMessage: 'Erro ao deletar funcionário',
         });
       },
     },
@@ -116,3 +156,4 @@ const employeeRoutes = [
 ];
 
 export default employeeRoutes;
+
