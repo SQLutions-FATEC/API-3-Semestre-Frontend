@@ -116,7 +116,7 @@ export default {
     const getEmployee = async (employeeId) => {
       try {
         const { data } = await employee.get(employeeId);
-        employeeName.value = data.employee_name;
+        employeeName.value = data.name;
         employeeBirthDate.value = dayjs(data.birth_date, 'DD/MM/YYYY');
         employeeBloodType.value = data.blood_type;
         employeeRN.value = String(data.reg_num);
