@@ -122,6 +122,7 @@ export default {
         employeeRN.value = String(data.reg_num);
         employeeRole.value = data.role_id;
         pageTitle.value = `Editar ${employeeName.value}`;
+        companyId.value = data.company_id;
 
         const foundRole = roleOptions.value.find(
           (role) => role.value === data.role_id
@@ -129,8 +130,6 @@ export default {
         if (foundRole) {
           employeeRole.label = role.label;
         }
-
-        companyId.value = data.company_id;
 
         const company = companyOptions.value.find(
           (c) => c.value === data.company_id
@@ -325,6 +324,8 @@ export default {
       router,
       route,
       pageTitle,
+      company,
+      role,
     };
   },
 };
