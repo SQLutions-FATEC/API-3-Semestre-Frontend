@@ -73,13 +73,15 @@ export default {
           registerNumber: info.register_number,
           employee: info.employee.name,
           employeeId: info.employee.id,
-          companyId: info.company.id,
           company: info.company.name,
+          companyId: info.company.id,
           role: info.role_name,
           datetime: info.date_time,
           clocked: info.direction,
         }));
         totalInfos.value = data.total;
+
+        eventBus.$emit('table-data', dataSource.value);
       } catch (error) {
         console.error(error);
       }
