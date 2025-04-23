@@ -1,6 +1,10 @@
-import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
+import { getClockInOut } from '@/mock/seeds/clockInOutSeeds';
 import { companies } from '@/mock/seeds/companySeeds';
-import { clockInOut } from '@/mock/seeds/clockInOutSeeds';
+import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
+import {
+  deleteClockInOut,
+  updateCompanyInClockInOut,
+} from '../seeds/clockInOutSeeds';
 
 const companyRoutes = [
   mockFlag(
@@ -42,7 +46,7 @@ const companyRoutes = [
 
         const newCompany = {
           id: companies.length + 1,
-          company_name: body.company_name,
+          name: body.name,
           cnpj: body.cnpj,
           trade_name: body.trade_name,
         };
@@ -67,9 +71,10 @@ const companyRoutes = [
           (company) => company.id == params.id
         );
 
-        companyToEdit.company_name = body.company_name;
+        companyToEdit.name = body.name;
         companyToEdit.cnpj = body.cnpj;
         companyToEdit.trade_name = body.trade_name;
+        updateCompanyInClockInOut(params.id, body.name);
 
         return APIFailureWrapper({
           content: companyToEdit,
@@ -86,15 +91,16 @@ const companyRoutes = [
       result: ({ params }) => {
         let companyToDelete = {};
 
-        for (let index = 0; index < companies.length; index++) {
-          if (companies[index].id == params.id) {
-            companyToDelete = companies.splice(index, 1)[0];
+        const clockInOut = getClockInOut();
+        for (let index = clockInOut.length - 1; index >= 0; index--) {
+          if (clockInOut[index].company.id == params.id) {
+            deleteClockInOut(clockInOut[index].id);
           }
         }
 
-        for (let index = clockInOut.length - 1; index >= 0; index--) {
-          if (clockInOut[index].company.id == params.id) {
-            clockInOut.splice(index, 1);
+        for (let index = 0; index < companies.length; index++) {
+          if (companies[index].id == params.id) {
+            companyToDelete = companies.splice(index, 1)[0];
           }
         }
 
