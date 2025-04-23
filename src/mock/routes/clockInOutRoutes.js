@@ -1,5 +1,5 @@
+import { getClockInOut } from '@/mock/seeds/clockInOutSeeds';
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
-import { clockInOut } from '@/mock/seeds/clockInOutSeeds';
 import dayjs from 'dayjs';
 
 const clockInOutRoutes = [
@@ -8,7 +8,8 @@ const clockInOutRoutes = [
       method: 'get',
       url: '/clock_in/search',
       result: ({ queryParams }) => {
-        let response = clockInOut;
+        let response = getClockInOut();
+
         if (queryParams.employee) {
           response = response.filter((item) =>
             item.employee.name
@@ -57,6 +58,7 @@ const clockInOutRoutes = [
       url: '/clock_in',
       result: ({ requestBody }) => {
         const requestObj = JSON.parse(requestBody);
+        const clockInOut = getClockInOut();
 
         clockInOut.forEach((info) => {
           if (info.register_number == requestObj.register_number) {
