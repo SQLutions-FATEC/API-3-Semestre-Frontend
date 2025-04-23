@@ -27,6 +27,7 @@ export default {
     const route = useRoute();
     const router = useRouter();
     const dateFormatList = ['DD/MM/YYYY'];
+
     const employeeName = ref('');
     const employeeRN = ref('');
     const employeeBirthDate = ref(null);
@@ -69,7 +70,7 @@ export default {
 
       const params = {
         id: route.params.id,
-        employee_name: employeeName.value,
+        name: employeeName.value,
         birth_date: formattedDate,
         blood_type: employeeBloodType.value,
         employee_Role: employeeRole.value,
