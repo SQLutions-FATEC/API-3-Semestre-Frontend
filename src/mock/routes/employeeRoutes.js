@@ -1,11 +1,7 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
+import { employees } from '@/mock/seeds/employeeSeeds';
+import { errorMessages } from 'vue/compiler-sfc';
 import { clockInOut } from '@/mock/seeds/clockInOutSeeds';
-
-let employees = JSON.parse(localStorage.getItem('mock-employees')) || [];
-
-function saveToLocalStorage() {
-  localStorage.setItem('mock-employees', JSON.stringify(employees));
-}
 
 const employeeRoutes = [
   mockFlag(
@@ -55,17 +51,13 @@ const employeeRoutes = [
       method: 'post',
       url: '/employee',
       result: ({ requestBody }) => {
-        const formData = requestBody;
-        const body = Object.fromEntries(formData.entries());
+        const body = JSON.pare(requestBody);
 
         const newId = employees.length > 0 ? Math.max(...employees.map(e => e.id)) + 1 : 1;
 
         const newEmployee = {
-          id: newId,
+          id: employees.length + 1,
           employee_name: body.employee_name,
-          employee_birth_date: body.employee_birth_date,
-          employee_blood_type: body.employee_blood_type,
-          employee_role: body.employee_role,
           company_id: body.company_id,
           employee_rn: body.employee_rn,
           profile_image: body.profile_image ? `employee_${newId}_profile.jpg` : null,
@@ -76,12 +68,10 @@ const employeeRoutes = [
         };
 
         employees.push(newEmployee);
-        saveToLocalStorage();
 
         return APIFailureWrapper({
           content: newEmployee,
-          errorMessage: null,
-          status: 201
+          errorMessage: 'Erro ao cadastrar funcionário',
         });
       },
     },
@@ -102,13 +92,10 @@ const employeeRoutes = [
           if (employee.id == params.id) {
             employee.employee_name = body.employee_name;
             employee.blood_type = body.employee_blood_type;
-            employee.role = body.employee_role;
             employee.role_id = body.employee_role;
             employee.company_id = body.company_id;
             employee.reg_num = body.employee_rn;
-            employee.employee_rn = body.employee_rn;
             employee.birth_date = body.employee_birth_date;
-            employee.employee_birth_date = body.employee_birth_date;
 
             if (body.profile_image) {
               employee.profile_image = URL.createObjectURL(body.profile_image);
@@ -119,7 +106,7 @@ const employeeRoutes = [
         });
 
         return APIFailureWrapper({
-          content: updatedEmployee,
+          content: null,
           errorMessage: 'Erro ao editar funcionário',
         });
       },

@@ -7,6 +7,7 @@ const employees = [
     company_id: 1,
     reg_num: '54376523455',
     birth_date: '02/02/1993',
+    image: 'where-is-the-office-cast-now.jpg'
   },
   {
     id: 2,
@@ -16,6 +17,7 @@ const employees = [
     company_id: 2,
     reg_num: '98632165432',
     birth_date: '26/08/1974',
+    image: 'dd50a95ef21a03b9b23a5871a78e35a24dec86be_00.jpg'
   },
   {
     id: 3,
@@ -25,6 +27,7 @@ const employees = [
     company_id: 3,
     reg_num: '76542397833',
     birth_date: '12/11/1998',
+    image: '9dbb78df3604587ae97ffc7ed364e363.jpg'
   },
 ];
 

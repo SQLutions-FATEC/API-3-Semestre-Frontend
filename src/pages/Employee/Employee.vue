@@ -180,9 +180,12 @@ const customRequest = ({ file, onSuccess, onError }) => {
         employeeBloodType.value = data.blood_type;
         employeeRole.value = data.role_id;
 
-        if (data.profile_image) {
-          profileImage.value = data.profile_image;
-        }
+        if (data.image) {
+              profileImage.value = data.image.startsWith('http') || data.image.startsWith('data:image')
+                ? data.image
+                : `/images/employees/${data.image}`;
+            }
+
 
         const foundRole = roleOptions.value.find(
           (role) => role.value === data.role_id
@@ -341,7 +344,6 @@ const customRequest = ({ file, onSuccess, onError }) => {
       companyId.value = '';
       employeeRN.value = '';
       profileImage.value = defaultProfileImage;
-      fileList.value = [];
     };
 
     const validateRNInput = (event) => {
