@@ -159,7 +159,7 @@ export default {
         const response = await company.get();
         companyOptions.value = response.data.map((item) => ({
           value: item.id,
-          label: item.company_name,
+          label: item.name,
         }));
       } catch (error) {
         console.error('Erro ao buscar empresas:', error);
