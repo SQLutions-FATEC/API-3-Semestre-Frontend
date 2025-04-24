@@ -3,6 +3,8 @@ import { Button } from 'ant-design-vue';
 import { MenuOutlined } from '@ant-design/icons-vue';
 
 export default {
+  name: 'TopBar',
+  
   components: {
     'a-button': Button,
     MenuOutlined,
@@ -28,6 +30,7 @@ export default {
           <menu-outlined />
         </template>
       </a-button>
+      <img alt="altave" src="/altave.svg"
     </div>
   </div>
 </template>
@@ -41,9 +44,11 @@ export default {
   justify-content: center;
 
   .top-bar__container {
+    display: flex;
+    justify-content: space-between;
     max-width: 1200px;
     width: 100%;
-    padding: 0 16px;
+    padding: 0 $spacingLg;
   }
 }
 </style>
