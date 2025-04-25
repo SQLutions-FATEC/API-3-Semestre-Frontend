@@ -131,9 +131,9 @@ export default {
       try {
         const { data } = await employee.get(employeeId);
         employeeName.value = data.name;
-        employeeBirthDate.value = dayjs(data.birth_date, 'DD/MM/YYYY');
+        employeeBirthDate.value = dayjs(data.birth_date);
         employeeBloodType.value = data.blood_type;
-        employeeRN.value = String(data.reg_num);
+        employeeRN.value = String(data.register_number);
         fillContracts(data.contracts);
 
         pageTitle.value = `Editar ${employeeName.value}`;
@@ -256,6 +256,7 @@ export default {
           <a-date-picker
             v-model:value="employeeBirthDate"
             placeholder="Data de nascimento"
+            valueFormat="YYYY-MM-DDTHH:mm:ss.SSSZ"
             :format="dateFormatList"
             @change="handleDateChange"
           />
