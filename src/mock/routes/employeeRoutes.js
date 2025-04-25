@@ -1,8 +1,6 @@
 import { getClockInOut } from '@/mock/seeds/clockInOutSeeds';
 import { employees } from '@/mock/seeds/employeeSeeds';
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
-import { employees } from '@/mock/seeds/employeeSeeds';
-import { getClockInOut } from '@/mock/seeds/clockInOutSeeds';
 import { companies } from '@/mock/seeds/companySeeds';
 import { roles } from '@/mock/seeds/roleSeeds';
 import {
