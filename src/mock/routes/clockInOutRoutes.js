@@ -1,6 +1,5 @@
 import { getClockInOut } from '@/mock/seeds/clockInOutSeeds';
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
-import { getClockInOut } from '@/mock/seeds/clockInOutSeeds';
 import dayjs from 'dayjs';
 
 const clockInOutRoutes = [
