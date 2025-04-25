@@ -1,16 +1,16 @@
 <script>
-import { Button, Select, Table } from 'ant-design-vue';
-import { onMounted, onBeforeUnmount, ref, h } from 'vue';
+import HomeHeader from '@/components/Headers/HomeHeader.vue';
+import EditClockInModal from '@/components/Modals/EditClockInModal.vue';
+import clockInOut from '@/services/clockInOut';
+import { eventBus } from '@/utils/eventBus';
 import {
-  ArrowUpOutlined,
   ArrowDownOutlined,
+  ArrowUpOutlined,
   EditOutlined,
 } from '@ant-design/icons-vue';
-import clockInOut from '@/services/clockInOut';
-import EditClockInModal from '@/components/Modals/EditClockInModal.vue';
-import HomeHeader from '@/components/Headers/HomeHeader.vue';
+import { Button, Select, Table } from 'ant-design-vue';
+import { h, onBeforeUnmount, onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
-import { eventBus } from '@/utils/eventBus';
 
 export default {
   name: 'Home',
@@ -74,6 +74,7 @@ export default {
           employee: info.employee.name,
           employeeId: info.employee.id,
           company: info.company.name,
+          companyId: info.company.id,
           role: info.role_name,
           datetime: info.date_time,
           clocked: info.direction,
@@ -120,6 +121,16 @@ export default {
         title: 'Funcionário',
         dataIndex: 'employee',
         key: 'employee',
+        customRender: ({ text, record }) => {
+          return h(
+            RouterLink,
+            {
+              to: { path: `/employee/${record.employeeId}` },
+              style: { color: 'inherit', textDecoration: 'underline' },
+            },
+            () => text
+          );
+        },
       },
       {
         title: 'Empresa',
@@ -129,7 +140,7 @@ export default {
           return h(
             RouterLink,
             {
-              to: { path: `/company/${record.employeeId}` },
+              to: { path: `/company/${record.companyId}` },
               style: { color: 'inherit', textDecoration: 'underline' },
             },
             () => text

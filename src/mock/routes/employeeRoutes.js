@@ -1,6 +1,12 @@
-import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
+import { getClockInOut } from '@/mock/seeds/clockInOutSeeds';
 import { employees } from '@/mock/seeds/employeeSeeds';
-import { clockInOut } from '@/mock/seeds/clockInOutSeeds';
+import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
+import { companies } from '@/mock/seeds/companySeeds';
+import { roles } from '@/mock/seeds/roleSeeds';
+import {
+  deleteClockInOut,
+  updateEmployeeInClockInOut,
+} from '../seeds/clockInOutSeeds';
 
 const employeeRoutes = [
   mockFlag(
@@ -8,11 +14,12 @@ const employeeRoutes = [
       method: 'get',
       url: '/employee',
       result: () => {
-        return {
-          success: true,
-          content: employees,
-          errorMessage: null
-        };
+        const response = employees;
+
+        return APIFailureWrapper({
+          content: response,
+          errorMessage: 'Erro ao listar os funcionários',
+        });
       },
     },
     'on'
@@ -22,19 +29,42 @@ const employeeRoutes = [
       method: 'get',
       url: '/employee/:id',
       result: ({ params }) => {
-        const employee = employees.find(e => e.id == params.id);
-        if (!employee) {
-          return APIFailureWrapper({
-            content: null,
-            errorMessage: 'Funcionário não encontrado',
-            status: 404
-          });
-        }
-        return {
-          success: true,
-          content: employee,
-          errorMessage: null
+        const employee = employees.find((employee) => employee.id == params.id);
+
+        if (!employee) return null;
+
+        const response = {
+          name: employee.name,
+          birth_date: employee.birth_date,
+          blood_type: employee.blood_type,
+          reg_num: employee.reg_num,
+          contracts: employee.contracts.map((contract) => {
+            const selectedCompany = companies.find(
+              (company) => company.id == contract.company.id
+            );
+            const selectedRole = roles.find(
+              (role) => role.id == contract.role.id
+            );
+
+            return {
+              company: {
+                id: selectedCompany.id,
+                name: selectedCompany.name,
+              },
+              role: {
+                id: selectedRole.id,
+                name: selectedRole.name,
+              },
+              datetime_start: contract.datetime_start,
+              datetime_end: contract.datetime_end,
+            };
+          }),
         };
+
+        return APIFailureWrapper({
+          content: response,
+          errorMessage: 'Erro ao listar funcionário',
+        });
       },
     },
     'on'
@@ -44,45 +74,22 @@ const employeeRoutes = [
       method: 'post',
       url: '/employee',
       result: ({ requestBody }) => {
-        try {
-          const body = JSON.parse(requestBody);
+        const body = JSON.parse(requestBody);
 
-          if (!body.employee_name || !body.company_id || !body.employee_rn) {
-            return APIFailureWrapper({
-              content: null,
-              errorMessage: 'Dados obrigatórios faltando',
-              status: 400
-            });
-          }
+        const newEmployee = {
+          id: employees.length + 1,
+          name: body.name,
+          blood_type: body.blood_type,
+          reg_num: body.reg_num,
+          birth_date: body.birth_date,
+          contracts: body.contracts,
+        };
+        employees.push(newEmployee);
 
-          const newId = employees.length > 0 ? Math.max(...employees.map(e => e.id)) + 1 : 1;
-
-          const newEmployee = {
-            id: newId,
-            employee_name: body.employee_name,
-            company_id: body.company_id,
-            employee_rn: body.employee_rn,
-            profile_image: body.profile_image_base64 ? `employee_${newId}_profile.jpg` : null,
-            reg_num: body.employee_rn,
-            birth_date: body.employee_birth_date || null,
-            blood_type: body.employee_blood_type || null,
-            role_id: body.employee_role || null
-          };
-
-          employees.push(newEmployee);
-
-          return {
-            success: true,
-            content: newEmployee,
-            errorMessage: null
-          };
-        } catch (error) {
-          return APIFailureWrapper({
-            content: null,
-            errorMessage: 'Erro ao processar requisição',
-            status: 500
-          });
-        }
+        return APIFailureWrapper({
+          content: newEmployee,
+          errorMessage: 'Erro ao cadastrar funcionário',
+        });
       },
     },
     'on'
@@ -92,45 +99,23 @@ const employeeRoutes = [
       method: 'put',
       url: '/employee/:id',
       result: ({ params, requestBody }) => {
-        try {
-          const body = JSON.parse(requestBody);
-          const employeeIndex = employees.findIndex(e => e.id == params.id);
+        const body = JSON.parse(requestBody);
 
-          if (employeeIndex === -1) {
-            return APIFailureWrapper({
-              content: null,
-              errorMessage: 'Funcionário não encontrado',
-              status: 404
-            });
+        employees.forEach((employee) => {
+          if (employee.id == params.id) {
+            employee.name = body.name;
+            employee.blood_type = body.blood_type;
+            employee.reg_num = body.reg_num;
+            employee.birth_date = body.birth_date;
+            employee.contracts = body.contracts;
+            updateEmployeeInClockInOut(params.id, body.name);
           }
+        });
 
-          const updatedEmployee = {
-            ...employees[employeeIndex],
-            employee_name: body.employee_name || employees[employeeIndex].employee_name,
-            blood_type: body.employee_blood_type || employees[employeeIndex].blood_type,
-            role_id: body.employee_role || employees[employeeIndex].role_id,
-            company_id: body.company_id || employees[employeeIndex].company_id,
-            reg_num: body.employee_rn || employees[employeeIndex].reg_num,
-            birth_date: body.employee_birth_date || employees[employeeIndex].birth_date,
-            profile_image: body.profile_image_base64
-              ? `employee_${params.id}_profile.jpg`
-              : employees[employeeIndex].profile_image
-          };
-
-          employees[employeeIndex] = updatedEmployee;
-
-          return {
-            success: true,
-            content: updatedEmployee,
-            errorMessage: null
-          };
-        } catch (error) {
-          return APIFailureWrapper({
-            content: null,
-            errorMessage: 'Erro ao atualizar funcionário',
-            status: 500
-          });
-        }
+        return APIFailureWrapper({
+          content: null,
+          errorMessage: 'Erro ao editar funcionário',
+        });
       },
     },
     'on'
@@ -140,30 +125,25 @@ const employeeRoutes = [
       method: 'delete',
       url: '/employee/:id',
       result: ({ params }) => {
-        const employeeIndex = employees.findIndex(e => e.id == params.id);
+        let employeeToDelete = {};
 
-        if (employeeIndex === -1) {
-          return APIFailureWrapper({
-            content: null,
-            errorMessage: 'Funcionário não encontrado',
-            status: 404
-          });
-        }
-
-        const [deletedEmployee] = employees.splice(employeeIndex, 1);
-
-        // Remove registros de ponto
-        for (let i = clockInOut.length - 1; i >= 0; i--) {
-          if (clockInOut[i].employee.id == params.id) {
-            clockInOut.splice(i, 1);
+        const clockInOut = getClockInOut();
+        for (let index = clockInOut.length - 1; index >= 0; index--) {
+          if (clockInOut[index].employee.id == params.id) {
+            deleteClockInOut(clockInOut[index].id);
           }
         }
 
-        return {
-          success: true,
-          content: deletedEmployee,
-          errorMessage: null
-        };
+        for (let index = 0; index < employees.length; index++) {
+          if (employees[index].id == params.id) {
+            employeeToDelete = employees.splice(index, 1)[0];
+          }
+        }
+
+        return APIFailureWrapper({
+          content: employeeToDelete,
+          errorMessage: 'Erro ao deletar funcionário',
+        });
       },
     },
     'on'
