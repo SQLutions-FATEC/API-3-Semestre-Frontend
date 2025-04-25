@@ -1,6 +1,6 @@
-import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
-import { companies } from '@/mock/seeds/companySeeds';
 import { getClockInOut } from '@/mock/seeds/clockInOutSeeds';
+import { companies } from '@/mock/seeds/companySeeds';
+import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import {
   deleteClockInOut,
   updateCompanyInClockInOut,

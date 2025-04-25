@@ -1,13 +1,12 @@
 <script>
-import { Button, Cascader, DatePicker, Image, Modal } from 'ant-design-vue';
-import { onMounted, ref } from 'vue';
-import { validateRN } from '@/utils/validations/registerNumber';
-import { useRoute, useRouter } from 'vue-router';
-import { computed } from 'vue';
-import dayjs from 'dayjs';
-import employee from '@/services/employee';
-import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import AtInput from '@/components/Input/AtInput.vue';
+import AtNumberInput from '@/components/Input/AtNumberInput.vue';
+import employee from '@/services/employee';
+import { validateRN } from '@/utils/validations/registerNumber';
+import { Button, Cascader, DatePicker, Image, Modal } from 'ant-design-vue';
+import dayjs from 'dayjs';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import Contracts from '@/components/Contracts.vue';
 
 export default {
