@@ -30,7 +30,7 @@ export default {
           <menu-outlined />
         </template>
       </a-button>
-      <img alt="altave" src="/altave.svg"
+      <img alt="altave" src="/assets/altave.svg"
     </div>
   </div>
 </template>
