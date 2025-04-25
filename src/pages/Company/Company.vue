@@ -186,7 +186,7 @@ export default {
       @ok="deleteCompany"
     >
       <span>
-        Tem certeza que deseja deletar a empresa {{ tradeName.value }}?
+        Tem certeza que deseja deletar a empresa {{ tradeName }}?
       </span>
     </a-modal>
   </div>
