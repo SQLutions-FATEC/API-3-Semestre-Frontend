@@ -30,7 +30,7 @@ export default {
     const router = useRouter();
     const dateFormatList = ['DD/MM/YYYY'];
     let employeeContracts = [];
-    const defaultProfileImage = '/assets/altave.jpg'
+    const defaultProfileImage = '/assets/altave.jpg';
 
     const contractsRef = ref(null);
     const employeeName = ref('');
@@ -46,7 +46,8 @@ export default {
     const uploading = ref(false);
 
     const beforeUpload = (file) => {
-      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+      const isJpgOrPng =
+        file.type === 'image/jpeg' || file.type === 'image/png';
       if (!isJpgOrPng) {
         message.error('Você só pode enviar arquivos JPG/PNG!');
       }
@@ -75,7 +76,7 @@ export default {
       const reader = new FileReader();
       reader.onload = () => {
         profileImage.value = URL.createObjectURL(file);
-        onSuccess("Imagem carregada com sucesso", file);
+        onSuccess('Imagem carregada com sucesso', file);
       };
       reader.onerror = (error) => {
         onError(error);
@@ -180,7 +181,7 @@ export default {
         employeeBirthDate.value = dayjs(data.birth_date, 'DD/MM/YYYY');
         employeeBloodType.value = data.blood_type;
         employeeRN.value = String(data.reg_num);
-        profileImage.value = data.profile_image
+        profileImage.value = data.profile_image;
         fillContracts(data.contracts);
 
         pageTitle.value = `Editar ${employeeName.value}`;
@@ -322,8 +323,9 @@ export default {
 
         <div class="right-column">
           <a-upload
-            name="avatar"
+            class="employee-image__wrapper"
             list-type="picture-card"
+            name="avatar"
             :show-upload-list="false"
             :before-upload="beforeUpload"
             :custom-request="customRequest"
@@ -338,6 +340,7 @@ export default {
             <img
               v-else
               alt="Foto do Funcionário"
+              class="employee-image"
               :src="profileImage"
             />
           </a-upload>
@@ -353,7 +356,12 @@ export default {
         >
           Deletar funcionario
         </a-button>
-        <a-button type="primary" style="width: 250px" :loading="uploading" @click="employeeAction">
+        <a-button
+          type="primary"
+          style="width: 250px"
+          :loading="uploading"
+          @click="employeeAction"
+        >
           {{ buttonAction }}
         </a-button>
       </div>
@@ -396,6 +404,18 @@ export default {
       .right-column {
         flex: 1 1 calc(50% - $spacingXxl/2);
         text-align: center;
+
+        .employee-image__wrapper {
+          max-height: 100%;
+          max-width: 100%;
+          height: 100%;
+          width: 100%;
+
+          .employee-image {
+            height: 100%;
+            width: 100%;
+          }
+        }
       }
     }
     .content__contracts {
@@ -410,5 +430,11 @@ export default {
       gap: $spacingMd;
     }
   }
+}
+::v-deep .ant-upload,
+.ant-upload-select {
+  height: 100% !important;
+  width: 100% !important;
+  margin: 0px !important;
 }
 </style>
