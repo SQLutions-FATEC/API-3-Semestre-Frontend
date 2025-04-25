@@ -187,6 +187,5 @@ export {
   getClockInOut,
   resetClockInOut,
   updateCompanyInClockInOut,
-  updateEmployeeInClockInOut
+  updateEmployeeInClockInOut,
 };
-

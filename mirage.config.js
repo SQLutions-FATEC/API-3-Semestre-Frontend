@@ -6,7 +6,12 @@ import roleRoutes from './src/mock/routes/roleRoutes';
 
 export function makeServer() {
   if (import.meta.env.MODE === 'development' && !window.server) {
-    const routes = [...companyRoutes, ...clockInOutRoutes, ...employeeRoutes, ...roleRoutes];
+    const routes = [
+      ...companyRoutes,
+      ...clockInOutRoutes,
+      ...employeeRoutes,
+      ...roleRoutes,
+    ];
 
     window.server = createServer({
       models: {},

@@ -1,6 +1,10 @@
 import { getClockInOut } from '@/mock/seeds/clockInOutSeeds';
 import { employees } from '@/mock/seeds/employeeSeeds';
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
+import { employees } from '@/mock/seeds/employeeSeeds';
+import { getClockInOut } from '@/mock/seeds/clockInOutSeeds';
+import { companies } from '@/mock/seeds/companySeeds';
+import { roles } from '@/mock/seeds/roleSeeds';
 import {
   deleteClockInOut,
   updateEmployeeInClockInOut,
@@ -27,7 +31,37 @@ const employeeRoutes = [
       method: 'get',
       url: '/employee/:id',
       result: ({ params }) => {
-        const response = employees.find((employee) => employee.id == params.id);
+        const employee = employees.find((employee) => employee.id == params.id);
+
+        if (!employee) return null;
+
+        const response = {
+          name: employee.name,
+          birth_date: employee.birth_date,
+          blood_type: employee.blood_type,
+          reg_num: employee.reg_num,
+          contracts: employee.contracts.map((contract) => {
+            const selectedCompany = companies.find(
+              (company) => company.id == contract.company.id
+            );
+            const selectedRole = roles.find(
+              (role) => role.id == contract.role.id
+            );
+
+            return {
+              company: {
+                id: selectedCompany.id,
+                name: selectedCompany.name,
+              },
+              role: {
+                id: selectedRole.id,
+                name: selectedRole.name,
+              },
+              datetime_start: contract.datetime_start,
+              datetime_end: contract.datetime_end,
+            };
+          }),
+        };
 
         return APIFailureWrapper({
           content: response,
@@ -47,11 +81,10 @@ const employeeRoutes = [
         const newEmployee = {
           id: employees.length + 1,
           name: body.name,
-          birth_date: body.birth_date,
           blood_type: body.blood_type,
-          role: body.role,
-          company_id: body.company_id,
           reg_num: body.reg_num,
+          birth_date: body.birth_date,
+          contracts: body.contracts,
         };
         employees.push(newEmployee);
 
@@ -76,6 +109,7 @@ const employeeRoutes = [
             employee.blood_type = body.blood_type;
             employee.reg_num = body.reg_num;
             employee.birth_date = body.birth_date;
+            employee.contracts = body.contracts;
             updateEmployeeInClockInOut(params.id, body.name);
           }
         });

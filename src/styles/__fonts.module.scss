@@ -118,3 +118,30 @@ $paragraph-styles: (
     line-height: 16px,
   ),
 );
+
+@mixin heading($size) {
+  $styles: map-get($heading-styles, $size);
+  @if $styles {
+    @each $property, $value in $styles {
+      #{$property}: $value;
+    }
+  }
+}
+
+@mixin label($size) {
+  $styles: map-get($label-styles, $size);
+  @if $styles {
+    @each $property, $value in $styles {
+      #{$property}: $value;
+    }
+  }
+}
+
+@mixin paragraph($size) {
+  $styles: map-get($paragraph-styles, $size);
+  @if $styles {
+    @each $property, $value in $styles {
+      #{$property}: $value;
+    }
+  }
+}

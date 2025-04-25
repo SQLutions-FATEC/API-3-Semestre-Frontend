@@ -9,6 +9,12 @@ import { Button, Cascader, DatePicker, Image, Modal } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { computed } from 'vue';
+import dayjs from 'dayjs';
+import employee from '@/services/employee';
+import AtNumberInput from '@/components/Input/AtNumberInput.vue';
+import AtInput from '@/components/Input/AtInput.vue';
+import Contracts from '@/components/Contracts.vue';
 
 export default {
   name: 'Employee',
@@ -21,40 +27,40 @@ export default {
     'at-input': AtInput,
     'at-number-input': AtNumberInput,
     'a-image': Image,
+    contracts: Contracts,
   },
 
   setup() {
     const route = useRoute();
     const router = useRouter();
     const dateFormatList = ['DD/MM/YYYY'];
+    let employeeContracts = [];
 
+    const contractsRef = ref(null);
     const employeeName = ref('');
     const employeeRN = ref('');
-    const employeeBirthDate = ref(null);
+    const employeeBirthDate = ref('');
     const employeeBloodType = ref('');
-    const employeeRole = ref('');
     const isConfirmationModalOpened = ref(false);
-    const companyId = ref('');
-    const companyOptions = ref([]);
-    const roleOptions = ref([]);
     const pageTitle = ref('Cadastro de funcionário');
     const buttonAction = ref('Cadastrar');
     const isEditing = ref(false);
     const errorMessage = ref('');
-    const isRoleModalOpen = ref(false);
-    const newRole = ref('');
     const profileImage = ref(
       'https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg'
     );
+
+    const addContract = (contract) => {
+      employeeContracts.push(contract);
+    };
 
     const employeeAction = async () => {
       if (
         !employeeName.value ||
         !employeeBirthDate.value ||
         !employeeBloodType.value ||
-        !employeeRole.value ||
-        !companyId.value ||
-        !employeeRN.value
+        !employeeRN.value ||
+        !employeeContracts.length
       ) {
         alert('Todos os campos são obrigatórios');
         return;
@@ -71,11 +77,10 @@ export default {
       const params = {
         id: route.params.id,
         name: employeeName.value,
-        birth_date: formattedDate,
         blood_type: employeeBloodType.value,
-        employee_Role: employeeRole.value,
-        company_id: companyId.value,
+        birth_date: formattedDate,
         reg_num: employeeRN.value,
+        contracts: employeeContracts,
       };
 
       if (isEditing.value) {
@@ -114,6 +119,20 @@ export default {
       }
     };
 
+    const fillContracts = (contracts) => {
+      const formattedContracts = [];
+      contracts.forEach((contract) => {
+        formattedContracts.push({
+          company: contract.company,
+          role: contract.role,
+          datetime_start: contract.datetime_start,
+          datetime_end: contract.datetime_end,
+        });
+      });
+      employeeContracts = formattedContracts;
+      contractsRef.value.fillContracts(formattedContracts);
+    };
+
     const getEmployee = async (employeeId) => {
       try {
         const { data } = await employee.get(employeeId);
@@ -121,23 +140,9 @@ export default {
         employeeBirthDate.value = dayjs(data.birth_date, 'DD/MM/YYYY');
         employeeBloodType.value = data.blood_type;
         employeeRN.value = String(data.reg_num);
-        employeeRole.value = data.role_id;
+        fillContracts(data.contracts);
+
         pageTitle.value = `Editar ${employeeName.value}`;
-        companyId.value = data.company_id;
-
-        const foundRole = roleOptions.value.find(
-          (role) => role.value === data.role_id
-        );
-        if (foundRole) {
-          employeeRole.label = role.label;
-        }
-
-        const company = companyOptions.value.find(
-          (c) => c.value === data.company_id
-        );
-        if (company) {
-          companyId.label = company.label;
-        }
       } catch (error) {
         console.error(error);
       }
@@ -154,41 +159,12 @@ export default {
       { value: 'O-', label: 'O-' },
     ];
 
-    const fetchCompanies = async () => {
-      try {
-        const response = await company.get();
-        companyOptions.value = response.data.map((item) => ({
-          value: item.id,
-          label: item.name,
-        }));
-      } catch (error) {
-        console.error('Erro ao buscar empresas:', error);
-      }
-    };
-
-    const fetchRoles = async () => {
-      try {
-        const response = await role.get();
-        roleOptions.value = response.data.map((item) => ({
-          value: item.id,
-          label: item.name,
-        }));
-        ensureAddNewIsLast();
-      } catch (error) {
-        console.error('Erro ao buscar funções:', error);
-      }
-    };
-
     onMounted(async () => {
-      fetchCompanies();
-      fetchRoles();
       const employeeId = route.params.id;
       if (!!employeeId) {
         buttonAction.value = 'Editar';
         isEditing.value = true;
         await getEmployee(employeeId);
-      } else {
-        clearFields();
       }
     });
 
@@ -213,64 +189,17 @@ export default {
       }
     };
 
-    const handleRoleChange = (value) => {
-      if (value != null) {
-        if (value.includes('add-new')) {
-          employeeRole.value = [];
-          openRoleModal();
-          ensureAddNewIsLast();
-        } else {
-          employeeRole.value = value[0];
-        }
-      }
-    };
-
-    const handleCompanyChange = (value) => {
-      if (value != null) {
-        companyId.value = value[0];
-      }
-    };
-
     const handleDateChange = (date) => {
       employeeBirthDate.value = date;
     };
 
-    const ensureAddNewIsLast = () => {
-      const regularOptions = roleOptions.value.filter(
-        (opt) => opt.value !== 'add-new'
-      );
-
-      roleOptions.value = [
-        ...regularOptions,
-        { value: 'add-new', label: '➕ Adicionar Função' },
-      ];
-    };
-
-    const openRoleModal = () => {
-      isRoleModalOpen.value = true;
-    };
-
-    const addRole = () => {
-      if (newRole.value.trim()) {
-        roleOptions.value.push({
-          value: newRole.value,
-          label: newRole.value,
-        });
-        employeeRole.value = newRole.value;
-        newRole.value = '';
-        isRoleModalOpen.value = false;
-        ensureAddNewIsLast();
-      }
-    };
-
     const clearFields = () => {
       employeeName.value = '';
-      employeeBirthDate.value = null;
+      employeeBirthDate.value = '';
       employeeRN.value = '';
       employeeBloodType.value = '';
-      employeeRole.value = '';
-      companyId.value = '';
       employeeRN.value = '';
+      contractsRef.value.resetContracts();
     };
 
     const validateRNInput = (event) => {
@@ -283,50 +212,30 @@ export default {
     };
 
     const showDeleteButton = computed(() => {
-      return isEditing.value || true;
+      return isEditing.value;
     });
 
     return {
+      addContract,
+      bloodTypeOptions,
+      buttonAction,
+      contractsRef,
+      dateFormatList,
       deleteEmployee,
-      employeeName,
-      employeeRN,
       employeeBirthDate,
       employeeBloodType,
-      employeeRole,
-      isConfirmationModalOpened,
-      companyId,
-      buttonAction,
-      isEditing,
-      errorMessage,
-      profileImage,
-      createEmployee,
-      bloodTypeOptions,
-      roleOptions,
-      companyOptions,
-      handleBloodTypeChange,
-      handleRoleChange,
-      handleCompanyChange,
-      isRoleModalOpen,
-      newRole,
-      openRoleModal,
-      openConfirmationModal,
-      addRole,
-      handleDateChange,
-      dateFormatList,
-      ensureAddNewIsLast,
-      showDeleteButton,
-      clearFields,
-      validateRNInput,
-      verifyAge,
+      employeeName,
+      employeeRN,
       employeeAction,
-      onMounted,
-      fetchCompanies,
-      getEmployee,
-      router,
-      route,
+      errorMessage,
+      handleBloodTypeChange,
+      handleDateChange,
+      isConfirmationModalOpened,
+      openConfirmationModal,
       pageTitle,
-      company,
-      role,
+      profileImage,
+      showDeleteButton,
+      validateRNInput,
     };
   },
 };
@@ -335,17 +244,14 @@ export default {
   <div class="employee">
     <h1>{{ pageTitle }}</h1>
 
-    <div class="employee_content">
-      <div class="left_collumn" style="width: 40%">
-        <div class="content__input">
+    <div class="employee__content">
+      <div class="content__inputs">
+        <div class="left-column">
           <at-input
             v-model:value="employeeName"
             placeholder="Nome completo"
             text
           />
-        </div>
-
-        <div class="content__input">
           <at-number-input
             v-model:value="employeeRN"
             placeholder="Número de registro"
@@ -353,63 +259,26 @@ export default {
             :error-message="errorMessage"
             @input="validateRNInput"
           />
-        </div>
-
-        <div class="dropdown">
           <a-date-picker
             v-model:value="employeeBirthDate"
             placeholder="Data de nascimento"
             :format="dateFormatList"
             @change="handleDateChange"
           />
-        </div>
-
-        <div class="dropdown">
           <a-cascader
             v-model:value="employeeBloodType"
-            :options="bloodTypeOptions"
             placeholder="Tipo Sanguíneo"
+            style="width: 100%"
+            :options="bloodTypeOptions"
             @change="handleBloodTypeChange"
           />
         </div>
 
-        <div class="dropdown">
-          <a-cascader
-            v-model:value="employeeRole"
-            :options="roleOptions"
-            placeholder="Função"
-            @change="handleRoleChange"
-            :showSearch="{
-              filter: (inputValue, path) =>
-                path.some((option) =>
-                  option.label.toLowerCase().includes(inputValue.toLowerCase())
-                ),
-            }"
-          />
-        </div>
-      </div>
-
-      <div class="right_collumn" style="width: 40%">
-        <div class="profile-picture" style="text-align: center">
+        <div class="right-column">
           <a-image :width="225" :height="225" :src="profileImage" />
         </div>
-
-        <div class="dropdown">
-          <a-cascader
-            v-model:value="companyId"
-            :options="companyOptions"
-            placeholder="Empresa"
-            @change="handleCompanyChange"
-            :showSearch="{
-              filter: (inputValue, path) =>
-                path.some((option) =>
-                  option.label.toLowerCase().includes(inputValue.toLowerCase())
-                ),
-            }"
-          />
-        </div>
       </div>
-
+      <contracts ref="contractsRef" @add-contract="addContract" />
       <div class="content__action">
         <a-button
           v-if="showDeleteButton"
@@ -425,9 +294,6 @@ export default {
       </div>
     </div>
 
-    <a-modal v-model:open="isRoleModalOpen" title="Nova Função" @ok="addRole">
-      <a-input v-model:value="newRole" placeholder="Digite a nova função" />
-    </a-modal>
     <a-modal
       v-model:open="isConfirmationModalOpened"
       title="Deletar funcionário"
@@ -444,35 +310,39 @@ export default {
 .employee {
   padding: $spacingXxl 0px;
 
-  .employee_content {
+  .employee__content {
     padding: $spacingXxl 0px;
     display: flex;
     flex-wrap: wrap;
     overflow: auto;
     gap: $spacingXxl;
 
-    .profile-picture {
-      margin-bottom: $spacingXxl;
-    }
+    .content__inputs {
+      display: flex;
+      gap: $spacingXxl;
+      flex: 1 1 calc(100% - $spacingXxl);
 
-    .content__input {
-      margin-bottom: $spacingXxl;
+      .left-column {
+        display: flex;
+        flex-direction: column;
+        gap: $spacingXxl;
+        flex: 1 1 calc(50% - $spacingXxl/2);
+      }
+      .right-column {
+        flex: 1 1 calc(50% - $spacingXxl/2);
+        text-align: center;
+      }
     }
-
+    .content__contracts {
+      display: flex;
+      flex: 1 1 auto;
+      gap: $spacingXxl;
+    }
     .content__action {
       flex: 0 0 100%;
       display: flex;
       justify-content: center;
-      gap: 12px;
-    }
-
-    .dropdown {
-      margin-bottom: $spacingXxl;
-
-      :deep(.ant-picker),
-      :deep(.ant-cascader) {
-        width: 100%;
-      }
+      gap: $spacingMd;
     }
   }
 }
