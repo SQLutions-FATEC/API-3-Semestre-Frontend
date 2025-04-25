@@ -1,6 +1,5 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import { employees } from '@/mock/seeds/employeeSeeds';
-import { errorMessages } from 'vue/compiler-sfc';
 import { clockInOut } from '@/mock/seeds/clockInOutSeeds';
 
 const employeeRoutes = [
@@ -9,15 +8,11 @@ const employeeRoutes = [
       method: 'get',
       url: '/employee',
       result: () => {
-        const response = employees.map(emp => ({
-          ...emp,
-          profile_image: (emp.profile_image && !emp.profile_image.startsWith('data:')) ? emp.profile_image : null
-        }));
-
-        return APIFailureWrapper({
-          content: response,
-          errorMessage: 'Erro ao listar os funcionários',
-        });
+        return {
+          success: true,
+          content: employees,
+          errorMessage: null
+        };
       },
     },
     'on'
@@ -27,21 +22,19 @@ const employeeRoutes = [
       method: 'get',
       url: '/employee/:id',
       result: ({ params }) => {
-        const response = employees.find((employee) => employee.id == params.id);
-        if (response) {
+        const employee = employees.find(e => e.id == params.id);
+        if (!employee) {
           return APIFailureWrapper({
-            content: {
-              ...response,
-              profile_image: (response.profile_image && !response.profile_image.startsWith('data:')) ? response.profile_image : null
-            },
-            errorMessage: 'Erro ao listar funcionário',
+            content: null,
+            errorMessage: 'Funcionário não encontrado',
+            status: 404
           });
         }
-        return APIFailureWrapper({
-          content: null,
-          errorMessage: 'Funcionário não encontrado',
-          status: 404
-        });
+        return {
+          success: true,
+          content: employee,
+          errorMessage: null
+        };
       },
     },
     'on'
@@ -51,64 +44,93 @@ const employeeRoutes = [
       method: 'post',
       url: '/employee',
       result: ({ requestBody }) => {
-        const body = JSON.pare(requestBody);
+        try {
+          const body = JSON.parse(requestBody);
 
-        const newId = employees.length > 0 ? Math.max(...employees.map(e => e.id)) + 1 : 1;
+          if (!body.employee_name || !body.company_id || !body.employee_rn) {
+            return APIFailureWrapper({
+              content: null,
+              errorMessage: 'Dados obrigatórios faltando',
+              status: 400
+            });
+          }
 
-        const newEmployee = {
-          id: employees.length + 1,
-          employee_name: body.employee_name,
-          company_id: body.company_id,
-          employee_rn: body.employee_rn,
-          profile_image: body.profile_image ? `employee_${newId}_profile.jpg` : null,
-          reg_num: body.employee_rn,
-          birth_date: body.employee_birth_date,
-          blood_type: body.employee_blood_type,
-          role_id: body.employee_role
-        };
+          const newId = employees.length > 0 ? Math.max(...employees.map(e => e.id)) + 1 : 1;
 
-        employees.push(newEmployee);
+          const newEmployee = {
+            id: newId,
+            employee_name: body.employee_name,
+            company_id: body.company_id,
+            employee_rn: body.employee_rn,
+            profile_image: body.profile_image_base64 ? `employee_${newId}_profile.jpg` : null,
+            reg_num: body.employee_rn,
+            birth_date: body.employee_birth_date || null,
+            blood_type: body.employee_blood_type || null,
+            role_id: body.employee_role || null
+          };
 
-        return APIFailureWrapper({
-          content: newEmployee,
-          errorMessage: 'Erro ao cadastrar funcionário',
-        });
+          employees.push(newEmployee);
+
+          return {
+            success: true,
+            content: newEmployee,
+            errorMessage: null
+          };
+        } catch (error) {
+          return APIFailureWrapper({
+            content: null,
+            errorMessage: 'Erro ao processar requisição',
+            status: 500
+          });
+        }
       },
     },
     'on'
-),
-
+  ),
   mockFlag(
     {
       method: 'put',
       url: '/employee/:id',
       result: ({ params, requestBody }) => {
-        const formData = requestBody;
-        const body = Object.fromEntries(formData.entries());
+        try {
+          const body = JSON.parse(requestBody);
+          const employeeIndex = employees.findIndex(e => e.id == params.id);
 
-        let updatedEmployee = null;
-
-        employees.forEach((employee) => {
-          if (employee.id == params.id) {
-            employee.employee_name = body.employee_name;
-            employee.blood_type = body.employee_blood_type;
-            employee.role_id = body.employee_role;
-            employee.company_id = body.company_id;
-            employee.reg_num = body.employee_rn;
-            employee.birth_date = body.employee_birth_date;
-
-            if (body.profile_image) {
-              employee.profile_image = URL.createObjectURL(body.profile_image);
-            }
-
-            updatedEmployee = employee;
+          if (employeeIndex === -1) {
+            return APIFailureWrapper({
+              content: null,
+              errorMessage: 'Funcionário não encontrado',
+              status: 404
+            });
           }
-        });
 
-        return APIFailureWrapper({
-          content: null,
-          errorMessage: 'Erro ao editar funcionário',
-        });
+          const updatedEmployee = {
+            ...employees[employeeIndex],
+            employee_name: body.employee_name || employees[employeeIndex].employee_name,
+            blood_type: body.employee_blood_type || employees[employeeIndex].blood_type,
+            role_id: body.employee_role || employees[employeeIndex].role_id,
+            company_id: body.company_id || employees[employeeIndex].company_id,
+            reg_num: body.employee_rn || employees[employeeIndex].reg_num,
+            birth_date: body.employee_birth_date || employees[employeeIndex].birth_date,
+            profile_image: body.profile_image_base64
+              ? `employee_${params.id}_profile.jpg`
+              : employees[employeeIndex].profile_image
+          };
+
+          employees[employeeIndex] = updatedEmployee;
+
+          return {
+            success: true,
+            content: updatedEmployee,
+            errorMessage: null
+          };
+        } catch (error) {
+          return APIFailureWrapper({
+            content: null,
+            errorMessage: 'Erro ao atualizar funcionário',
+            status: 500
+          });
+        }
       },
     },
     'on'
@@ -118,24 +140,30 @@ const employeeRoutes = [
       method: 'delete',
       url: '/employee/:id',
       result: ({ params }) => {
-        let employeeToDelete = {};
+        const employeeIndex = employees.findIndex(e => e.id == params.id);
 
-        for (let index = 0; index < employees.length; index++) {
-          if (employees[index].id == params.id) {
-            employeeToDelete = employees.splice(index, 1)[0];
+        if (employeeIndex === -1) {
+          return APIFailureWrapper({
+            content: null,
+            errorMessage: 'Funcionário não encontrado',
+            status: 404
+          });
+        }
+
+        const [deletedEmployee] = employees.splice(employeeIndex, 1);
+
+        // Remove registros de ponto
+        for (let i = clockInOut.length - 1; i >= 0; i--) {
+          if (clockInOut[i].employee.id == params.id) {
+            clockInOut.splice(i, 1);
           }
         }
 
-        for (let index = clockInOut.length - 1; index >= 0; index--) {
-          if (clockInOut[index].employee.id == params.id) {
-            clockInOut.splice(index, 1);
-          }
-        }
-
-        return APIFailureWrapper({
-          content: employeeToDelete,
-          errorMessage: 'Erro ao deletar funcionário',
-        });
+        return {
+          success: true,
+          content: deletedEmployee,
+          errorMessage: null
+        };
       },
     },
     'on'
@@ -143,4 +171,3 @@ const employeeRoutes = [
 ];
 
 export default employeeRoutes;
-

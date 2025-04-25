@@ -34,7 +34,7 @@ export default {
     const dateFormatList = ['DD/MM/YYYY'];
     const employeeName = ref('');
     const employeeRN = ref('');
-    const employeeBirthDate = ref('');
+    const employeeBirthDate = ref(null);
     const employeeBloodType = ref('');
     const employeeRole = ref('');
     const isConfirmationModalOpened = ref(false);
@@ -49,7 +49,6 @@ export default {
     const newRole = ref('');
     const defaultProfileImage = 'https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg';
     const profileImage = ref(defaultProfileImage);
-    const fileList = ref([]);
     const uploading = ref(false);
 
     const beforeUpload = (file) => {
@@ -78,25 +77,23 @@ export default {
       }
     };
 
-const customRequest = ({ file, onSuccess, onError }) => {
-  const reader = new FileReader();
+    const customRequest = ({ file, onSuccess, onError }) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+           // Armazena a URL temporária para pré-visualização
+           profileImage.value = URL.createObjectURL(file);
+           onSuccess("Imagem carregada com sucesso", file);
+         };
 
-  reader.onload = () => {
-    // Armazena apenas a representação em base64 da imagem
-    const base64String = reader.result.split(',')[1];
-    profileImage.value = `data:image/jpeg;base64,${base64String}`;
-    onSuccess("Imagem carregada com sucesso", file);
-  };
+         reader.onerror = (error) => {
+           onError(error);
+         };
 
-  reader.onerror = (error) => {
-    onError(error);
-  };
-
-  reader.readAsDataURL(file);
-};
+         reader.readAsDataURL(file);
+       };
 
 
-    const employeeAction = async () => {
+    const employeeAction = async () => { // Adicione async aqui
       if (
         !employeeName.value ||
         !employeeBirthDate.value ||
@@ -108,6 +105,7 @@ const customRequest = ({ file, onSuccess, onError }) => {
         message.error('Todos os campos são obrigatórios');
         return;
       }
+
       const age = verifyAge(employeeBirthDate.value);
 
       if (age < 16 || age > 100) {
@@ -127,65 +125,56 @@ const customRequest = ({ file, onSuccess, onError }) => {
         employee_rn: employeeRN.value,
       };
 
-  if (profileImage.value && profileImage.value !== defaultProfileImage) {
-    const base64Data = profileImage.value.split(',')[1];
-    payload.profile_image_base64 = base64Data;
+      if (profileImage.value && profileImage.value !== defaultProfileImage) {
+        payload.profile_image_base64 = true;
+      }
+
+      try {
+        if (isEditing.value) {
+          await editEmployee(payload); // Agora pode usar await
+        } else {
+          await createEmployee(payload); // Agora pode usar await
+        }
+      } catch (error) {
+        console.error('Erro:', error);
+        message.error('Ocorreu um erro ao processar a solicitação');
+      }
+    };
+
+const createEmployee = async (payload) => {
+  try {
+    await employee.create(payload);
+    message.success(`Usuário ${payload.employee_name} criado com sucesso`);
+    clearFields();
+    router.push({ name: 'Home' });
+  } catch (error) {
+    console.error('Erro ao criar funcionário:', error);
+    message.error(error.response?.data?.errorMessage || 'Erro ao criar funcionário');
   }
+};
 
-      if (isEditing.value) {
-        await editEmployee(payload);
-      } else {
-        await createEmployee(payload);
-      }
-    };
-
-    const createEmployee = async (payload) => {
-      try {
-        await employee.create(payload);
-        message.success(`Usuário ${employeeName.value} cadastrado com sucesso`);
-        clearFields();
-        router.push({ name: 'Home' });
-      } catch (error) {
-        console.error('Erro completo:', {
-          message: error.message,
-          response: error.response?.data,
-          status: error.response?.status,
-          config: error.config,
-        });
-        message.error('Erro ao cadastrar funcionário');
-      }
-    };
-
-    const editEmployee = async (payload) => {
-      try {
-        await employee.edit(payload);
-        message.success(`Usuário ${employeeName.value} foi editado com sucesso`);
-        router.push({ name: 'Home' });
-      } catch (error) {
-        console.error('Erro completo:', {
-          message: error.message,
-          response: error.response?.data,
-          status: error.response?.status,
-          config: error.config,
-        });
-        message.error('Erro ao editar funcionário');
-      }
-    };
+const editEmployee = async (payload) => {
+  try {
+    await employee.edit(payload);
+    message.success(`Usuário ${payload.employee_name} atualizado com sucesso`);
+    router.push({ name: 'Home' });
+  } catch (error) {
+    console.error('Erro ao editar funcionário:', error);
+    message.error(error.response?.data?.errorMessage || 'Erro ao editar funcionário');
+  }
+};
 
     const getEmployee = async (employeeId) => {
       try {
         const { data } = await employee.get(employeeId);
         employeeName.value = data.employee_name;
-        employeeBirthDate.value = dayjs(data.birth_date, 'DD/MM/YYYY');
+            employeeBirthDate.value = data.birth_date
+              ? dayjs(data.birth_date, 'DD/MM/YYYY')
+              : null;
         employeeBloodType.value = data.blood_type;
         employeeRole.value = data.role_id;
 
-        if (data.image) {
-              profileImage.value = data.image.startsWith('http') || data.image.startsWith('data:image')
-                ? data.image
-                : `/images/employees/${data.image}`;
-            }
-
+        profileImage.value = data.image || defaultProfileImage;
 
         const foundRole = roleOptions.value.find(
           (role) => role.value === data.role_id
@@ -337,7 +326,7 @@ const customRequest = ({ file, onSuccess, onError }) => {
 
     const clearFields = () => {
       employeeName.value = '';
-      employeeBirthDate.value = '';
+      employeeBirthDate.value = null;
       employeeRN.value = '';
       employeeBloodType.value = '';
       employeeRole.value = '';
@@ -402,7 +391,6 @@ const customRequest = ({ file, onSuccess, onError }) => {
       beforeUpload,
       handleImageChange,
       customRequest,
-      fileList,
       uploading,
     };
   },
@@ -439,6 +427,7 @@ const customRequest = ({ file, onSuccess, onError }) => {
             placeholder="Data de nascimento"
             :format="dateFormatList"
             @change="handleDateChange"
+            style="width: 100%"
           />
         </div>
 
