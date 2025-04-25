@@ -67,10 +67,10 @@ export default {
         }
 
         const { data } = await clockInOut.get(params);
-
+        
         dataSource.value = data.items.map((info) => ({
           key: info.id,
-          registerNumber: info.register_number,
+          registerNumber: info.employee.register_number,
           employee: info.employee.name,
           employeeId: info.employee.id,
           company: info.company.name,
