@@ -102,8 +102,10 @@ const employeeRoutes = [
       result: ({ params, requestBody }) => {
         const body = JSON.parse(requestBody);
 
+        let editedEmployee;
         employees.forEach((employee) => {
           if (employee.id == params.id) {
+            editedEmployee = employee;
             employee.name = body.name;
             employee.blood_type = body.blood_type;
             employee.reg_num = body.reg_num;
@@ -114,7 +116,7 @@ const employeeRoutes = [
         });
 
         return APIFailureWrapper({
-          content: null,
+          content: editedEmployee,
           errorMessage: 'Erro ao editar funcionário',
         });
       },

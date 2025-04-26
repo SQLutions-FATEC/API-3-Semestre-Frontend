@@ -9,6 +9,8 @@ import dayjs from 'dayjs';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Contracts from '@/components/Contracts.vue';
+import { message } from 'ant-design-vue';
+import photo from '@/services/photo';
 
 export default {
   name: 'Employee',
@@ -32,17 +34,18 @@ export default {
     let employeeContracts = [];
     const defaultProfileImage = '/assets/altave.jpg';
 
+    const buttonAction = ref('Cadastrar');
     const contractsRef = ref(null);
     const employeeName = ref('');
     const employeeRN = ref('');
     const employeeBirthDate = ref('');
     const employeeBloodType = ref('');
+    const errorMessage = ref('');
     const isConfirmationModalOpened = ref(false);
     const pageTitle = ref('Cadastro de funcionário');
-    const buttonAction = ref('Cadastrar');
     const isEditing = ref(false);
-    const errorMessage = ref('');
     const profileImage = ref(defaultProfileImage);
+    const selectedFile = ref(null);
     const uploading = ref(false);
 
     const beforeUpload = (file) => {
@@ -73,6 +76,7 @@ export default {
     };
 
     const customRequest = ({ file, onSuccess, onError }) => {
+      selectedFile.value = file;
       const reader = new FileReader();
       reader.onload = () => {
         profileImage.value = URL.createObjectURL(file);
@@ -116,15 +120,16 @@ export default {
         reg_num: employeeRN.value,
         contracts: employeeContracts,
       };
-      if (profileImage.value && profileImage.value !== defaultProfileImage) {
-        params.profile_image_base64 = true;
-      }
 
+      let employeeId;
       try {
         if (isEditing.value) {
-          await editEmployee(params);
+          employeeId = await editEmployee(params);
+          await uploadEmployeePhoto(employeeId);
         } else {
-          await createEmployee(params);
+          employeeId = await createEmployee(params);
+          await uploadEmployeePhoto(employeeId);
+          clearFields();
         }
       } catch (error) {
         console.error(error);
@@ -133,9 +138,9 @@ export default {
 
     const createEmployee = async (params) => {
       try {
-        await employee.create(params);
-        alert(`Usuario ${employeeName.value} cadastrado com sucesso`);
-        clearFields();
+        const { data } = await employee.create(params);
+        message.success(`Usuario ${employeeName.value} cadastrado com sucesso`);
+        return data.id;
       } catch (error) {
         message.error('Erro completo:', {
           message: error.message,
@@ -148,8 +153,9 @@ export default {
 
     const editEmployee = async (params) => {
       try {
-        await employee.edit(params);
-        alert(`Usuario ${employeeName.value} foi editado`);
+        const { data } = await employee.edit(params);
+        message.success(`Usuario ${employeeName.value} foi editado`);
+        return data.id;
       } catch (error) {
         console.error('Erro completo:', {
           message: error.message,
@@ -187,6 +193,20 @@ export default {
         pageTitle.value = `Editar ${employeeName.value}`;
       } catch (error) {
         console.error(error);
+      }
+    };
+
+    const uploadEmployeePhoto = async (employeeId) => {
+      if (selectedFile.value && profileImage.value !== defaultProfileImage) {
+        try {
+          const formData = new FormData();
+          formData.append('file', selectedFile.value);
+          formData.append('employeeId', employeeId);
+
+          await photo.create(formData);
+        } catch (error) {
+          console.error('Erro ao enviar foto:', error);
+        }
       }
     };
 
@@ -242,6 +262,7 @@ export default {
       employeeBloodType.value = '';
       employeeRN.value = '';
       contractsRef.value.resetContracts();
+      profileImage.value = defaultProfileImage;
     };
 
     const validateRNInput = (event) => {
