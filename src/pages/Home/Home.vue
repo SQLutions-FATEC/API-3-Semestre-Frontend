@@ -1,91 +1,119 @@
 <script>
-import { Select, Table } from 'ant-design-vue';
-import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons-vue';
-import company from '@/services/company';
+import HomeHeader from '@/components/Headers/HomeHeader.vue';
+import EditClockInModal from '@/components/Modals/EditClockInModal.vue';
 import clockInOut from '@/services/clockInOut';
-import { h } from 'vue';
+import { eventBus } from '@/utils/eventBus';
+import {
+  ArrowDownOutlined,
+  ArrowUpOutlined,
+  EditOutlined,
+} from '@ant-design/icons-vue';
+import { Button, Select, Table } from 'ant-design-vue';
+import { h, onBeforeUnmount, onMounted, ref } from 'vue';
+import { RouterLink } from 'vue-router';
 
 export default {
   name: 'Home',
 
   components: {
+    'a-button': Button,
     'a-select': Select,
     'a-table': Table,
     'arrow-up-outlined': ArrowUpOutlined,
     'arrow-down-outlined': ArrowDownOutlined,
+    'edit-clock-in-modal': EditClockInModal,
+    'edit-outlined': EditOutlined,
+    'home-header': HomeHeader,
   },
 
   setup() {
-    const router = useRouter();
-    const companies = ref([]);
     const currentPage = ref(1);
-    const dataSource = ref([])
+    const currentFilters = ref({});
+    const dataSource = ref([]);
+    const isEditClockInOpened = ref(false);
     const pageSize = ref(10);
-    const selectedCompany = ref(null);
-    const totalPages = ref(0);
+    const selectedClockIn = ref({});
+    const totalInfos = ref(0);
 
-    const getCompanies = async () => {
-      try {
-        const { data } = await company.get();
-        companies.value = data.map((company) => ({
-          label: company.company_name,
-          value: company.id,
-        }));
-      } catch (error) {
-        console.error(error);
-      }
+    const closeEditModal = () => {
+      isEditClockInOpened.value = false;
     };
 
-    const getEmployeesClockInOut = async () => {
+    const getEmployeesClockInOut = async (filters) => {
       try {
-        const { data } = await clockInOut.get(
-          {
-            page: currentPage.value,
-            size: pageSize.value,
-          }
-        );
+        const params = {
+          page: currentPage.value,
+          size: pageSize.value,
+        };
+
+        if (filters) {
+          currentFilters.value = filters;
+        } else {
+          currentFilters.value = {};
+        }
+
+        if (currentFilters.value.company)
+          params.company = currentFilters.value.company;
+        if (currentFilters.value.employee)
+          params.employee = currentFilters.value.employee;
+        if (currentFilters.value.role) params.role = currentFilters.value.role;
+        if (currentFilters.value.dateRange?.length === 2) {
+          params.start_date = currentFilters.value.dateRange[0].format(
+            'YYYY-MM-DD HH:mm'
+          );
+          params.end_date = currentFilters.value.dateRange[1].format(
+            'YYYY-MM-DD HH:mm'
+          );
+        }
+
+        const { data } = await clockInOut.get(params);
+        
         dataSource.value = data.items.map((info) => ({
           key: info.id,
-          registerNumber: info.register_number,
+          registerNumber: info.employee.register_number,
           employee: info.employee.name,
+          employeeId: info.employee.id,
           company: info.company.name,
+          companyId: info.company.id,
           role: info.role_name,
           datetime: info.date_time,
-          clocked: info.direction
+          direction: info.direction,
         }));
-        totalPages.value = data.total
+        totalInfos.value = data.total;
+
+        eventBus.$emit('table-data', dataSource.value);
       } catch (error) {
         console.error(error);
       }
-    }
-
-    const handleChange = (value) => {
-      const companyId = value;
-
-      router.push({
-        name: 'Company',
-        params: { id: String(companyId) },
-      });
     };
 
-    const handleTableChange = (paginator) => {
+    const handleEdit = (clockIn) => {
+      selectedClockIn.value = clockIn;
+      isEditClockInOpened.value = true;
+    };
+
+    const handleFilterChange = async (filters) => {
+      await getEmployeesClockInOut(filters);
+    };
+
+    const handleTableChange = async (paginator) => {
       currentPage.value = paginator.current;
       pageSize.value = paginator.pageSize;
-      getEmployeesClockInOut();
+      await getEmployeesClockInOut(currentFilters.value);
     };
 
     onMounted(async () => {
-      await Promise.allSettled([
-        getCompanies(),
-        getEmployeesClockInOut(),
-      ]);
+      eventBus.$on('filter-changed', handleFilterChange);
+      await getEmployeesClockInOut();
+    });
+
+    onBeforeUnmount(() => {
+      eventBus.$off('filter-changed', handleFilterChange);
     });
 
     const columns = [
       {
-        title: 'CPF',
+        title: 'Número de registro',
         dataIndex: 'registerNumber',
         key: 'registerNumber',
       },
@@ -93,11 +121,31 @@ export default {
         title: 'Funcionário',
         dataIndex: 'employee',
         key: 'employee',
+        customRender: ({ text, record }) => {
+          return h(
+            RouterLink,
+            {
+              to: { path: `/employee/${record.employeeId}` },
+              style: { color: 'inherit', textDecoration: 'underline' },
+            },
+            () => text
+          );
+        },
       },
       {
         title: 'Empresa',
         dataIndex: 'company',
         key: 'company',
+        customRender: ({ text, record }) => {
+          return h(
+            RouterLink,
+            {
+              to: { path: `/company/${record.companyId}` },
+              style: { color: 'inherit', textDecoration: 'underline' },
+            },
+            () => text
+          );
+        },
       },
       {
         title: 'Função',
@@ -111,8 +159,8 @@ export default {
       },
       {
         title: '',
-        dataIndex: 'clocked',
-        key: 'clocked',
+        dataIndex: 'direction',
+        key: 'direction',
         customRender: ({ text }) => {
           if (text === 'Entrada') {
             return h(ArrowUpOutlined, { style: { color: 'green' } });
@@ -121,43 +169,68 @@ export default {
           }
         },
       },
-    ]
+      {
+        title: 'Ações',
+        key: 'actions',
+        customRender: ({ record }) => {
+          return h(
+            Button,
+            {
+              type: 'primary',
+              shape: 'circle',
+              onClick: () => handleEdit(record),
+            },
+            () => h(EditOutlined)
+          );
+        },
+      },
+    ];
 
     return {
       columns,
-      companies,
+      closeEditModal,
       currentPage,
       dataSource,
-      getCompanies,
-      handleChange,
+      getEmployeesClockInOut,
+      isEditClockInOpened,
       handleTableChange,
       pageSize,
-      selectedCompany,
-      totalPages
+      selectedClockIn,
+      totalInfos,
     };
   },
 };
 </script>
 
 <template>
-  <div>
-    <a-select
-      v-model:value="selectedCompany"
-      placeholder="Empresas"
-      style="width: 120px"
-      :options="companies"
-      @change="handleChange"
-    />
+  <div class="home">
+    <home-header />
     <a-table
       :dataSource="dataSource"
       :columns="columns"
       :pagination="{
         current: currentPage,
         pageSize: pageSize,
-        total: totalPages,
+        total: totalInfos,
         showSizeChanger: true,
         pageSizeOptions: ['10', '20', '50'],
       }"
-    @change="handleTableChange" />
+      @change="handleTableChange"
+    />
+    <edit-clock-in-modal
+      v-if="isEditClockInOpened"
+      :clock-in="selectedClockIn"
+      @close="closeEditModal"
+      @reload="getEmployeesClockInOut"
+    />
   </div>
 </template>
+
+<style lang="scss" scoped>
+.home {
+  padding: $spacingLg 0px $spacingXxl 0px;
+  display: flex;
+  flex-direction: column;
+  gap: $spacingXl;
+}
+</style>

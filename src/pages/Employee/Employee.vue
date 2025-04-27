@@ -1,10 +1,16 @@
 <script>
-import { Button, Cascader, DatePicker, Image, Modal } from 'ant-design-vue';
-import dayjs from 'dayjs';
-import { ref } from 'vue';
-import employee from '@/services/employee';
-import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import AtInput from '@/components/Input/AtInput.vue';
+import AtNumberInput from '@/components/Input/AtNumberInput.vue';
+import employee from '@/services/employee';
+import { CameraOutlined } from '@ant-design/icons-vue';
+import { validateRN } from '@/utils/validations/registerNumber';
+import { Button, Cascader, DatePicker, Upload, Modal } from 'ant-design-vue';
+import dayjs from 'dayjs';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import Contracts from '@/components/Contracts.vue';
+import { message } from 'ant-design-vue';
+import photo from '@/services/photo';
 
 export default {
   name: 'Employee',
@@ -16,58 +22,149 @@ export default {
     'a-modal': Modal,
     'at-input': AtInput,
     'at-number-input': AtNumberInput,
-    'a-image': Image,
+    'a-upload': Upload,
+    'camera-outlined': CameraOutlined,
+    contracts: Contracts,
   },
 
   setup() {
+    const route = useRoute();
+    const router = useRouter();
     const dateFormatList = ['DD/MM/YYYY'];
-    const employeeName = ref('');
-    const employeeCpf = ref('');
-    const employeeBirthDate = ref(dayjs());
-    const employeeBloodType = ref('');
-    const employeeFunction = ref('');
-    const company = ref('');
-    const errorMessage = ref('');
-    const isFunctionModalOpen = ref(false);
-    const newFunction = ref('');
-    const profileImage = ref(
-      'https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg'
-    );
+    const defaultProfileImage = '/assets/altave.jpg';
+    let employeeContracts = [];
+    let gender = 'F';
 
-    const createEmployee = async () => {
+    const buttonAction = ref('Cadastrar');
+    const contractsRef = ref(null);
+    const employeeName = ref('');
+    const employeeRN = ref('');
+    const employeeBirthDate = ref('');
+    const employeeBloodType = ref('');
+    const errorMessage = ref('');
+    const isConfirmationModalOpened = ref(false);
+    const pageTitle = ref('Cadastro de funcionário');
+    const isEditing = ref(false);
+    const profileImage = ref(defaultProfileImage);
+    const selectedFile = ref(null);
+    const uploading = ref(false);
+
+    const beforeUpload = (file) => {
+      const isJpgOrPng =
+        file.type === 'image/jpeg' || file.type === 'image/png';
+      if (!isJpgOrPng) {
+        message.error('Você só pode enviar arquivos JPG/PNG!');
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        message.error('A imagem deve ser menor que 2MB!');
+      }
+      return isJpgOrPng && isLt2M;
+    };
+
+    const handleImageChange = (info) => {
+      if (info.file.status === 'uploading') {
+        uploading.value = true;
+        return;
+      }
+      if (info.file.status === 'done') {
+        message.success(`${info.file.name} carregado com sucesso`);
+        uploading.value = false;
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} falhou no upload.`);
+        uploading.value = false;
+      }
+    };
+
+    const customRequest = ({ file, onSuccess, onError }) => {
+      selectedFile.value = file;
+      const reader = new FileReader();
+      reader.onload = () => {
+        profileImage.value = URL.createObjectURL(file);
+        onSuccess('Imagem carregada com sucesso', file);
+      };
+      reader.onerror = (error) => {
+        onError(error);
+      };
+      reader.readAsDataURL(file);
+    };
+
+    const addContract = (contract) => {
+      employeeContracts.push(contract);
+    };
+
+    const employeeAction = async () => {
       if (
+        // temporario, para fazer funcionar sem contratos, que será na próxima sprint
+        
+        // !employeeName.value ||
+        // !employeeBirthDate.value ||
+        // !employeeBloodType.value ||
+        // !employeeRN.value ||
+        // profileImage.value === defaultProfileImage ||
+        // !employeeContracts.length
         !employeeName.value ||
         !employeeBirthDate.value ||
         !employeeBloodType.value ||
-        !employeeFunction.value ||
-        !company.value ||
-        !employeeCpf.value
+        !employeeRN.value ||
+        profileImage.value === defaultProfileImage
       ) {
-        alert('Todos os campos são obrigatórios');
+        message.error('Todos os campos são obrigatórios');
+        return;
+      }
+      const age = verifyAge(employeeBirthDate.value);
+
+      if (age < 16 || age > 100) {
+        message.error('Não é possivel cadastrar usuários com esta idade');
         return;
       }
 
-      if (verifyAge(employeeBirthDate.value) < 16) {
-        alert('Não é possivel cadastrar usuários menores de 16 anos');
-        return;
-      }
-
-      const formattedEmployeeDate =
-        employeeBirthDate.value.format('YYYY-MM-DD');
-
-      const payload = {
-        employee_name: employeeName.value,
-        employee_birth_date: formattedEmployeeDate,
-        employee_blood_type: employeeBloodType.value,
-        employee_function: employeeFunction.value,
-        company: company.value,
-        employee_cpf: employeeCpf.value,
+      const params = {
+        id: route.params.id,
+        name: employeeName.value,
+        blood_type: employeeBloodType.value,
+        birth_date: employeeBirthDate.value,
+        register_number: employeeRN.value,
+        gender: gender
+        // temporario, para fazer funcionar sem contratos, que será na próxima sprint
+        // contracts: employeeContracts,
       };
 
+      let employeeId;
       try {
-        await employee.create(payload);
-        alert(`Usuario ${employeeName.value} cadastrado com sucesso`);
-        clearFields();
+        if (isEditing.value) {
+          employeeId = await editEmployee(params);
+          await uploadEmployeePhoto(employeeId);
+        } else {
+          employeeId = await createEmployee(params);
+          await uploadEmployeePhoto(employeeId);
+          clearFields();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const createEmployee = async (params) => {
+      try {
+        const { data } = await employee.create(params);
+        message.success(`Usuario ${employeeName.value} cadastrado com sucesso`);
+        return data.id;
+      } catch (error) {
+        message.error('Erro completo:', {
+          message: error.message,
+          response: error.response?.data,
+          status: error.response?.status,
+          config: error.config,
+        });
+      }
+    };
+
+    const editEmployee = async (params) => {
+      try {
+        const { data } = await employee.edit(params);
+        message.success(`Usuario ${employeeName.value} foi editado`);
+        return data.id;
       } catch (error) {
         console.error('Erro completo:', {
           message: error.message,
@@ -75,6 +172,60 @@ export default {
           status: error.response?.status,
           config: error.config,
         });
+      }
+    };
+
+    const fillContracts = (contracts) => {
+      const formattedContracts = [];
+      contracts.forEach((contract) => {
+        formattedContracts.push({
+          company: contract.company,
+          role: contract.role,
+          datetime_start: contract.datetime_start,
+          datetime_end: contract.datetime_end,
+        });
+      });
+      employeeContracts = formattedContracts;
+      contractsRef.value.fillContracts(formattedContracts);
+    };
+
+    const getEmployee = async (employeeId) => {
+      try {
+        const { data } = await employee.get(employeeId);
+        employeeName.value = data.name;
+        employeeBirthDate.value = dayjs(data.birth_date);
+        employeeBloodType.value = data.blood_type;
+        employeeRN.value = String(data.register_number);
+        gender = data.gender
+        fillContracts(data.contracts);
+
+        pageTitle.value = `Editar ${employeeName.value}`;
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const getPhoto = async (employeeId) => {
+      try {
+        const { data } = await photo.getByEmployee(employeeId);
+        const imageUrl = URL.createObjectURL(data);
+        profileImage.value = imageUrl;
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const uploadEmployeePhoto = async (employeeId) => {
+      if (selectedFile.value && profileImage.value !== defaultProfileImage) {
+        try {
+          const formData = new FormData();
+          formData.append('file', selectedFile.value);
+          formData.append('employeeId', employeeId.toString());
+
+          await photo.create(formData);
+        } catch (error) {
+          console.error('Erro ao enviar foto:', error);
+        }
       }
     };
 
@@ -89,17 +240,29 @@ export default {
       { value: 'O-', label: 'O-' },
     ];
 
-    const functionOptions = ref([
-      { value: 'Engenheiro', label: 'Engenheiro' },
-      { value: 'Mecânico', label: 'Mecânico' },
-      { value: 'Pintor', label: 'Pintor' },
-    ]);
+    onMounted(async () => {
+      const employeeId = route.params.id;
+      if (!!employeeId) {
+        buttonAction.value = 'Editar';
+        isEditing.value = true;
+        await Promise.all([getEmployee(employeeId), getPhoto(employeeId)]);
+      }
+    });
 
-    const companyOptions = [
-      { value: 1, label: 'Empresa A' },
-      { value: 2, label: 'Empresa B' },
-      { value: 3, label: 'Empresa C' },
-    ];
+    const deleteEmployee = async () => {
+      try {
+        const employeeId = route.params.id;
+        await employee.delete(employeeId);
+        isConfirmationModalOpened.value = false;
+        router.push({ name: 'Home' });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const openConfirmationModal = () => {
+      isConfirmationModalOpened.value = true;
+    };
 
     const handleBloodTypeChange = (value) => {
       if (value != null) {
@@ -107,243 +270,212 @@ export default {
       }
     };
 
-    const handleFunctionChange = (value) => {
-      if (value != null) {
-        if (value.includes('add-new')) {
-          employeeFunction.value = [];
-          openFunctionModal();
-          ensureAddNewIsLast();
-        } else {
-          employeeFunction.value = value[0];
-        }
-      }
-    };
-
-    const handleCompanyChange = (value) => {
-      if (value != null) {
-        company.value = value[0];
-      }
-    };
-
     const handleDateChange = (date) => {
-      if (date) {
-        employeeBirthDate.value = dayjs(date);
-      } else {
-        employeeBirthDate.value = null;
-      }
-    };
-
-    const ensureAddNewIsLast = () => {
-      const regularOptions = functionOptions.value.filter(
-        (opt) => opt.value !== 'add-new'
-      );
-
-      functionOptions.value = [
-        ...regularOptions,
-        { value: 'add-new', label: '➕ Adicionar Função' },
-      ];
-    };
-
-    ensureAddNewIsLast();
-
-    const openFunctionModal = () => {
-      isFunctionModalOpen.value = true;
-    };
-
-    const addFunction = () => {
-      if (newFunction.value.trim()) {
-        functionOptions.value.push({
-          value: newFunction.value,
-          label: newFunction.value,
-        });
-        employeeFunction.value = newFunction.value;
-        newFunction.value = '';
-        isFunctionModalOpen.value = false;
-        ensureAddNewIsLast();
-      }
+      employeeBirthDate.value = date;
     };
 
     const clearFields = () => {
       employeeName.value = '';
-
       employeeBirthDate.value = '';
-
-      employeeCpf.value = '';
+      employeeRN.value = '';
+      employeeBloodType.value = '';
+      employeeRN.value = '';
+      contractsRef.value.resetContracts();
+      profileImage.value = defaultProfileImage;
     };
 
-    const validateCpf = (event) => {
+    const validateRNInput = (event) => {
       const newValue = event.target.value;
-      const rawValue = newValue.replace(/\D/g, '');
-      if (rawValue.length === 11) {
-        errorMessage.value = '';
-      } else {
-        errorMessage.value = 'CPF deve ter 11 dígitos.';
-      }
+      errorMessage.value = validateRN(newValue);
     };
 
     const verifyAge = (birthDate) => {
-      const today = dayjs();
-      const birth = dayjs(birthDate);
-
-      return today.diff(birth, 'year');
+      return dayjs().diff(birthDate, 'year');
     };
 
+    const showDeleteButton = computed(() => {
+      return isEditing.value;
+    });
+
     return {
-      employeeName,
-      employeeCpf,
+      addContract,
+      beforeUpload,
+      bloodTypeOptions,
+      buttonAction,
+      contractsRef,
+      customRequest,
+      dateFormatList,
+      defaultProfileImage,
+      deleteEmployee,
       employeeBirthDate,
       employeeBloodType,
-      employeeFunction,
-      company,
+      employeeName,
+      employeeRN,
+      employeeAction,
       errorMessage,
-      profileImage,
-      createEmployee,
-      bloodTypeOptions,
-      functionOptions,
-      companyOptions,
       handleBloodTypeChange,
-      handleFunctionChange,
-      handleCompanyChange,
-      isFunctionModalOpen,
-      newFunction,
-      openFunctionModal,
-      addFunction,
       handleDateChange,
-      dateFormatList,
-      ensureAddNewIsLast,
-      validateCpf,
-      clearFields,
-      verifyAge,
+      handleImageChange,
+      isConfirmationModalOpened,
+      openConfirmationModal,
+      pageTitle,
+      profileImage,
+      showDeleteButton,
+      uploading,
+      validateRNInput,
     };
   },
 };
 </script>
 <template>
   <div class="employee">
-    <h1>Cadastro de Funcionário</h1>
+    <h1>{{ pageTitle }}</h1>
 
-    <div class="employee_content">
-      <div class="left_collumn" style="width: 40%">
-        <div class="content__input">
+    <div class="employee__content">
+      <div class="content__inputs">
+        <div class="left-column">
           <at-input
             v-model:value="employeeName"
             placeholder="Nome completo"
             text
           />
-        </div>
-
-        <div class="content__input">
           <at-number-input
-            v-model:value="employeeCpf"
-            placeholder="CPF"
-            mask="###.###.###-##"
+            v-model:value="employeeRN"
+            placeholder="Número de registro"
+            mask="###########"
             :error-message="errorMessage"
-            @input="validateCpf"
+            @input="validateRNInput"
           />
-        </div>
-
-        <div class="dropdown">
           <a-date-picker
             v-model:value="employeeBirthDate"
             placeholder="Data de nascimento"
+            valueFormat="YYYY-MM-DDTHH:mm:ss.SSSZ"
             :format="dateFormatList"
             @change="handleDateChange"
           />
-        </div>
-
-        <div class="dropdown">
           <a-cascader
-            :options="bloodTypeOptions"
+            v-model:value="employeeBloodType"
             placeholder="Tipo Sanguíneo"
+            style="width: 100%"
+            :options="bloodTypeOptions"
             @change="handleBloodTypeChange"
           />
         </div>
 
-        <div class="dropdown">
-          <a-cascader
-            :options="functionOptions"
-            placeholder="Função"
-            @change="handleFunctionChange"
-            :showSearch="{
-              filter: (inputValue, path) =>
-                path.some((option) =>
-                  option.label.toLowerCase().includes(inputValue.toLowerCase())
-                ),
-            }"
-          />
+        <div class="right-column">
+          <a-upload
+            class="employee-image__wrapper"
+            list-type="picture-card"
+            name="avatar"
+            :show-upload-list="false"
+            :before-upload="beforeUpload"
+            :custom-request="customRequest"
+            @change="handleImageChange"
+          >
+            <template v-if="profileImage === defaultProfileImage">
+              <div>
+                <camera-outlined />
+                <div>Adicionar Foto</div>
+              </div>
+            </template>
+            <img
+              v-else
+              alt="Foto do Funcionário"
+              class="employee-image"
+              :src="profileImage"
+            />
+          </a-upload>
         </div>
       </div>
-
-      <div class="right_collumn" style="width: 40%">
-        <div class="profile-picture" style="text-align: center">
-          <a-image :width="225" :height="225" :src="profileImage" />
-        </div>
-
-        <div class="dropdown">
-          <a-cascader
-            :options="companyOptions"
-            placeholder="Empresa"
-            @change="handleCompanyChange"
-            :showSearch="{
-              filter: (inputValue, path) =>
-                path.some((option) =>
-                  option.label.toLowerCase().includes(inputValue.toLowerCase())
-                ),
-            }"
-          />
-        </div>
-      </div>
-
+      <contracts ref="contractsRef" @add-contract="addContract" />
       <div class="content__action">
-        <a-button type="primary" style="width: 250px" @click="createEmployee">
-          Cadastrar
+        <a-button
+          v-if="showDeleteButton"
+          danger
+          style="width: 250px"
+          @click="openConfirmationModal"
+        >
+          Deletar funcionario
+        </a-button>
+        <a-button
+          type="primary"
+          style="width: 250px"
+          :loading="uploading"
+          @click="employeeAction"
+        >
+          {{ buttonAction }}
         </a-button>
       </div>
     </div>
 
     <a-modal
-      v-model:open="isFunctionModalOpen"
-      title="Nova Função"
-      @ok="addFunction"
+      v-model:open="isConfirmationModalOpened"
+      title="Deletar funcionário"
+      @ok="deleteEmployee"
     >
-      <a-input v-model:value="newFunction" placeholder="Digite a nova função" />
+      <span>
+        Tem certeza que deseja deletar o funcionário {{ employeeName }}?
+      </span>
     </a-modal>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .employee {
-  padding: $spacingXxl;
+  padding: $spacingXxl 0px;
 
-  .employee_content {
+  .employee__content {
     padding: $spacingXxl 0px;
     display: flex;
     flex-wrap: wrap;
     overflow: auto;
     gap: $spacingXxl;
 
-    .profile-picture {
-      margin-bottom: $spacingXxl;
-    }
+    .content__inputs {
+      display: flex;
+      gap: $spacingXxl;
+      flex: 1 1 calc(100% - $spacingXxl);
 
-    .content__input {
-      margin-bottom: $spacingXxl;
-    }
+      .left-column {
+        display: flex;
+        flex-direction: column;
+        gap: $spacingXxl;
+        flex: 1 1 calc(50% - $spacingXxl/2);
+      }
+      .right-column {
+        flex: 1 1 calc(50% - $spacingXxl/2);
+        text-align: center;
 
-    .content__action {
-      flex: 0 0 calc(100% - 200px);
-      display: inline-flex;
-      justify-content: center;
-    }
+        .employee-image__wrapper {
+          max-height: 100%;
+          max-width: 100%;
+          height: 100%;
+          width: 100%;
 
-    .dropdown {
-      margin-bottom: $spacingXxl;
-
-      :deep(.ant-picker),
-      :deep(.ant-cascader) {
-        width: 100%;
+          .employee-image {
+            height: 100%;
+            width: 100%;
+          }
+        }
       }
     }
+    .content__contracts {
+      display: flex;
+      flex: 1 1 auto;
+      gap: $spacingXxl;
+    }
+    .content__action {
+      flex: 0 0 100%;
+      display: flex;
+      justify-content: center;
+      gap: $spacingMd;
+    }
   }
+}
+:deep(.ant-upload),
+.ant-upload-select {
+  height: 100% !important;
+  width: 100% !important;
+  margin: 0px !important;
 }
 </style>

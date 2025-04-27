@@ -1,15 +1,11 @@
 import api from './api';
 
 const employee = {
-  create: (payload) =>
-    api.post('/employee', {
-    employee_name: payload.employee_name,
-    employee_birth_date: payload.employee_birth_date,
-    employee_blood_type: payload.employee_blood_type,
-    employee_function: payload.employee_function,
-    company: payload.company,
-    employee_cpf: payload.employee_cpf,
-    }),
+  get: (employeeId) => api.get(`/employee/${employeeId}`),
+  getAll: () => api.get('/employee'),
+  create: (payload) => api.post('/employee', payload),
+  edit: (payload) => api.put(`/employee/${payload.id}`, payload),
+  delete: (employeeId) => api.delete(`/employee/${employeeId}`),
 };
 
 export default employee;

@@ -52,13 +52,7 @@ export default {
     </template>
     <div class="side-bar">
       <a-button block type="primary" @click="redirect('employee')">
-        Cadastrar Funcionários
-        <template #icon>
-          <user-outlined />
-        </template>
-      </a-button>
-      <a-button block type="primary" @click="redirect('employee-edit')">
-        Editar Funcionário
+        Funcionários
         <template #icon>
           <user-outlined />
         </template>

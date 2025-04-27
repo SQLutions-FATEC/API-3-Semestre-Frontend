@@ -1,62 +1,84 @@
 <script>
-import { Button } from 'ant-design-vue';
+import { Button, Modal } from 'ant-design-vue';
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { validateCnpj } from '@/utils/validations/cnpj';
 import company from '@/services/company';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import AtInput from '@/components/Input/AtInput.vue';
+import { computed } from 'vue';
+import { message } from 'ant-design-vue';
 
 export default {
   name: 'Company',
 
   components: {
     'a-button': Button,
+    'a-modal': Modal,
     'at-input': AtInput,
     'at-number-input': AtNumberInput,
   },
 
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const buttonAction = ref('Cadastrar');
     const companyName = ref('');
     const cnpj = ref('');
     const isEditing = ref(false);
+    const isConfirmationModalOpened = ref(false);
     const errorMessage = ref('');
     const pageTitle = ref('Cadastro de empresa');
     const tradeName = ref('');
 
-    const companyAction = async () => {
+    const createEditCompany = async () => {
       if (!companyName.value || !cnpj.value || !tradeName.value) {
-        alert('Todos os campos são obrigatórios');
+        message.error('Todos os campos são obrigatórios');
         return;
       }
-      const payload = {
-        company_name: companyName.value,
+      if (!!errorMessage.value) {
+        message.error('Corrija o CNPJ');
+        return;
+      }
+      const params = {
+        id: route.params.id,
+        name: companyName.value,
         cnpj: cnpj.value,
         trade_name: tradeName.value,
       };
       if (isEditing.value) {
-        await editCompany(payload);
+        await editCompany(params);
       } else {
-        await createCompany(payload);
+        await createCompany(params);
       }
     };
 
-    const createCompany = async (payload) => {
+    const createCompany = async (params) => {
       try {
-        await company.create(payload);
-        alert(`Empresa ${tradeName.value} criada`);
+        await company.create(params);
+        message.success(`Empresa ${tradeName.value} criada`);
         resetInputs();
       } catch (error) {
         console.error(error);
       }
     };
 
-    const editCompany = async (payload) => {
+    const deleteCompany = async () => {
       try {
-        payload.company_id = route.params.id;
-        await company.edit(payload);
-        alert(`Empresa ${tradeName.value} editada`);
+        const companyId = route.params.id;
+        await company.delete(companyId);
+        isConfirmationModalOpened.value = false;
+        router.push({ name: 'Home' });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const editCompany = async (params) => {
+      try {
+        params.company_id = route.params.id;
+        await company.edit(params);
+        message.success(`Empresa ${tradeName.value} editada`);
       } catch (error) {
         console.error(error);
       }
@@ -65,7 +87,7 @@ export default {
     const getCompany = async (companyId) => {
       try {
         const { data } = await company.getById(companyId);
-        companyName.value = data.company_name;
+        companyName.value = data.name;
         cnpj.value = String(data.cnpj);
         tradeName.value = data.trade_name;
         pageTitle.value = `Editar ${tradeName.value}`;
@@ -74,14 +96,13 @@ export default {
       }
     };
 
-    const validateCnpj = (event) => {
+    const openConfirmationModal = () => {
+      isConfirmationModalOpened.value = true;
+    };
+
+    const validateCnpjInput = (event) => {
       const newValue = event.target.value;
-      const rawValue = newValue.replace(/\D/g, '');
-      if (rawValue.length === 14) {
-        errorMessage.value = '';
-      } else {
-        errorMessage.value = 'CNPJ deve ter 14 dígitos.';
-      }
+      errorMessage.value = validateCnpj(newValue);
     };
 
     const resetInputs = () => {
@@ -101,15 +122,23 @@ export default {
       }
     });
 
+    const showDeleteButton = computed(() => {
+      return isEditing.value;
+    });
+
     return {
       buttonAction,
-      companyAction,
       companyName,
       cnpj,
+      createEditCompany,
+      deleteCompany,
       errorMessage,
+      isConfirmationModalOpened,
+      openConfirmationModal,
       pageTitle,
+      showDeleteButton,
       tradeName,
-      validateCnpj,
+      validateCnpjInput,
     };
   },
 };
@@ -128,24 +157,45 @@ export default {
           mask="##.###.###/####-##"
           placeholder="CNPJ"
           :error-message="errorMessage"
-          @input="validateCnpj"
+          @input="validateCnpjInput"
         />
       </div>
       <div class="content__input">
         <at-input v-model:value="tradeName" placeholder="Nome fantasia" text />
       </div>
       <div class="content__action">
-        <a-button type="primary" style="width: 250px" @click="companyAction">
+        <a-button
+          v-if="showDeleteButton"
+          danger
+          style="width: 250px"
+          @click="openConfirmationModal"
+        >
+          Deletar empresa
+        </a-button>
+        <a-button
+          type="primary"
+          style="width: 250px"
+          @click="createEditCompany"
+        >
           {{ buttonAction }}
         </a-button>
       </div>
     </div>
+    <a-modal
+      v-model:open="isConfirmationModalOpened"
+      title="Deletar empresa"
+      @ok="deleteCompany"
+    >
+      <span>
+        Tem certeza que deseja deletar a empresa {{ tradeName }}?
+      </span>
+    </a-modal>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .company {
-  padding: $spacingXxl;
+  padding: $spacingXxl 0px;
 
   .company__content {
     padding: $spacingXxl 0px;
@@ -161,6 +211,7 @@ export default {
       flex: 0 0 100%;
       display: flex;
       justify-content: center;
+      gap: 12px;
     }
   }
 }
