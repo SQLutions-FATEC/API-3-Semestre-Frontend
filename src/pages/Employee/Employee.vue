@@ -453,7 +453,7 @@ export default {
     }
   }
 }
-::v-deep .ant-upload,
+:deep(.ant-upload),
 .ant-upload-select {
   height: 100% !important;
   width: 100% !important;
