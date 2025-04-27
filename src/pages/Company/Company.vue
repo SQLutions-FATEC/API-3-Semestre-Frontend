@@ -7,6 +7,7 @@ import company from '@/services/company';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import AtInput from '@/components/Input/AtInput.vue';
 import { computed } from 'vue';
+import { message } from 'ant-design-vue';
 
 export default {
   name: 'Company',
@@ -32,11 +33,11 @@ export default {
 
     const createEditCompany = async () => {
       if (!companyName.value || !cnpj.value || !tradeName.value) {
-        alert('Todos os campos são obrigatórios');
+        message.error('Todos os campos são obrigatórios');
         return;
       }
       if (!!errorMessage.value) {
-        alert('Corrija o CNPJ');
+        message.error('Corrija o CNPJ');
         return;
       }
       const params = {
@@ -55,7 +56,7 @@ export default {
     const createCompany = async (params) => {
       try {
         await company.create(params);
-        alert(`Empresa ${tradeName.value} criada`);
+        message.success(`Empresa ${tradeName.value} criada`);
         resetInputs();
       } catch (error) {
         console.error(error);
@@ -77,7 +78,7 @@ export default {
       try {
         params.company_id = route.params.id;
         await company.edit(params);
-        alert(`Empresa ${tradeName.value} editada`);
+        message.success(`Empresa ${tradeName.value} editada`);
       } catch (error) {
         console.error(error);
       }

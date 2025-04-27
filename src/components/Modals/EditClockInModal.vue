@@ -5,6 +5,7 @@ import { onMounted } from 'vue';
 import AtInput from '@/components/Input/AtInput.vue';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import clockInOut from '@/services/clockInOut';
+import { message } from 'ant-design-vue';
 
 export default {
   name: 'EditClockInModal',
@@ -51,7 +52,7 @@ export default {
         await clockInOut.put(params);
         handleCloseAndReload();
       } catch (error) {
-        alert('Houve um erro ao tentar editar a movimentação');
+        message.error('Houve um erro ao tentar editar a movimentação');
       } finally {
         loading.value = false;
       }

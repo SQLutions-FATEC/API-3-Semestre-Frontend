@@ -4,6 +4,7 @@ import { CloseOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import { onMounted, ref } from 'vue';
 import company from '@/services/company';
 import role from '@/services/role';
+import { message } from 'ant-design-vue';
 
 export default {
   name: 'Contracts',
@@ -36,9 +37,7 @@ export default {
         !(selectedRoleData.value && Object.keys(selectedRoleData.value)) ||
         !selectedDatetime.value.length
       ) {
-        return alert(
-          'Empresa, função e datas de contrato devem estar preenchidos'
-        );
+        return message.error('Empresa, função e datas de contrato devem estar preenchidos')
       }
 
       const contract = {

@@ -1,6 +1,7 @@
 <script>
 import { ref } from 'vue';
 import xlsx from 'node-xlsx';
+import { message } from 'ant-design-vue';
 
 export default {
   props: {
@@ -39,8 +40,7 @@ export default {
 
     const exportToExcel = async () => {
       if (!props.data || props.data.length === 0) {
-        alert('Nenhum dado disponível para exportação');
-        return;
+        return message.error('Nenhum dado disponível para exportação')
       }
 
       isLoading.value = true;
@@ -75,7 +75,7 @@ export default {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } catch (error) {
-        alert('Erro na exportação:', error);
+        message.error('Erro na exportação:', error)
       } finally {
         isLoading.value = false;
       }
