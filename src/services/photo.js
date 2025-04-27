@@ -1,7 +1,10 @@
 import api from './api';
 
 const photo = {
-  getByEmployee: (employeeId) => api.get(`/photos/file/employee/${employeeId}`),
+  getByEmployee: (employeeId) =>
+    api.get(`/photos/file/employee/${employeeId}`, {
+      responseType: 'blob',
+    }),
   create: (payload) =>
     api.post('/photos/upload', payload, {
       headers: {

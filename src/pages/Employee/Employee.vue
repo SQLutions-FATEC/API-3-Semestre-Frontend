@@ -94,11 +94,19 @@ export default {
 
     const employeeAction = async () => {
       if (
+        // temporario, para fazer funcionar sem contratos, que será na próxima sprint
+        
+        // !employeeName.value ||
+        // !employeeBirthDate.value ||
+        // !employeeBloodType.value ||
+        // !employeeRN.value ||
+        // profileImage.value === defaultProfileImage ||
+        // !employeeContracts.length
         !employeeName.value ||
         !employeeBirthDate.value ||
         !employeeBloodType.value ||
         !employeeRN.value ||
-        !employeeContracts.length
+        profileImage.value === defaultProfileImage
       ) {
         message.error('Todos os campos são obrigatórios');
         return;
@@ -198,7 +206,8 @@ export default {
     const getPhoto = async (employeeId) => {
       try {
         const { data } = await photo.getByEmployee(employeeId);
-        profileImage.value = data.profile_image;
+        const imageUrl = URL.createObjectURL(data);
+        profileImage.value = imageUrl;
       } catch (error) {
         console.error(error);
       }
@@ -209,7 +218,9 @@ export default {
         try {
           const formData = new FormData();
           formData.append('file', selectedFile.value);
-          formData.append('employeeId', employeeId.toString());
+          // temporario, para fazer funcionar sem contratos, que será na próxima sprint
+          formData.append('employeeId', '3');
+          // formData.append('employeeId', employeeId.toString());
 
           await photo.create(formData);
         } catch (error) {
