@@ -77,7 +77,7 @@ export default {
           companyId: info.company.id,
           role: info.role_name,
           datetime: info.date_time,
-          clocked: info.direction,
+          direction: info.direction,
         }));
         totalInfos.value = data.total;
 
@@ -159,8 +159,8 @@ export default {
       },
       {
         title: '',
-        dataIndex: 'clocked',
-        key: 'clocked',
+        dataIndex: 'direction',
+        key: 'direction',
         customRender: ({ text }) => {
           if (text === 'Entrada') {
             return h(ArrowUpOutlined, { style: { color: 'green' } });

@@ -89,7 +89,7 @@ export default {
           Empresa: info.company,
           Função: info.role,
           Horário: info.datetime,
-          Movimentação: info.clocked,
+          Movimentação: info.direction,
         };
       });
     };

@@ -45,11 +45,13 @@ export default {
     const editClockIn = async () => {
       loading.value = true;
       const params = {
-        clock_in_time: clockInTime.value,
-        register_number: registerNumber.value,
+        id: props.clockIn.key,
+        date_time: clockInTime.value,
+        employee: props.clockIn.employeeId,
+        direction: props.clockIn.direction
       };
       try {
-        await clockInOut.put(params);
+        await clockInOut.edit(params);
         handleCloseAndReload();
       } catch (error) {
         message.error('Houve um erro ao tentar editar a movimentação');
