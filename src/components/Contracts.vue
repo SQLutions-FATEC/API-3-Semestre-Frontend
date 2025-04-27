@@ -41,7 +41,7 @@ export default {
         );
       }
 
-      emit('add-contract', {
+      const contract = {
         company: {
           id: selectedCompanyData.value.id,
           name: selectedCompanyData.value.name,
@@ -52,7 +52,10 @@ export default {
         },
         datetime_start: selectedDatetime.value[0],
         datetime_end: selectedDatetime.value[1],
-      });
+      };
+
+      emit('add-contract', contract);
+      selectedContracts.value.push(contract);
 
       selectedCompanyId.value = '';
       selectedCompanyData.value = {};
