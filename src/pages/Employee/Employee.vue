@@ -220,9 +220,7 @@ export default {
         try {
           const formData = new FormData();
           formData.append('file', selectedFile.value);
-          // temporario, para fazer funcionar sem contratos, que será na próxima sprint
-          formData.append('employeeId', '3');
-          // formData.append('employeeId', employeeId.toString());
+          formData.append('employeeId', employeeId.toString());
 
           await photo.create(formData);
         } catch (error) {
