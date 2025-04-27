@@ -5,6 +5,7 @@ import { onMounted } from 'vue';
 import AtInput from '@/components/Input/AtInput.vue';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import clockInOut from '@/services/clockInOut';
+import { message } from 'ant-design-vue';
 
 export default {
   name: 'EditClockInModal',
@@ -44,14 +45,16 @@ export default {
     const editClockIn = async () => {
       loading.value = true;
       const params = {
-        clock_in_time: clockInTime.value,
-        register_number: registerNumber.value,
+        id: props.clockIn.key,
+        date_time: clockInTime.value,
+        employee: props.clockIn.employeeId,
+        direction: props.clockIn.direction
       };
       try {
-        await clockInOut.put(params);
+        await clockInOut.edit(params);
         handleCloseAndReload();
       } catch (error) {
-        alert('Houve um erro ao tentar editar a movimentação');
+        message.error('Houve um erro ao tentar editar a movimentação');
       } finally {
         loading.value = false;
       }

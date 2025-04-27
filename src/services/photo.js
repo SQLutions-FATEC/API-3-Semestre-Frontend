@@ -1,8 +1,17 @@
 import api from './api';
 
 const photo = {
-  get: (employeeId) => api.get(`/photos/${employeeId}`),
-  create: (payload) => api.post('/photos', payload),
+  getByEmployee: (employeeId) =>
+    api.get(`/photos/file/employee/${employeeId}`, {
+      responseType: 'blob',
+    }),
+  create: (payload) =>
+    api.post('/photos/upload', payload, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }),
+  // create: (payload) => api.post('/photos/upload', payload),
 };
 
 export default photo;

@@ -31,8 +31,9 @@ export default {
     const route = useRoute();
     const router = useRouter();
     const dateFormatList = ['DD/MM/YYYY'];
-    let employeeContracts = [];
     const defaultProfileImage = '/assets/altave.jpg';
+    let employeeContracts = [];
+    let gender = 'F';
 
     const buttonAction = ref('Cadastrar');
     const contractsRef = ref(null);
@@ -94,11 +95,19 @@ export default {
 
     const employeeAction = async () => {
       if (
+        // temporario, para fazer funcionar sem contratos, que será na próxima sprint
+        
+        // !employeeName.value ||
+        // !employeeBirthDate.value ||
+        // !employeeBloodType.value ||
+        // !employeeRN.value ||
+        // profileImage.value === defaultProfileImage ||
+        // !employeeContracts.length
         !employeeName.value ||
         !employeeBirthDate.value ||
         !employeeBloodType.value ||
         !employeeRN.value ||
-        !employeeContracts.length
+        profileImage.value === defaultProfileImage
       ) {
         message.error('Todos os campos são obrigatórios');
         return;
@@ -110,15 +119,15 @@ export default {
         return;
       }
 
-      const formattedDate = employeeBirthDate.value.format('DD/MM/YYYY');
-
       const params = {
         id: route.params.id,
         name: employeeName.value,
         blood_type: employeeBloodType.value,
-        birth_date: formattedDate,
-        reg_num: employeeRN.value,
-        contracts: employeeContracts,
+        birth_date: employeeBirthDate.value,
+        register_number: employeeRN.value,
+        gender: gender
+        // temporario, para fazer funcionar sem contratos, que será na próxima sprint
+        // contracts: employeeContracts,
       };
 
       let employeeId;
@@ -187,10 +196,20 @@ export default {
         employeeBirthDate.value = dayjs(data.birth_date);
         employeeBloodType.value = data.blood_type;
         employeeRN.value = String(data.register_number);
-        profileImage.value = data.profile_image;
+        gender = data.gender
         fillContracts(data.contracts);
 
         pageTitle.value = `Editar ${employeeName.value}`;
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const getPhoto = async (employeeId) => {
+      try {
+        const { data } = await photo.getByEmployee(employeeId);
+        const imageUrl = URL.createObjectURL(data);
+        profileImage.value = imageUrl;
       } catch (error) {
         console.error(error);
       }
@@ -201,7 +220,7 @@ export default {
         try {
           const formData = new FormData();
           formData.append('file', selectedFile.value);
-          formData.append('employeeId', employeeId);
+          formData.append('employeeId', employeeId.toString());
 
           await photo.create(formData);
         } catch (error) {
@@ -226,7 +245,7 @@ export default {
       if (!!employeeId) {
         buttonAction.value = 'Editar';
         isEditing.value = true;
-        await getEmployee(employeeId);
+        await Promise.all([getEmployee(employeeId), getPhoto(employeeId)]);
       }
     });
 
