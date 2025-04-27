@@ -8,6 +8,7 @@ const employees = [
     blood_type: 'A+',
     reg_num: '54376523455',
     birth_date: '02/02/1993',
+    profile_image: '/assets/homer.jpg',
     contracts: [
       {
         company: { id: companies[0].id, name: companies[0].name },
@@ -23,6 +24,7 @@ const employees = [
     blood_type: 'O+',
     reg_num: '98632165432',
     birth_date: '26/08/1974',
+    profile_image: '/assets/dumbledore.jpg',
     contracts: [
       {
         company: { id: companies[0].id, name: companies[0].name },
@@ -44,6 +46,7 @@ const employees = [
     blood_type: 'B-',
     reg_num: '76542397833',
     birth_date: '12/11/1998',
+    profile_image: '/assets/homer.jpg',
     contracts: [
       {
         company: { id: companies[2].id, name: companies[2].name },
@@ -59,6 +62,7 @@ const employees = [
     blood_type: 'AB+',
     reg_num: '98632165282',
     birth_date: '22/09/1975',
+    profile_image: '/assets/homer.jpg',
     contracts: [
       {
         company: { id: companies[0].id, name: companies[0].name },
@@ -74,6 +78,7 @@ const employees = [
     blood_type: 'A+',
     reg_num: '98643165432',
     birth_date: '12/04/1972',
+    profile_image: '/assets/homer.jpg',
     contracts: [
       {
         company: { id: companies[0].id, name: companies[0].name },
@@ -89,6 +94,7 @@ const employees = [
     blood_type: 'B+',
     reg_num: '98246165432',
     birth_date: '15/05/1970',
+    profile_image: '/assets/homer.jpg',
     contracts: [
       {
         company: { id: companies[0].id, name: companies[0].name },
@@ -104,6 +110,7 @@ const employees = [
     blood_type: 'O-',
     reg_num: '28632165432',
     birth_date: '22/10/1980',
+    profile_image: '/assets/homer.jpg',
     contracts: [
       {
         company: { id: companies[0].id, name: companies[0].name },
@@ -119,6 +126,7 @@ const employees = [
     blood_type: 'AB-',
     reg_num: '99332165432',
     birth_date: '21/12/1982',
+    profile_image: '/assets/homer.jpg',
     contracts: [
       {
         company: { id: companies[0].id, name: companies[0].name },
@@ -134,6 +142,7 @@ const employees = [
     blood_type: 'A+',
     reg_num: '98722165432',
     birth_date: '04/02/1984',
+    profile_image: '/assets/homer.jpg',
     contracts: [
       {
         company: { id: companies[0].id, name: companies[0].name },
@@ -149,6 +158,7 @@ const employees = [
     blood_type: 'O-',
     reg_num: '98631234432',
     birth_date: '22/06/1990',
+    profile_image: '/assets/pam.jpg',
     contracts: [
       {
         company: { id: companies[0].id, name: companies[0].name },
@@ -161,4 +171,3 @@ const employees = [
 ];
 
 export { employees };
-

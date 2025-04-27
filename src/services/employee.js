@@ -1,10 +1,10 @@
 import api from './api';
 
 const employee = {
-  get: () => api.get('/employee'),
   get: (employeeId) => api.get(`/employee/${employeeId}`),
-  create: (params) => api.post('/employee', params),
-  edit: (params) => api.put(`/employee/${params.id}`, params),
+  getAll: () => api.get('/employee'),
+  create: (payload) => api.post('/employee', payload),
+  edit: (payload) => api.put(`/employee/${payload.id}`, payload),
   delete: (employeeId) => api.delete(`/employee/${employeeId}`),
 };
 

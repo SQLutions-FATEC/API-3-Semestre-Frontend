@@ -2,12 +2,15 @@
 import AtInput from '@/components/Input/AtInput.vue';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import employee from '@/services/employee';
+import { CameraOutlined } from '@ant-design/icons-vue';
 import { validateRN } from '@/utils/validations/registerNumber';
-import { Button, Cascader, DatePicker, Image, Modal } from 'ant-design-vue';
+import { Button, Cascader, DatePicker, Upload, Modal } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Contracts from '@/components/Contracts.vue';
+import { message } from 'ant-design-vue';
+import photo from '@/services/photo';
 
 export default {
   name: 'Employee',
@@ -19,7 +22,8 @@ export default {
     'a-modal': Modal,
     'at-input': AtInput,
     'at-number-input': AtNumberInput,
-    'a-image': Image,
+    'a-upload': Upload,
+    'camera-outlined': CameraOutlined,
     contracts: Contracts,
   },
 
@@ -28,20 +32,61 @@ export default {
     const router = useRouter();
     const dateFormatList = ['DD/MM/YYYY'];
     let employeeContracts = [];
+    const defaultProfileImage = '/assets/altave.jpg';
 
+    const buttonAction = ref('Cadastrar');
     const contractsRef = ref(null);
     const employeeName = ref('');
     const employeeRN = ref('');
     const employeeBirthDate = ref('');
     const employeeBloodType = ref('');
+    const errorMessage = ref('');
     const isConfirmationModalOpened = ref(false);
     const pageTitle = ref('Cadastro de funcionário');
-    const buttonAction = ref('Cadastrar');
     const isEditing = ref(false);
-    const errorMessage = ref('');
-    const profileImage = ref(
-      'https://i.pinimg.com/custom_covers/222x/85498161615209203_1636332751.jpg'
-    );
+    const profileImage = ref(defaultProfileImage);
+    const selectedFile = ref(null);
+    const uploading = ref(false);
+
+    const beforeUpload = (file) => {
+      const isJpgOrPng =
+        file.type === 'image/jpeg' || file.type === 'image/png';
+      if (!isJpgOrPng) {
+        message.error('Você só pode enviar arquivos JPG/PNG!');
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        message.error('A imagem deve ser menor que 2MB!');
+      }
+      return isJpgOrPng && isLt2M;
+    };
+
+    const handleImageChange = (info) => {
+      if (info.file.status === 'uploading') {
+        uploading.value = true;
+        return;
+      }
+      if (info.file.status === 'done') {
+        message.success(`${info.file.name} carregado com sucesso`);
+        uploading.value = false;
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} falhou no upload.`);
+        uploading.value = false;
+      }
+    };
+
+    const customRequest = ({ file, onSuccess, onError }) => {
+      selectedFile.value = file;
+      const reader = new FileReader();
+      reader.onload = () => {
+        profileImage.value = URL.createObjectURL(file);
+        onSuccess('Imagem carregada com sucesso', file);
+      };
+      reader.onerror = (error) => {
+        onError(error);
+      };
+      reader.readAsDataURL(file);
+    };
 
     const addContract = (contract) => {
       employeeContracts.push(contract);
@@ -55,13 +100,13 @@ export default {
         !employeeRN.value ||
         !employeeContracts.length
       ) {
-        alert('Todos os campos são obrigatórios');
+        message.error('Todos os campos são obrigatórios');
         return;
       }
       const age = verifyAge(employeeBirthDate.value);
 
       if (age < 16 || age > 100) {
-        alert('Não é possivel cadastrar usuários com esta idades');
+        message.error('Não é possivel cadastrar usuários com esta idade');
         return;
       }
 
@@ -76,20 +121,28 @@ export default {
         contracts: employeeContracts,
       };
 
-      if (isEditing.value) {
-        await editEmployee(params);
-      } else {
-        await createEmployee(params);
+      let employeeId;
+      try {
+        if (isEditing.value) {
+          employeeId = await editEmployee(params);
+          await uploadEmployeePhoto(employeeId);
+        } else {
+          employeeId = await createEmployee(params);
+          await uploadEmployeePhoto(employeeId);
+          clearFields();
+        }
+      } catch (error) {
+        console.error(error);
       }
     };
 
     const createEmployee = async (params) => {
       try {
-        await employee.create(params);
-        alert(`Usuario ${employeeName.value} cadastrado com sucesso`);
-        clearFields();
+        const { data } = await employee.create(params);
+        message.success(`Usuario ${employeeName.value} cadastrado com sucesso`);
+        return data.id;
       } catch (error) {
-        console.error('Erro completo:', {
+        message.error('Erro completo:', {
           message: error.message,
           response: error.response?.data,
           status: error.response?.status,
@@ -100,8 +153,9 @@ export default {
 
     const editEmployee = async (params) => {
       try {
-        await employee.edit(params);
-        alert(`Usuario ${employeeName.value} foi editado`);
+        const { data } = await employee.edit(params);
+        message.success(`Usuario ${employeeName.value} foi editado`);
+        return data.id;
       } catch (error) {
         console.error('Erro completo:', {
           message: error.message,
@@ -133,11 +187,26 @@ export default {
         employeeBirthDate.value = dayjs(data.birth_date, 'DD/MM/YYYY');
         employeeBloodType.value = data.blood_type;
         employeeRN.value = String(data.reg_num);
+        profileImage.value = data.profile_image;
         fillContracts(data.contracts);
 
         pageTitle.value = `Editar ${employeeName.value}`;
       } catch (error) {
         console.error(error);
+      }
+    };
+
+    const uploadEmployeePhoto = async (employeeId) => {
+      if (selectedFile.value && profileImage.value !== defaultProfileImage) {
+        try {
+          const formData = new FormData();
+          formData.append('file', selectedFile.value);
+          formData.append('employeeId', employeeId);
+
+          await photo.create(formData);
+        } catch (error) {
+          console.error('Erro ao enviar foto:', error);
+        }
       }
     };
 
@@ -193,6 +262,7 @@ export default {
       employeeBloodType.value = '';
       employeeRN.value = '';
       contractsRef.value.resetContracts();
+      profileImage.value = defaultProfileImage;
     };
 
     const validateRNInput = (event) => {
@@ -210,10 +280,13 @@ export default {
 
     return {
       addContract,
+      beforeUpload,
       bloodTypeOptions,
       buttonAction,
       contractsRef,
+      customRequest,
       dateFormatList,
+      defaultProfileImage,
       deleteEmployee,
       employeeBirthDate,
       employeeBloodType,
@@ -223,11 +296,13 @@ export default {
       errorMessage,
       handleBloodTypeChange,
       handleDateChange,
+      handleImageChange,
       isConfirmationModalOpened,
       openConfirmationModal,
       pageTitle,
       profileImage,
       showDeleteButton,
+      uploading,
       validateRNInput,
     };
   },
@@ -268,7 +343,28 @@ export default {
         </div>
 
         <div class="right-column">
-          <a-image :width="225" :height="225" :src="profileImage" />
+          <a-upload
+            class="employee-image__wrapper"
+            list-type="picture-card"
+            name="avatar"
+            :show-upload-list="false"
+            :before-upload="beforeUpload"
+            :custom-request="customRequest"
+            @change="handleImageChange"
+          >
+            <template v-if="profileImage === defaultProfileImage">
+              <div>
+                <camera-outlined />
+                <div>Adicionar Foto</div>
+              </div>
+            </template>
+            <img
+              v-else
+              alt="Foto do Funcionário"
+              class="employee-image"
+              :src="profileImage"
+            />
+          </a-upload>
         </div>
       </div>
       <contracts ref="contractsRef" @add-contract="addContract" />
@@ -281,7 +377,12 @@ export default {
         >
           Deletar funcionario
         </a-button>
-        <a-button type="primary" style="width: 250px" @click="employeeAction">
+        <a-button
+          type="primary"
+          style="width: 250px"
+          :loading="uploading"
+          @click="employeeAction"
+        >
           {{ buttonAction }}
         </a-button>
       </div>
@@ -324,6 +425,18 @@ export default {
       .right-column {
         flex: 1 1 calc(50% - $spacingXxl/2);
         text-align: center;
+
+        .employee-image__wrapper {
+          max-height: 100%;
+          max-width: 100%;
+          height: 100%;
+          width: 100%;
+
+          .employee-image {
+            height: 100%;
+            width: 100%;
+          }
+        }
       }
     }
     .content__contracts {
@@ -338,5 +451,11 @@ export default {
       gap: $spacingMd;
     }
   }
+}
+::v-deep .ant-upload,
+.ant-upload-select {
+  height: 100% !important;
+  width: 100% !important;
+  margin: 0px !important;
 }
 </style>
