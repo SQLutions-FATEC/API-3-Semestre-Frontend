@@ -1,13 +1,15 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
-import { roles } from '@/mock/seeds/roleSeeds';
+import { photos } from '../seeds/photoSeeds';
 
 const photoRoutes = [
   mockFlag(
     {
       method: 'get',
-      url: '/photos/:id',
-      result: () => {
-        const response = roles;
+      url: '/photos/file/employee/:employee_id',
+      result: ({ params }) => {
+        const response = photos.find(
+          (photo) => photo.employee_id == params.employee_id
+        ).profile_image;
 
         return APIFailureWrapper({
           content: response,
@@ -20,7 +22,7 @@ const photoRoutes = [
   mockFlag(
     {
       method: 'post',
-      url: '/photos',
+      url: '/photos/upload',
       result: () => {
         return APIFailureWrapper({
           content: null,

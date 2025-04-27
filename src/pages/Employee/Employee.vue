@@ -187,10 +187,18 @@ export default {
         employeeBirthDate.value = dayjs(data.birth_date);
         employeeBloodType.value = data.blood_type;
         employeeRN.value = String(data.register_number);
-        profileImage.value = data.profile_image;
         fillContracts(data.contracts);
 
         pageTitle.value = `Editar ${employeeName.value}`;
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const getPhoto = async (employeeId) => {
+      try {
+        const { data } = await photo.getByEmployee(employeeId);
+        profileImage.value = data.profile_image;
       } catch (error) {
         console.error(error);
       }
@@ -201,7 +209,7 @@ export default {
         try {
           const formData = new FormData();
           formData.append('file', selectedFile.value);
-          formData.append('employeeId', employeeId);
+          formData.append('employeeId', employeeId.toString());
 
           await photo.create(formData);
         } catch (error) {
@@ -226,7 +234,7 @@ export default {
       if (!!employeeId) {
         buttonAction.value = 'Editar';
         isEditing.value = true;
-        await getEmployee(employeeId);
+        await Promise.all([getEmployee(employeeId), getPhoto(employeeId)]);
       }
     });
 
