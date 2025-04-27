@@ -31,8 +31,9 @@ export default {
     const route = useRoute();
     const router = useRouter();
     const dateFormatList = ['DD/MM/YYYY'];
-    let employeeContracts = [];
     const defaultProfileImage = '/assets/altave.jpg';
+    let employeeContracts = [];
+    let gender = 'F';
 
     const buttonAction = ref('Cadastrar');
     const contractsRef = ref(null);
@@ -118,15 +119,15 @@ export default {
         return;
       }
 
-      const formattedDate = employeeBirthDate.value.format('DD/MM/YYYY');
-
       const params = {
         id: route.params.id,
         name: employeeName.value,
         blood_type: employeeBloodType.value,
-        birth_date: formattedDate,
-        reg_num: employeeRN.value,
-        contracts: employeeContracts,
+        birth_date: employeeBirthDate.value,
+        register_number: employeeRN.value,
+        gender: gender
+        // temporario, para fazer funcionar sem contratos, que será na próxima sprint
+        // contracts: employeeContracts,
       };
 
       let employeeId;
@@ -195,6 +196,7 @@ export default {
         employeeBirthDate.value = dayjs(data.birth_date);
         employeeBloodType.value = data.blood_type;
         employeeRN.value = String(data.register_number);
+        gender = data.gender
         fillContracts(data.contracts);
 
         pageTitle.value = `Editar ${employeeName.value}`;

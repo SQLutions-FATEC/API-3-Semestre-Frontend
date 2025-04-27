@@ -6,7 +6,7 @@ const employees = [
     id: 1,
     name: 'José Amaral',
     blood_type: 'A+',
-    reg_num: '54376523455',
+    register_number: '54376523455',
     birth_date: '1993-02-02T02:00:00.000+00:00',
     profile_image: '/assets/homer.jpg',
     contracts: [
@@ -22,7 +22,7 @@ const employees = [
     id: 2,
     name: 'Robson Fernandes',
     blood_type: 'O+',
-    reg_num: '98632165432',
+    register_number: '98632165432',
     birth_date: '1974-08-26T02:00:00.000+00:00',
     profile_image: '/assets/dumbledore.jpg',
     contracts: [
@@ -44,7 +44,7 @@ const employees = [
     id: 3,
     name: 'Welington',
     blood_type: 'B-',
-    reg_num: '76542397833',
+    register_number: '76542397833',
     birth_date: '1998-11-12T02:00:00.000+00:00',
     profile_image: '/assets/homer.jpg',
     contracts: [
@@ -60,7 +60,7 @@ const employees = [
     id: 4,
     name: 'Pedro Ribeiro',
     blood_type: 'AB+',
-    reg_num: '98632165282',
+    register_number: '98632165282',
     birth_date: '1975-09-22T02:00:00.000+00:00',
     profile_image: '/assets/homer.jpg',
     contracts: [
@@ -76,7 +76,7 @@ const employees = [
     id: 5,
     name: 'Jonas Fernandes',
     blood_type: 'A+',
-    reg_num: '98643165432',
+    register_number: '98643165432',
     birth_date: '1972-04-12T02:00:00.000+00:00',
     profile_image: '/assets/homer.jpg',
     contracts: [
@@ -92,7 +92,7 @@ const employees = [
     id: 6,
     name: 'Marco Alcântara',
     blood_type: 'B+',
-    reg_num: '98246165432',
+    register_number: '98246165432',
     birth_date: '1970-05-15T02:00:00.000+00:00',
     profile_image: '/assets/homer.jpg',
     contracts: [
@@ -108,7 +108,7 @@ const employees = [
     id: 7,
     name: 'Matheus Paulista',
     blood_type: 'O-',
-    reg_num: '28632165432',
+    register_number: '28632165432',
     birth_date: '1980-10-22T02:00:00.000+00:00',
     profile_image: '/assets/homer.jpg',
     contracts: [
@@ -124,7 +124,7 @@ const employees = [
     id: 8,
     name: 'Miguel Silva',
     blood_type: 'AB-',
-    reg_num: '99332165432',
+    register_number: '99332165432',
     birth_date: '1982-12-21T02:00:00.000+00:00',
     profile_image: '/assets/homer.jpg',
     contracts: [
@@ -140,7 +140,7 @@ const employees = [
     id: 9,
     name: 'Thiago Rocha',
     blood_type: 'A+',
-    reg_num: '98722165432',
+    register_number: '98722165432',
     birth_date: '1984-02-04T02:00:00.000+00:00',
     profile_image: '/assets/homer.jpg',
     contracts: [
@@ -156,7 +156,7 @@ const employees = [
     id: 10,
     name: 'Maria Santos',
     blood_type: 'O-',
-    reg_num: '98631234432',
+    register_number: '98631234432',
     birth_date: '1990-06-22T02:00:00.000+00:00',
     profile_image: '/assets/pam.jpg',
     contracts: [

@@ -37,7 +37,7 @@ const employeeRoutes = [
           name: employee.name,
           birth_date: employee.birth_date,
           blood_type: employee.blood_type,
-          register_number: employee.reg_num,
+          register_number: employee.register_number,
           contracts: employee.contracts.map((contract) => {
             const selectedCompany = companies.find(
               (company) => company.id == contract.company.id
@@ -80,9 +80,10 @@ const employeeRoutes = [
           id: employees.length + 1,
           name: body.name,
           blood_type: body.blood_type,
-          reg_num: body.reg_num,
+          register_number: body.register_number,
           birth_date: body.birth_date,
-          contracts: body.contracts,
+          // temporario, para fazer funcionar sem contratos, que será na próxima sprint
+          // contracts: body.contracts,
         };
         employees.push(newEmployee);
 
@@ -107,7 +108,7 @@ const employeeRoutes = [
             editedEmployee = employee;
             employee.name = body.name;
             employee.blood_type = body.blood_type;
-            employee.reg_num = body.reg_num;
+            employee.register_number = body.register_number;
             employee.birth_date = body.birth_date;
             employee.contracts = body.contracts;
             updateEmployeeInClockInOut(params.id, body.name);

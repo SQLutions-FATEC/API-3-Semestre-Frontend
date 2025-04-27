@@ -7,7 +7,7 @@ const initialClockInOut = [
     employee: {
       id: employees[0].id,
       name: employees[0].name,
-      register_number: employees[0].reg_num,
+      register_number: employees[0].register_number,
     },
     company: { id: companies[0].id, name: companies[0].name },
     role_name: 'Açougueiro',
@@ -19,7 +19,7 @@ const initialClockInOut = [
     employee: {
       id: employees[1].id,
       name: employees[1].name,
-      register_number: employees[1].reg_num,
+      register_number: employees[1].register_number,
     },
     company: { id: companies[0].id, name: companies[0].name },
     role_name: 'Caixa',
@@ -31,7 +31,7 @@ const initialClockInOut = [
     employee: {
       id: employees[2].id,
       name: employees[2].name,
-      register_number: employees[2].reg_num,
+      register_number: employees[2].register_number,
     },
     company: { id: companies[1].id, name: companies[1].name },
     role_name: 'Engenheiro Civil',
@@ -43,7 +43,7 @@ const initialClockInOut = [
     employee: {
       id: employees[3].id,
       name: employees[3].name,
-      register_number: employees[3].reg_num,
+      register_number: employees[3].register_number,
     },
     company: { id: companies[2].id, name: companies[2].name },
     role_name: 'Analista Financeiro',
@@ -55,7 +55,7 @@ const initialClockInOut = [
     employee: {
       id: employees[4].id,
       name: employees[4].name,
-      register_number: employees[4].reg_num,
+      register_number: employees[4].register_number,
     },
     company: { id: companies[1].id, name: companies[1].name },
     role_name: 'Arquiteto',
@@ -67,7 +67,7 @@ const initialClockInOut = [
     employee: {
       id: employees[0].id,
       name: employees[0].name,
-      register_number: employees[0].reg_num,
+      register_number: employees[0].register_number,
     },
     company: { id: companies[0].id, name: companies[0].name },
     role_name: 'Açougueiro',
@@ -79,7 +79,7 @@ const initialClockInOut = [
     employee: {
       id: employees[1].id,
       name: employees[1].name,
-      register_number: employees[1].reg_num,
+      register_number: employees[1].register_number,
     },
     company: { id: companies[0].id, name: companies[0].name },
     role_name: 'Caixa',
@@ -91,7 +91,7 @@ const initialClockInOut = [
     employee: {
       id: employees[5].id,
       name: employees[5].name,
-      register_number: employees[5].reg_num,
+      register_number: employees[5].register_number,
     },
     company: { id: companies[3].id, name: companies[3].name },
     role_name: 'Desenvolvedor Front-end',
@@ -103,7 +103,7 @@ const initialClockInOut = [
     employee: {
       id: employees[2].id,
       name: employees[2].name,
-      register_number: employees[2].reg_num,
+      register_number: employees[2].register_number,
     },
     company: { id: companies[1].id, name: companies[1].name },
     role_name: 'Engenheiro Civil',
@@ -115,7 +115,7 @@ const initialClockInOut = [
     employee: {
       id: employees[6].id,
       name: employees[6].name,
-      register_number: employees[6].reg_num,
+      register_number: employees[6].register_number,
     },
     company: { id: companies[4].id, name: companies[4].name },
     role_name: 'Gerente de Vendas',
@@ -127,7 +127,7 @@ const initialClockInOut = [
     employee: {
       id: employees[7].id,
       name: employees[7].name,
-      register_number: employees[7].reg_num,
+      register_number: employees[7].register_number,
     },
     company: { id: companies[2].id, name: companies[2].name },
     role_name: 'RH Assistente',
@@ -139,7 +139,7 @@ const initialClockInOut = [
     employee: {
       id: employees[8].id,
       name: employees[8].name,
-      register_number: employees[8].reg_num,
+      register_number: employees[8].register_number,
     },
     company: { id: companies[1].id, name: companies[1].name },
     role_name: 'Engenheiro Elétrico',
@@ -151,7 +151,7 @@ const initialClockInOut = [
     employee: {
       id: employees[3].id,
       name: employees[3].name,
-      register_number: employees[3].reg_num,
+      register_number: employees[3].register_number,
     },
     company: { id: companies[2].id, name: companies[2].name },
     role_name: 'Analista Financeiro',
@@ -163,7 +163,7 @@ const initialClockInOut = [
     employee: {
       id: employees[9].id,
       name: employees[9].name,
-      register_number: employees[9].reg_num,
+      register_number: employees[9].register_number,
     },
     company: { id: companies[0].id, name: companies[0].name },
     role_name: 'Estoquista',
@@ -175,7 +175,7 @@ const initialClockInOut = [
     employee: {
       id: employees[4].id,
       name: employees[4].name,
-      register_number: employees[4].reg_num,
+      register_number: employees[4].register_number,
     },
     company: { id: companies[1].id, name: companies[1].name },
     role_name: 'Arquiteto',
