@@ -37,7 +37,7 @@ const employeeRoutes = [
           name: employee.name,
           birth_date: employee.birth_date,
           blood_type: employee.blood_type,
-          reg_num: employee.reg_num,
+          register_number: employee.reg_num,
           profile_image: employee.profile_image,
           contracts: employee.contracts.map((contract) => {
             const selectedCompany = companies.find(

@@ -59,18 +59,18 @@ export default {
         if (currentFilters.value.role) params.role = currentFilters.value.role;
         if (currentFilters.value.dateRange?.length === 2) {
           params.start_date = currentFilters.value.dateRange[0].format(
-            'YYYY-MM-DD HH:mm:ss'
+            'YYYY-MM-DD HH:mm'
           );
           params.end_date = currentFilters.value.dateRange[1].format(
-            'YYYY-MM-DD HH:mm:ss'
+            'YYYY-MM-DD HH:mm'
           );
         }
 
         const { data } = await clockInOut.get(params);
-
+        
         dataSource.value = data.items.map((info) => ({
           key: info.id,
-          registerNumber: info.register_number,
+          registerNumber: info.employee.register_number,
           employee: info.employee.name,
           employeeId: info.employee.id,
           company: info.company.name,

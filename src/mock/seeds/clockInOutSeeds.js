@@ -4,8 +4,11 @@ import { employees } from '@/mock/seeds/employeeSeeds';
 const initialClockInOut = [
   {
     id: 1,
-    register_number: '20230001',
-    employee: { id: employees[0].id, name: employees[0].name },
+    employee: {
+      id: employees[0].id,
+      name: employees[0].name,
+      register_number: employees[0].reg_num,
+    },
     company: { id: companies[0].id, name: companies[0].name },
     role_name: 'Açougueiro',
     direction: 'Entrada',
@@ -13,8 +16,11 @@ const initialClockInOut = [
   },
   {
     id: 2,
-    register_number: '20230002',
-    employee: { id: employees[1].id, name: employees[1].name },
+    employee: {
+      id: employees[1].id,
+      name: employees[1].name,
+      register_number: employees[1].reg_num,
+    },
     company: { id: companies[0].id, name: companies[0].name },
     role_name: 'Caixa',
     direction: 'Entrada',
@@ -22,8 +28,11 @@ const initialClockInOut = [
   },
   {
     id: 3,
-    register_number: '20230003',
-    employee: { id: employees[2].id, name: employees[2].name },
+    employee: {
+      id: employees[2].id,
+      name: employees[2].name,
+      register_number: employees[2].reg_num,
+    },
     company: { id: companies[1].id, name: companies[1].name },
     role_name: 'Engenheiro Civil',
     direction: 'Entrada',
@@ -31,8 +40,11 @@ const initialClockInOut = [
   },
   {
     id: 4,
-    register_number: '20230004',
-    employee: { id: employees[3].id, name: employees[3].name },
+    employee: {
+      id: employees[3].id,
+      name: employees[3].name,
+      register_number: employees[3].reg_num,
+    },
     company: { id: companies[2].id, name: companies[2].name },
     role_name: 'Analista Financeiro',
     direction: 'Entrada',
@@ -40,8 +52,11 @@ const initialClockInOut = [
   },
   {
     id: 5,
-    register_number: '20230005',
-    employee: { id: employees[4].id, name: employees[4].name },
+    employee: {
+      id: employees[4].id,
+      name: employees[4].name,
+      register_number: employees[4].reg_num,
+    },
     company: { id: companies[1].id, name: companies[1].name },
     role_name: 'Arquiteto',
     direction: 'Entrada',
@@ -49,8 +64,11 @@ const initialClockInOut = [
   },
   {
     id: 6,
-    register_number: '20230001',
-    employee: { id: employees[0].id, name: employees[0].name },
+    employee: {
+      id: employees[0].id,
+      name: employees[0].name,
+      register_number: employees[0].reg_num,
+    },
     company: { id: companies[0].id, name: companies[0].name },
     role_name: 'Açougueiro',
     direction: 'Saída',
@@ -58,8 +76,11 @@ const initialClockInOut = [
   },
   {
     id: 7,
-    register_number: '20230002',
-    employee: { id: employees[1].id, name: employees[1].name },
+    employee: {
+      id: employees[1].id,
+      name: employees[1].name,
+      register_number: employees[1].reg_num,
+    },
     company: { id: companies[0].id, name: companies[0].name },
     role_name: 'Caixa',
     direction: 'Saída',
@@ -67,8 +88,11 @@ const initialClockInOut = [
   },
   {
     id: 8,
-    register_number: '20230006',
-    employee: { id: employees[5].id, name: employees[5].name },
+    employee: {
+      id: employees[5].id,
+      name: employees[5].name,
+      register_number: employees[5].reg_num,
+    },
     company: { id: companies[3].id, name: companies[3].name },
     role_name: 'Desenvolvedor Front-end',
     direction: 'Entrada',
@@ -76,8 +100,11 @@ const initialClockInOut = [
   },
   {
     id: 9,
-    register_number: '20230003',
-    employee: { id: employees[2].id, name: employees[2].name },
+    employee: {
+      id: employees[2].id,
+      name: employees[2].name,
+      register_number: employees[2].reg_num,
+    },
     company: { id: companies[1].id, name: companies[1].name },
     role_name: 'Engenheiro Civil',
     direction: 'Saída',
@@ -85,8 +112,11 @@ const initialClockInOut = [
   },
   {
     id: 10,
-    register_number: '20230007',
-    employee: { id: employees[6].id, name: employees[6].name },
+    employee: {
+      id: employees[6].id,
+      name: employees[6].name,
+      register_number: employees[6].reg_num,
+    },
     company: { id: companies[4].id, name: companies[4].name },
     role_name: 'Gerente de Vendas',
     direction: 'Entrada',
@@ -94,8 +124,11 @@ const initialClockInOut = [
   },
   {
     id: 11,
-    register_number: '20230008',
-    employee: { id: employees[7].id, name: employees[7].name },
+    employee: {
+      id: employees[7].id,
+      name: employees[7].name,
+      register_number: employees[7].reg_num,
+    },
     company: { id: companies[2].id, name: companies[2].name },
     role_name: 'RH Assistente',
     direction: 'Entrada',
@@ -103,8 +136,11 @@ const initialClockInOut = [
   },
   {
     id: 12,
-    register_number: '20230009',
-    employee: { id: employees[8].id, name: employees[8].name },
+    employee: {
+      id: employees[8].id,
+      name: employees[8].name,
+      register_number: employees[8].reg_num,
+    },
     company: { id: companies[1].id, name: companies[1].name },
     role_name: 'Engenheiro Elétrico',
     direction: 'Entrada',
@@ -112,8 +148,11 @@ const initialClockInOut = [
   },
   {
     id: 13,
-    register_number: '20230004',
-    employee: { id: employees[3].id, name: employees[3].name },
+    employee: {
+      id: employees[3].id,
+      name: employees[3].name,
+      register_number: employees[3].reg_num,
+    },
     company: { id: companies[2].id, name: companies[2].name },
     role_name: 'Analista Financeiro',
     direction: 'Saída',
@@ -121,8 +160,11 @@ const initialClockInOut = [
   },
   {
     id: 14,
-    register_number: '20230010',
-    employee: { id: employees[9].id, name: employees[9].name },
+    employee: {
+      id: employees[9].id,
+      name: employees[9].name,
+      register_number: employees[9].reg_num,
+    },
     company: { id: companies[0].id, name: companies[0].name },
     role_name: 'Estoquista',
     direction: 'Entrada',
@@ -130,8 +172,11 @@ const initialClockInOut = [
   },
   {
     id: 15,
-    register_number: '20230005',
-    employee: { id: employees[4].id, name: employees[4].name },
+    employee: {
+      id: employees[4].id,
+      name: employees[4].name,
+      register_number: employees[4].reg_num,
+    },
     company: { id: companies[1].id, name: companies[1].name },
     role_name: 'Arquiteto',
     direction: 'Saída',
