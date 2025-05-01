@@ -84,10 +84,11 @@ export default {
   .bar__button {
     @include label(medium);
     height: 40px;
-    border-radius: none;
+    border-radius: 0px;
+    background-color: transparent;
 
     &:hover {
-      background-color: $colorBackgroundSecondary;
+      background-color: $colorBackgroundSecondary !important;
       color: $colorTextWhite
     }
   }
