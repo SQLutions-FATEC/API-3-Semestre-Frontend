@@ -176,7 +176,6 @@ export default {
           return h(
             Button,
             {
-              class: "edit-button",
               type: 'primary',
               shape: 'circle',
               onClick: () => handleEdit(record),
@@ -233,9 +232,6 @@ export default {
   display: flex;
   flex-direction: column;
   gap: $spacingXl;
-}
-:deep(.edit-button) {
-  background-color: $colorSecondary;
 }
 :deep(.ant-table-cell) {
   @include paragraph(medium);

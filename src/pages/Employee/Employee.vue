@@ -424,6 +424,9 @@ export default {
 .employee {
   padding: $spacingXxl 0px;
 
+  h1 {
+    @include heading(large);
+  }
   .employee__content {
     padding: $spacingXxl 0px;
     display: flex;

@@ -22,5 +22,9 @@ export default {
   display: flex;
   flex-direction: column;
   gap: $spacingLg;
+
+  h1 {
+    @include heading(large);
+  }
 }
 </style>

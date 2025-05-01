@@ -117,7 +117,7 @@ export default {
         <a-option value="role">Função</a-option>
         <a-option value="datetime">Data</a-option>
       </a-select>
-      <a-button class="filters__action" type="primary" @click="filterClockInOut">Filtrar</a-button>
+      <a-button type="primary" @click="filterClockInOut">Filtrar</a-button>
     </div>
   </div>
 </template>
@@ -138,9 +138,6 @@ export default {
     display: flex;
     align-items: center;
     gap: $spacingMd;
-  }
-  .filters__action {
-    background-color: $colorSecondary;
   }
 }
 </style>

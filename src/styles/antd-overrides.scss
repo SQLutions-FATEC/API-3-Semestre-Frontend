@@ -25,3 +25,11 @@ body {
 .ant-picker:hover {
   border-color: $colorBorderSecondary !important;
 }
+
+.ant-btn {
+  background-color: $colorSecondary;
+}
+
+.ant-btn:hover {
+  background-color: $colorSecondaryHighlight !important;
+}

@@ -28,6 +28,7 @@ export default {
       router.push({
         path: `/${path}`,
       });
+      toggleSidebar();
     };
 
     return {

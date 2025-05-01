@@ -4,18 +4,21 @@ $colorGray75: #979797;
 $colorBlack: #000000;
 $colorWhite: #ffffff;
 
-// background
-$colorBackground: #fffefd;
-$colorBackgroundPrimary: #ddf0fa;
-$colorBackgroundSecondary: #ff5f00;
-$colorBackgroundDisabled: #e7e6e6;
-$colorBackgroundWhite: #ffffff;
-
 // primary
 $colorPrimary: #74bfe5;
 $colorPrimaryHighlight: #0089d0;
+
+// secondary
 $colorSecondary: #ff5f00;
 $colorSecondaryHighlight: #d05207;
+
+// background
+$colorBackground: #fffefd;
+$colorBackgroundPrimary: #ddf0fa;
+$colorBackgroundSecondary: $colorSecondary;
+$colorBackgroundSecondaryHighlight: $colorSecondaryHighlight;
+$colorBackgroundDisabled: #e7e6e6;
+$colorBackgroundWhite: #ffffff;
 
 // border
 $colorBorder: #4c4c4c;

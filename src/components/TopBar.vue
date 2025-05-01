@@ -25,7 +25,7 @@ export default {
 <template>
   <div class="top-bar">
     <div class="top-bar__container">
-      <a-button class="top-bar__button" type="primary" shape="circle" @click="toggleSidebar">
+      <a-button type="primary" shape="circle" @click="toggleSidebar">
         <template #icon>
           <menu-outlined />
         </template>
@@ -49,10 +49,6 @@ export default {
     max-width: 1200px;
     width: 100%;
     padding: 0 $spacingLg;
-
-    .top-bar__button {
-      background-color: $colorSecondary;
-    }
   }
 }
 </style>
