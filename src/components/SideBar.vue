@@ -1,5 +1,5 @@
 <script>
-import { UserOutlined, WhatsAppOutlined } from '@ant-design/icons-vue';
+import { BankOutlined, UserOutlined } from '@ant-design/icons-vue';
 import { Drawer } from 'ant-design-vue';
 import { useRouter } from 'vue-router';
 
@@ -13,7 +13,7 @@ export default {
 
   components: {
     'a-drawer': Drawer,
-    WhatsAppOutlined,
+    BankOutlined,
     UserOutlined,
   },
 
@@ -46,21 +46,21 @@ export default {
     @close="toggleSidebar"
   >
     <template #title>
-      <router-link to="/" style="color: inherit; text-decoration: underline">
-        Altave
+      <router-link to="/" class="main-page-link">
+        Home
       </router-link>
     </template>
     <div class="side-bar">
-      <a-button block type="primary" @click="redirect('employee')">
+      <a-button block class="bar__button" type="text" @click="redirect('employee')">
         Funcionários
         <template #icon>
           <user-outlined />
         </template>
       </a-button>
-      <a-button block type="primary" @click="redirect('company')">
+      <a-button block class="bar__button" type="text" @click="redirect('company')">
         Empresas
         <template #icon>
-          <whats-app-outlined />
+          <bank-outlined />
         </template>
       </a-button>
     </div>
@@ -68,8 +68,27 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+.main-page-link {
+  @include heading(medium);
+  color: $colorSecondaryHighlight;
+  margin-left: $spacingLg;
+  text-decoration: underline;
+  text-transform: uppercase;
+}
 .side-bar {
   display: flex;
   flex-direction: column;
+  margin-top: $spacingLg;
+
+  .bar__button {
+    @include label(medium);
+    height: 40px;
+    border-radius: none;
+
+    &:hover {
+      background-color: $colorBackgroundSecondary;
+      color: $colorTextWhite
+    }
+  }
 }
 </style>

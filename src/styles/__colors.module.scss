@@ -1,6 +1,13 @@
+// colors
+$colorGrayBase: #4d4d4d;
+$colorGray75: #979797;
+$colorBlack: #000000;
+$colorWhite: #ffffff;
+
 // background
-$colorBackgroundPrimary: #fffefd;
-$colorBackgroundSecondary: #ddf0fa;
+$colorBackground: #fffefd;
+$colorBackgroundPrimary: #ddf0fa;
+$colorBackgroundSecondary: #ff5f00;
 $colorBackgroundDisabled: #e7e6e6;
 $colorBackgroundWhite: #ffffff;
 
@@ -24,12 +31,7 @@ $colorTextPrimary: #3a383a;
 $colorTextDisabled: #7d7c7d;
 $colorTextError: #ed6060;
 $colorTextOrange: $colorSecondary;
-
-// colors
-$colorGrayBase: #4d4d4d;
-$colorGray75: #979797;
-$colorBlack: #000000;
-$colorWhite: #ffffff;
+$colorTextWhite: $colorWhite;
 
 // brand
 $colorBrand: $colorPrimary;

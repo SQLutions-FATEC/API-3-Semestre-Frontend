@@ -38,7 +38,7 @@ export default {
 <style lang="scss" scoped>
 .top-bar {
   height: 50px;
-  background-color: $colorBackgroundSecondary;
+  background-color: $colorBackgroundPrimary;
   display: flex;
   align-items: center;
   justify-content: center;

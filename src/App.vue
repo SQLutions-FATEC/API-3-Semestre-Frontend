@@ -41,6 +41,6 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0px $spacingLg;
-  background-color: $colorBackgroundPrimary;
+  background-color: $colorBackground;
 }
 </style>
