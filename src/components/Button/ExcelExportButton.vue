@@ -103,7 +103,13 @@ export default {
 </script>
 
 <template>
-  <a-button type="primary" :loading="isLoading" @click="exportToExcel">
+  <a-button class="export-button" type="primary" :loading="isLoading" @click="exportToExcel">
     Exportar para Excel
   </a-button>
 </template>
+
+<style lang="scss" scoped>
+.export-button {
+  background-color: $colorSecondary;
+}
+</style>

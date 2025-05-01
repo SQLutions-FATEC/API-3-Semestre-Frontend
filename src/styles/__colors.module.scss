@@ -1,32 +1,36 @@
 // background
-$colorBackgroundPrimary: '#fffefd';
-$colorBackgroundDisabled: '#e7e6e6';
-$colorBackgroundWhite: '#ffffff';
+$colorBackgroundPrimary: #fffefd;
+$colorBackgroundSecondary: #ddf0fa;
+$colorBackgroundDisabled: #e7e6e6;
+$colorBackgroundWhite: #ffffff;
 
 // primary
-$colorPrimaryMain: '#f88d2a';
-$colorPrimaryVariant: '#ff5f00';
-$colorPrimaryHighlight: '#d05207';
+$colorPrimary: #74bfe5;
+$colorPrimaryHighlight: #0089d0;
+$colorSecondary: #ff5f00;
+$colorSecondaryHighlight: #d05207;
 
 // border
-$colorBorderPrimary: '#f88d2a';
-$colorBorder: '#4c4c4c';
+$colorBorder: #4c4c4c;
+$colorBorderPrimary: $colorPrimary;
+$colorBorderSecondary: $colorSecondary;
 
 // icon
-$colorIconPrimary: '#4c4c4c';
-$colorIconDisabled: '#c0c0c0';
+$colorIconPrimary: #4c4c4c;
+$colorIconDisabled: #7d7c7d;
 
 // text
-$colorTextPrimary: '#4d4d4d';
-$colorTextDisabled: '#c0c0c0';
-$colorTextError: '#ED6060';
+$colorTextPrimary: #3a383a;
+$colorTextDisabled: #7d7c7d;
+$colorTextError: #ed6060;
+$colorTextOrange: $colorSecondary;
 
 // colors
-$colorGrayBase: '#4d4d4d';
-$colorGray75: '#979797';
-$colorBlack: '#000000';
-$colorWhite: '#ffffff';
+$colorGrayBase: #4d4d4d;
+$colorGray75: #979797;
+$colorBlack: #000000;
+$colorWhite: #ffffff;
 
 // brand
-$colorBrandPrange: '#f88d2a';
-$colorBrandOrangeBrighter: '#ff5f00';
+$colorBrand: $colorPrimary;
+$colorBrandBrighter: $colorPrimaryHighlight;

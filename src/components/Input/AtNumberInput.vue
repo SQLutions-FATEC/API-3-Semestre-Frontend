@@ -73,7 +73,7 @@ export default {
   .input__error-message {
     position: absolute;
     top: 36px;
-    color: red;
+    color: $colorTextError;
   }
 }
 </style>
