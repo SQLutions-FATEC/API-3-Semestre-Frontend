@@ -233,4 +233,7 @@ export default {
   flex-direction: column;
   gap: $spacingXl;
 }
+:deep(.ant-table-cell) {
+  @include paragraph(medium);
+}
 </style>

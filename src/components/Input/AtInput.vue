@@ -96,4 +96,7 @@ export default {
     color: red;
   }
 }
+:deep(.ant-input) {
+  font-family: $fontFamily;
+}
 </style>

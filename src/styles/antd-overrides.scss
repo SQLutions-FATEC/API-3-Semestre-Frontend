@@ -1,0 +1,15 @@
+body {
+  font-family: $fontFamily, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.ant-btn,
+.ant-input,
+.ant-select,
+.ant-menu,
+.ant-modal-title,
+.ant-tabs-tab,
+.ant-alert-message,
+.ant-notification-notice-message,
+.ant-typography {
+  font-family: $fontFamily, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
