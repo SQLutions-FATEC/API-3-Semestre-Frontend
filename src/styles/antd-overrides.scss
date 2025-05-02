@@ -26,12 +26,26 @@ body {
   border-color: $colorBorderSecondary !important;
 }
 
-.ant-btn {
+.ant-btn-primary {
   background-color: $colorSecondary;
   border-color: $colorSecondary;
+  font-weight: 600;
+
+  &:hover {
+    background-color: $colorSecondaryHighlight !important;
+    border-color: $colorSecondaryHighlight !important;
+  }
 }
 
-.ant-btn:hover {
-  background-color: $colorSecondaryHighlight !important;
-  border-color: $colorSecondaryHighlight !important;
+.ant-btn-default {
+  background-color: transparent;
+  color: $colorSecondary;
+  border-color: $colorSecondary;
+  font-weight: 600;
+
+  &:hover {
+    background-color: $colorSecondaryHighlight !important;
+    border-color: $colorSecondaryHighlight !important;
+    color: $colorWhite !important;
+  }
 }

@@ -61,12 +61,12 @@ export default {
         </div>
       </div>
       <div class="contract-actions">
-        <a-button shape="circle" @click="editContract">
+        <a-button type="primary" shape="circle" @click="editContract">
           <template #icon>
             <edit-outlined style="color: white" />
           </template>
         </a-button>
-        <a-button shape="circle" @click="inactivateContract">
+        <a-button type="primary" shape="circle" @click="inactivateContract">
           <template #icon>
             <delete-outlined style="color: white" />
           </template>

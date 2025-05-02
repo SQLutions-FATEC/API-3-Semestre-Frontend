@@ -4,7 +4,14 @@ import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import employee from '@/services/employee';
 import { CameraOutlined } from '@ant-design/icons-vue';
 import { validateRN } from '@/utils/validations/registerNumber';
-import { Button, Cascader, DatePicker, Upload, Modal } from 'ant-design-vue';
+import {
+  Button,
+  Cascader,
+  DatePicker,
+  Divider,
+  Upload,
+  Modal,
+} from 'ant-design-vue';
 import dayjs from 'dayjs';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -19,6 +26,7 @@ export default {
     'a-button': Button,
     'a-cascader': Cascader,
     'a-date-picker': DatePicker,
+    'a-divider': Divider,
     'a-modal': Modal,
     'at-input': AtInput,
     'at-number-input': AtNumberInput,
@@ -243,7 +251,7 @@ export default {
     onMounted(async () => {
       const employeeId = route.params.id;
       if (!!employeeId) {
-        buttonAction.value = 'Editar';
+        buttonAction.value = 'Confirmar edição';
         isEditing.value = true;
         await Promise.all([getEmployee(employeeId), getPhoto(employeeId)]);
       }
@@ -387,6 +395,7 @@ export default {
           </a-upload>
         </div>
       </div>
+      <a-divider />
       <contracts ref="contractsRef" @add-contract="addContract" />
       <div class="content__action">
         <a-button
@@ -491,5 +500,8 @@ export default {
   height: 100% !important;
   width: 100% !important;
   margin: 0px !important;
+}
+.ant-divider-horizontal {
+  margin: 0px;
 }
 </style>
