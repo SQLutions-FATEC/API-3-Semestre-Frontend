@@ -1,7 +1,7 @@
 import api from './api';
 
 const contract = {
-  get: () => api.get('/contracts'),
+  getByEmployeeId: (employeeId) => api.get(`/contracts/employee/${employeeId}`),
   create: (params) => api.post('/contracts', params),
 };
 

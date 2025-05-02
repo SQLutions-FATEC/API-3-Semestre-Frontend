@@ -8,6 +8,7 @@ const contracts = [
     role: { id: roles[0].id, name: roles[0].name },
     datetime_start: '2025-04-16T19:48:05.652+00:00',
     datetime_end: '2025-04-26T19:48:05.652+00:00',
+    active: true,
   },
   {
     id: 2,
@@ -15,6 +16,7 @@ const contracts = [
     role: { id: roles[1].id, name: roles[1].name },
     datetime_start: '2025-04-16T19:48:05.652+00:00',
     datetime_end: '2025-04-26T19:48:05.652+00:00',
+    active: true,
   },
   {
     id: 3,
@@ -22,6 +24,7 @@ const contracts = [
     role: { id: roles[1].id, name: roles[1].name },
     datetime_start: '2025-04-16T19:48:05.652+00:00',
     datetime_end: '2025-04-26T19:48:05.652+00:00',
+    active: false,
   },
   {
     id: 4,
@@ -29,6 +32,7 @@ const contracts = [
     role: { id: roles[2].id, name: roles[2].name },
     datetime_start: '2025-04-16T19:48:05.652+00:00',
     datetime_end: '2025-04-26T19:48:05.652+00:00',
+    active: true,
   },
   {
     id: 5,
@@ -36,6 +40,7 @@ const contracts = [
     role: { id: roles[0].id, name: roles[0].name },
     datetime_start: '2025-04-16T19:48:05.652+00:00',
     datetime_end: '2025-04-26T19:48:05.652+00:00',
+    active: false,
   },
   {
     id: 6,
@@ -43,6 +48,7 @@ const contracts = [
     role: { id: roles[0].id, name: roles[0].name },
     datetime_start: '2025-04-16T19:48:05.652+00:00',
     datetime_end: '2025-04-26T19:48:05.652+00:00',
+    active: true,
   },
   {
     id: 7,
@@ -50,6 +56,7 @@ const contracts = [
     role: { id: roles[0].id, name: roles[0].name },
     datetime_start: '2025-04-16T19:48:05.652+00:00',
     datetime_end: '2025-04-26T19:48:05.652+00:00',
+    active: false,
   },
   {
     id: 8,
@@ -57,6 +64,7 @@ const contracts = [
     role: { id: roles[0].id, name: roles[0].name },
     datetime_start: '2025-04-16T19:48:05.652+00:00',
     datetime_end: '2025-04-26T19:48:05.652+00:00',
+    active: true,
   },
   {
     id: 9,
@@ -64,6 +72,7 @@ const contracts = [
     role: { id: roles[0].id, name: roles[0].name },
     datetime_start: '2025-04-16T19:48:05.652+00:00',
     datetime_end: '2025-04-26T19:48:05.652+00:00',
+    active: false,
   },
   {
     id: 10,
@@ -71,6 +80,7 @@ const contracts = [
     role: { id: roles[0].id, name: roles[0].name },
     datetime_start: '2025-04-16T19:48:05.652+00:00',
     datetime_end: '2025-04-26T19:48:05.652+00:00',
+    active: true,
   },
   {
     id: 11,
@@ -78,6 +88,7 @@ const contracts = [
     role: { id: roles[0].id, name: roles[0].name },
     datetime_start: '2025-04-16T19:48:05.652+00:00',
     datetime_end: '2025-04-26T19:48:05.652+00:00',
+    active: false,
   },
 ];
 

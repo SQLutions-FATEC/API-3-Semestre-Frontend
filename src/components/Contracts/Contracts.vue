@@ -2,7 +2,9 @@
 import { Modal } from 'ant-design-vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import ActiveContract from '@/components/Contracts/ActiveContract.vue';
+import InactiveContracts from '@/components/Contracts/InactiveContracts.vue';
 import ContractModal from '@/components/Modals/ContractModal.vue';
 import contract from '@/services/contracts';
 import dayjs from 'dayjs';
@@ -13,17 +15,21 @@ export default {
   components: {
     'a-modal': Modal,
     ActiveContract,
+    InactiveContracts,
     ContractModal,
     PlusOutlined,
   },
 
   setup(props) {
+    const route = useRoute();
+    let employeeId = null;
+
     const contracts = ref([]);
     const isContractModalOpened = ref(false);
 
     const fetchContracts = async () => {
       try {
-        const { data } = await contract.get();
+        const { data } = await contract.getByEmployeeId(employeeId);
         contracts.value = data;
       } catch (error) {
         console.error('Erro buscando contratos:', error);
@@ -39,7 +45,10 @@ export default {
     };
 
     onMounted(() => {
-      fetchContracts();
+      employeeId = route.params.id;
+      if (!!employeeId) {
+        fetchContracts();
+      }
     });
 
     return {
@@ -72,6 +81,7 @@ export default {
         end_date: '24/03/2025',
       }"
     />
+    <inactive-contracts />
     <div class="contracts__list">
       <div v-for="(contract, index) in contracts" :key="index" class="list">
         <p>

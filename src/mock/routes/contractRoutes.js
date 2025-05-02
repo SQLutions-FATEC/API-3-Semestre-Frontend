@@ -1,14 +1,17 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import { roles } from '@/mock/seeds/roleSeeds';
-import contracts from '../seeds/contractSeeds';
+import { employees } from '@/mock/seeds/employeeSeeds';
 
 const contractRoutes = [
   mockFlag(
     {
       method: 'get',
-      url: '/contracts',
-      result: () => {
-        const response = contracts;
+      url: '/contracts/employee/:employee_id',
+      result: ({ params }) => {
+        const selectedEmployee = employees.find(
+          (employee) => employee.id == params.employee_id
+        );
+        const response = selectedEmployee.contracts;
 
         return APIFailureWrapper({
           content: response,
