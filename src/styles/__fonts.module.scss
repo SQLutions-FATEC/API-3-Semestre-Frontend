@@ -1,0 +1,138 @@
+@use "sass:map";
+
+$heading-styles: (
+  xxlarge: (color: #000000,
+    font-family: "'Exo 2', sans-serif",
+    font-size: 40px,
+    font-style: normal,
+    font-weight: 600,
+    line-height: 52px,
+  ),
+  xlarge: (color: #000000,
+    font-family: "'Exo 2', sans-serif",
+    font-size: 32px,
+    font-style: normal,
+    font-weight: 600,
+    line-height: 40px,
+  ),
+  large: (color: #000000,
+    font-family: "'Exo 2', sans-serif",
+    font-size: 28px,
+    font-style: normal,
+    font-weight: 600,
+    line-height: 40px,
+  ),
+  medium: (color: #000000,
+    font-family: "'Exo 2', sans-serif",
+    font-size: 24px,
+    font-style: normal,
+    font-weight: 600,
+    line-height: 32px,
+  ),
+  small: (color: #000000,
+    font-family: "'Exo 2', sans-serif",
+    font-size: 20px,
+    font-style: normal,
+    font-weight: 600,
+    line-height: 28px,
+  ),
+  xsmall: (color: #000000,
+    font-family: "'Exo 2', sans-serif",
+    font-size: 18px,
+    font-style: normal,
+    font-weight: 600,
+    line-height: 24px,
+  ),
+);
+
+$label-styles: (
+  large: (color: #000000,
+    font-family: "'Exo 2', sans-serif",
+    font-size: 18px,
+    font-style: normal,
+    font-weight: 500,
+    line-height: 24px,
+  ),
+  medium: (color: #000000,
+    font-family: "'Exo 2', sans-serif",
+    font-size: 16px,
+    font-style: normal,
+    font-weight: 500,
+    line-height: 20px,
+  ),
+  small: (color: #000000,
+    font-family: "'Exo 2', sans-serif",
+    font-size: 14px,
+    font-style: normal,
+    font-weight: 500,
+    line-height: 16px,
+  ),
+  xsmall: (color: #000000,
+    font-family: "'Exo 2', sans-serif",
+    font-size: 12px,
+    font-style: normal,
+    font-weight: 500,
+    line-height: 16px,
+  ),
+);
+
+$paragraph-styles: (
+  large: (color: #000000,
+    font-family: "'Exo 2', sans-serif",
+    font-size: 18px,
+    font-style: normal,
+    font-weight: 400,
+    line-height: 24px,
+  ),
+  medium: (color: #000000,
+    font-family: "'Exo 2', sans-serif",
+    font-size: 16px,
+    font-style: normal,
+    font-weight: 400,
+    line-height: 20px,
+  ),
+  small: (color: #000000,
+    font-family: "'Exo 2', sans-serif",
+    font-size: 14px,
+    font-style: normal,
+    font-weight: 400,
+    line-height: 18px,
+  ),
+  xsmall: (color: #000000,
+    font-family: "'Exo 2', sans-serif",
+    font-size: 12px,
+    font-style: normal,
+    font-weight: 400,
+    line-height: 16px,
+  ),
+);
+
+@mixin heading($size) {
+  $styles: map.get($heading-styles, $size);
+
+  @if $styles {
+    @each $property, $value in $styles {
+      #{$property}: $value;
+    }
+  }
+}
+
+@mixin label($size) {
+  $styles: map.get($label-styles, $size);
+
+  @if $styles {
+    @each $property, $value in $styles {
+      #{$property}: $value;
+    }
+  }
+}
+
+@mixin paragraph($size) {
+  $styles: map.get($paragraph-styles, $size);
+
+  @if $styles {
+    @each $property, $value in $styles {
+      #{$property}: $value;
+    }
+  }
+}
