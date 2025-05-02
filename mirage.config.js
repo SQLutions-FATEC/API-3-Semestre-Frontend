@@ -4,11 +4,13 @@ import clockInOutRoutes from './src/mock/routes/clockInOutRoutes';
 import employeeRoutes from './src/mock/routes/employeeRoutes';
 import roleRoutes from './src/mock/routes/roleRoutes';
 import photoRoutes from './src/mock/routes/photoRoutes';
+import contractRoutes from './src/mock/routes/contractRoutes';
 
 export function makeServer() {
   if (import.meta.env.MODE === 'development' && !window.server) {
     const routes = [
       ...companyRoutes,
+      ...contractRoutes,
       ...clockInOutRoutes,
       ...employeeRoutes,
       ...photoRoutes,

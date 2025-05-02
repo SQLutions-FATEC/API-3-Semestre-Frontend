@@ -183,20 +183,6 @@ export default {
       }
     };
 
-    const fillContracts = (contracts) => {
-      const formattedContracts = [];
-      contracts.forEach((contract) => {
-        formattedContracts.push({
-          company: contract.company,
-          role: contract.role,
-          datetime_start: contract.datetime_start,
-          datetime_end: contract.datetime_end,
-        });
-      });
-      employeeContracts = formattedContracts;
-      contractsRef.value.fillContracts(formattedContracts);
-    };
-
     const getEmployee = async (employeeId) => {
       try {
         const { data } = await employee.get(employeeId);
@@ -205,7 +191,6 @@ export default {
         employeeBloodType.value = data.blood_type;
         employeeRN.value = String(data.register_number);
         gender = data.gender;
-        fillContracts(data.contracts);
 
         pageTitle.value = `Editar ${employeeName.value}`;
       } catch (error) {
@@ -288,7 +273,6 @@ export default {
       employeeRN.value = '';
       employeeBloodType.value = '';
       employeeRN.value = '';
-      contractsRef.value.resetContracts();
       profileImage.value = defaultProfileImage;
     };
 

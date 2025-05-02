@@ -46,7 +46,7 @@ export default {
       <div class="active-icon"></div>
     </a-tooltip>
     <div class="contract">
-      <div class="contract-infos">
+      <div class="contract__infos">
         <div class="info">
           <h3>Empresa</h3>
           <p>{{ contract.company.name }}</p>
@@ -60,13 +60,17 @@ export default {
           <p>{{ contract.start_date }} - {{ contract.end_date }}</p>
         </div>
       </div>
-      <div class="contract-actions">
+      <div class="contract__actions">
         <a-button type="primary" shape="circle" @click="editContract">
           <template #icon>
             <edit-outlined style="color: white" />
           </template>
         </a-button>
-        <a-button type="primary" shape="circle" @click="inactivateContract">
+        <a-button
+          class="delete-button"
+          shape="circle"
+          @click="inactivateContract"
+        >
           <template #icon>
             <delete-outlined style="color: white" />
           </template>
@@ -97,7 +101,7 @@ export default {
     border-radius: $borderRadiusSm;
     padding: $spacingSm $spacingMd;
 
-    .contract-infos {
+    .contract__infos {
       display: flex;
       gap: $spacingXxl;
 
@@ -116,9 +120,19 @@ export default {
         }
       }
     }
-    .contract-actions {
+    .contract__actions {
       display: flex;
       gap: $spacingXl;
+
+      .delete-button {
+        background-color: $colorBackgroundError;
+        border-color: $colorError;
+
+        &:hover {
+          background-color: darken($colorBackgroundError, 15%) !important;
+          border-color: darken($colorBackgroundError, 15%) !important;
+        }
+      }
     }
   }
 }

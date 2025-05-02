@@ -1,9 +1,11 @@
 <script>
 import { Modal } from 'ant-design-vue';
+import { PlusOutlined } from '@ant-design/icons-vue';
 import { onMounted, ref } from 'vue';
 import ActiveContract from '@/components/Contracts/ActiveContract.vue';
 import ContractModal from '@/components/Modals/ContractModal.vue';
 import contract from '@/services/contracts';
+import dayjs from 'dayjs';
 
 export default {
   name: 'Contracts',
@@ -12,6 +14,7 @@ export default {
     'a-modal': Modal,
     ActiveContract,
     ContractModal,
+    PlusOutlined,
   },
 
   setup(props) {
@@ -27,6 +30,10 @@ export default {
       }
     };
 
+    const formatDate = (dateString) => {
+      return dayjs(dateString).format('DD/MM/YYYY HH:mm');
+    };
+
     const openContractModal = () => {
       isContractModalOpened.value = true;
     };
@@ -37,6 +44,8 @@ export default {
 
     return {
       contracts,
+      fetchContracts,
+      formatDate,
       isContractModalOpened,
       openContractModal,
     };
@@ -67,9 +76,9 @@ export default {
       <div v-for="(contract, index) in contracts" :key="index" class="list">
         <p>
           Empresa: {{ contract.company.name }} / Função:
-          {{ contract.role.name }} / Início: {{ contract.datetime_start }} /
-          Fim:
-          {{ contract.datetime_end }}
+          {{ contract.role.name }} / Início:
+          {{ formatDate(contract.datetime_start) }} / Fim:
+          {{ formatDate(contract.datetime_end) }}
         </p>
       </div>
     </div>
