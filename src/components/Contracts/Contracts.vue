@@ -5,12 +5,14 @@ import { onMounted, ref } from 'vue';
 import company from '@/services/company';
 import role from '@/services/role';
 import { message } from 'ant-design-vue';
+import ActiveContract from '@/components/Contracts/ActiveContract.vue';
 
 export default {
   name: 'Contracts',
 
   components: {
     'a-range-picker': DatePicker.RangePicker,
+    ActiveContract,
     CloseOutlined,
     PlusOutlined,
   },
@@ -37,7 +39,9 @@ export default {
         !(selectedRoleData.value && Object.keys(selectedRoleData.value)) ||
         !selectedDatetime.value.length
       ) {
-        return message.error('Empresa, função e datas de contrato devem estar preenchidos')
+        return message.error(
+          'Empresa, função e datas de contrato devem estar preenchidos'
+        );
       }
 
       const contract = {
@@ -188,7 +192,23 @@ export default {
 
 <template>
   <div class="contracts">
-    <h1>Contratos</h1>
+    <div class="contracts__header">
+      <h1>Contratos</h1>
+      <a-button type="primary" @click="addContract">
+        <template #icon>
+          <plus-outlined />
+        </template>
+        Adicionar Contrato
+      </a-button>
+    </div>
+    <active-contract
+      :contract="{
+        company: { id: 1, name: 'Empresa Muito Boa' },
+        role: { id: 1, name: 'Soldador' },
+        start_date: '12/02/2024',
+        end_date: '24/03/2025',
+      }"
+    />
     <div class="contracts__content">
       <a-cascader
         v-model:value="selectedCompanyId"
@@ -227,12 +247,6 @@ export default {
         :placeholder="['Data início', 'Data fim']"
         :time-picker-props="{ format: 'HH:mm' }"
       />
-      <a-button type="primary" @click="addContract">
-        <template #icon>
-          <plus-outlined />
-        </template>
-        Adicionar Contrato
-      </a-button>
     </div>
     <div class="contracts__list">
       <div
@@ -265,6 +279,12 @@ export default {
   flex-direction: column;
   gap: $spacingLg;
   flex: 1 1 auto;
+
+  .contracts__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
   h1 {
     @include heading(large);

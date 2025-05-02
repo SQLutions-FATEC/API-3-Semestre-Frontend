@@ -8,7 +8,7 @@ import { Button, Cascader, DatePicker, Upload, Modal } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import Contracts from '@/components/Contracts.vue';
+import Contracts from '@/components/Contracts/Contracts.vue';
 import { message } from 'ant-design-vue';
 import photo from '@/services/photo';
 
@@ -96,7 +96,7 @@ export default {
     const employeeAction = async () => {
       if (
         // temporario, para fazer funcionar sem contratos, que será na próxima sprint
-        
+
         // !employeeName.value ||
         // !employeeBirthDate.value ||
         // !employeeBloodType.value ||
@@ -125,7 +125,7 @@ export default {
         blood_type: employeeBloodType.value,
         birth_date: employeeBirthDate.value,
         register_number: employeeRN.value,
-        gender: gender
+        gender: gender,
         // temporario, para fazer funcionar sem contratos, que será na próxima sprint
         // contracts: employeeContracts,
       };
@@ -196,7 +196,7 @@ export default {
         employeeBirthDate.value = dayjs(data.birth_date);
         employeeBloodType.value = data.blood_type;
         employeeRN.value = String(data.register_number);
-        gender = data.gender
+        gender = data.gender;
         fillContracts(data.contracts);
 
         pageTitle.value = `Editar ${employeeName.value}`;
@@ -391,7 +391,7 @@ export default {
       <div class="content__action">
         <a-button
           v-if="showDeleteButton"
-          danger
+          class="delete-button"
           style="width: 250px"
           @click="openConfirmationModal"
         >
@@ -472,6 +472,17 @@ export default {
       display: flex;
       justify-content: center;
       gap: $spacingMd;
+
+      .delete-button {
+        background-color: transparent;
+        border-color: $colorError;
+        color: $colorError;
+
+        &:hover {
+          background-color: $colorBackgroundError !important;
+          color: $colorWhite;
+        }
+      }
     }
   }
 }

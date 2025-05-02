@@ -5,6 +5,8 @@ import { message } from 'ant-design-vue';
 import { DownloadOutlined } from '@ant-design/icons-vue';
 
 export default {
+  name: 'ExcelExportButton',
+
   props: {
     data: {
       required: true,
@@ -45,7 +47,7 @@ export default {
 
     const exportToExcel = async () => {
       if (!props.data || props.data.length === 0) {
-        return message.error('Nenhum dado disponível para exportação')
+        return message.error('Nenhum dado disponível para exportação');
       }
 
       isLoading.value = true;
@@ -80,7 +82,7 @@ export default {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } catch (error) {
-        message.error('Erro na exportação:', error)
+        message.error('Erro na exportação:', error);
       } finally {
         isLoading.value = false;
       }
