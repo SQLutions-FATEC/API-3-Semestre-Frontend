@@ -1,6 +1,8 @@
 <script>
 import { Button, Tooltip } from 'ant-design-vue';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons-vue';
+import { ref } from 'vue';
+import ContractModal from '@/components/Modals/ContractModal.vue';
 
 export default {
   name: 'ActiveContract',
@@ -15,15 +17,21 @@ export default {
   components: {
     'a-button': Button,
     'a-tooltip': Tooltip,
+    'contract-modal': ContractModal,
     'delete-outlined': DeleteOutlined,
     'edit-outlined': EditOutlined,
   },
 
-  setup(props) {
+  setup(props, { emit }) {
     const contract = props.contract;
+    const isEditContractModalOpened = ref(false);
 
     const editContract = () => {
-      // todo
+      isEditContractModalOpened.value = true;
+    };
+
+    const fetchContracts = () => {
+      emit('fetch-contracts');
     };
 
     const inactivateContract = () => {
@@ -33,7 +41,9 @@ export default {
     return {
       contract,
       editContract,
+      fetchContracts,
       inactivateContract,
+      isEditContractModalOpened,
     };
   },
 };
@@ -58,9 +68,7 @@ export default {
         <div class="info">
           <h3>Data de contrato</h3>
           <p>
-            {{
-              new Date(contract.datetime_start).toLocaleDateString('pt-BR')
-            }}
+            {{ new Date(contract.datetime_start).toLocaleDateString('pt-BR') }}
             - {{ new Date(contract.datetime_end).toLocaleDateString('pt-BR') }}
           </p>
         </div>
@@ -82,6 +90,11 @@ export default {
         </a-button>
       </div>
     </div>
+    <contract-modal
+      v-model:open="isEditContractModalOpened"
+      :contract="contract"
+      @fetch-contracts="fetchContracts"
+    />
   </div>
 </template>
 

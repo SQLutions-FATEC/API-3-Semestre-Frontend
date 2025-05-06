@@ -1,7 +1,9 @@
 <script>
 import { Modal, message } from 'ant-design-vue';
-import { onMounted, ref } from 'vue';
+import { watch, ref } from 'vue';
+import dayjs from 'dayjs';
 import company from '@/services/company';
+import contracts from '@/services/contracts';
 import RoleModal from '@/components/Modals/RoleModal.vue';
 import role from '@/services/role';
 
@@ -9,6 +11,10 @@ export default {
   name: 'ContractModal',
 
   props: {
+    contract: {
+      default: {},
+      type: Object,
+    },
     open: {
       required: true,
       type: Boolean,
@@ -24,6 +30,7 @@ export default {
     const dateFormatList = 'DD/MM/YYYY HH:mm';
 
     const companyOptions = ref([]);
+    const isEditing = ref(false);
     const isRoleModalOpened = ref(false);
     const roleOptions = ref([]);
     const selectedCompanyData = ref({});
@@ -33,6 +40,14 @@ export default {
     const selectedRoleId = ref('');
 
     const addContract = async () => {
+      try {
+        await contracts.create(contract);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const addEditContract = async () => {
       if (
         !(
           selectedCompanyData.value && Object.keys(selectedCompanyData.value)
@@ -58,7 +73,9 @@ export default {
         datetime_end: selectedDatetime.value[1],
       };
 
-      await contract.create(contract);
+      if (isEditing.value) await editContract(contract);
+      else await addContract(contract);
+
       emit('fetch-contracts');
 
       selectedCompanyId.value = '';
@@ -83,6 +100,14 @@ export default {
         ...regularOptions,
         { value: 'add-new', label: '➕ Adicionar Função' },
       ];
+    };
+
+    const editContract = async () => {
+      try {
+        await contracts.edit(contract);
+      } catch (error) {
+        console.error(error);
+      }
     };
 
     const fetchCompanies = async () => {
@@ -138,12 +163,32 @@ export default {
       isRoleModalOpened.value = true;
     };
 
-    onMounted(async () => {
+    const loadData = async () => {
       await Promise.all([fetchCompanies(), fetchRoles()]);
-    });
+
+      if (isEditing.value) {
+        selectedCompanyId.value = props.contract.company.id;
+        selectedRoleId.value = props.contract.role.id;
+        selectedDatetime.value = [
+          dayjs(props.contract.datetime_start),
+          dayjs(props.contract.datetime_end),
+        ];
+      }
+    };
+
+    watch(
+      () => props.open,
+      async (isOpen) => {
+        if (isOpen) {
+          isEditing.value = !!Object.keys(props.contract).length;
+          await loadData();
+        }
+      },
+      { immediate: true }
+    );
 
     return {
-      addContract,
+      addEditContract,
       closeModal,
       companyOptions,
       dateFormatList,
@@ -168,7 +213,7 @@ export default {
     title="Novo Contrato"
     :open="open"
     @cancel="closeModal"
-    @ok="addContract"
+    @ok="addEditContract"
   >
     <div class="contract-modal">
       <a-cascader

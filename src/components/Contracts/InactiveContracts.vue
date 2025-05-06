@@ -16,7 +16,7 @@ export default {
     'a-table': Table,
   },
 
-  setup(props) {
+  setup(props, { emit }) {
     const columns = [
       {
         title: 'Empresa',
@@ -52,7 +52,7 @@ export default {
           size: pageSize.value,
         };
 
-        eventBus.$emit('fetch-contracts', params);
+        emit('fetch-contracts', params);
       } catch (error) {
         console.error(error);
       }

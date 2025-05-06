@@ -25,12 +25,20 @@ export default {
     let employeeId = null;
 
     const activeContract = ref({});
+    const currentPagination = ref({ page: 1, size: 5 });
     const inactiveContracts = ref([]);
     const isContractModalOpened = ref(false);
 
-    const fetchContracts = async () => {
+    const fetchContracts = async (pagination) => {
+      if (pagination) currentPagination.value = pagination;
+
+      const params = {
+        page: currentPagination.value.page,
+        size: currentPagination.value.size,
+      };
+
       try {
-        const { data } = await contract.getByEmployeeId(employeeId);
+        const { data } = await contract.getByEmployeeId(employeeId, params);
         activeContract.value = data.find((contract) => contract.active);
         inactiveContracts.value = data.filter((contract) => !contract.active);
       } catch (error) {
@@ -79,6 +87,7 @@ export default {
     <active-contract
       v-if="Object.keys(activeContract).length"
       :contract="activeContract"
+      @fetch-contracts="fetchContracts"
     />
     <inactive-contracts
       v-if="inactiveContracts.length"
