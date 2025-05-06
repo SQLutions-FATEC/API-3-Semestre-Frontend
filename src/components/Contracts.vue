@@ -227,10 +227,11 @@ export default {
         :placeholder="['Data início', 'Data fim']"
         :time-picker-props="{ format: 'HH:mm' }"
       />
-      <a-button type="primary" shape="circle" @click="addContract">
+      <a-button type="primary" @click="addContract">
         <template #icon>
           <plus-outlined />
         </template>
+        Adicionar Contrato
       </a-button>
     </div>
     <div class="contracts__list">

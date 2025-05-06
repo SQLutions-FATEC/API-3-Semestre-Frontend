@@ -117,7 +117,7 @@ export default {
         <a-option value="role">Função</a-option>
         <a-option value="datetime">Data</a-option>
       </a-select>
-      <a-button @click="filterClockInOut">Filtrar</a-button>
+      <a-button type="primary" @click="filterClockInOut">Filtrar</a-button>
     </div>
   </div>
 </template>

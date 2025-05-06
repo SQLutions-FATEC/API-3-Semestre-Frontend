@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import xlsx from 'node-xlsx';
 import { message } from 'ant-design-vue';
+import { DownloadOutlined } from '@ant-design/icons-vue';
 
 export default {
   props: {
@@ -18,6 +19,10 @@ export default {
       default: 'Dados',
       type: String,
     },
+  },
+
+  components: {
+    DownloadOutlined,
   },
 
   setup(props) {
@@ -104,6 +109,9 @@ export default {
 
 <template>
   <a-button type="primary" :loading="isLoading" @click="exportToExcel">
+    <template #icon>
+      <download-outlined />
+    </template>
     Exportar para Excel
   </a-button>
 </template>

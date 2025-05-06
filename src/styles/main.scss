@@ -1,7 +1,7 @@
 @forward './__border-radius.module.scss';
-@forward './__colors.module.scss';
 @forward './__fonts.module.scss';
 @forward './__spacers.module.scss';
+@import './__fonts.module.scss';
 
 h1,
 h2,
@@ -9,6 +9,9 @@ h3,
 h4,
 h5,
 h6,
-p {
+p,
+span,
+a {
+  font-family: $fontFamily !important;
   margin-bottom: 0px;
 }

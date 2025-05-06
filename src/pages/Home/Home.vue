@@ -233,4 +233,14 @@ export default {
   flex-direction: column;
   gap: $spacingXl;
 }
+:deep(.ant-table-cell) {
+  @include paragraph(medium);
+}
+:deep(.ant-pagination-item-active) {
+  border-color: $colorBorderSecondary;
+
+  a {
+    color: $colorTextOrange;
+  }
+}
 </style>

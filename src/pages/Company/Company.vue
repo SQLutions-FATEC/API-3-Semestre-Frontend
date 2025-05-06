@@ -197,6 +197,9 @@ export default {
 .company {
   padding: $spacingXxl 0px;
 
+  h1 {
+    @include heading(large);
+  }
   .company__content {
     padding: $spacingXxl 0px;
     display: flex;
@@ -204,14 +207,14 @@ export default {
     gap: $spacingXxl;
 
     .content__input {
-      flex: 0 0 calc(50% - 16px);
+      flex: 0 0 calc(50% - $spacingLg);
       box-sizing: border-box;
     }
     .content__action {
       flex: 0 0 100%;
       display: flex;
       justify-content: center;
-      gap: 12px;
+      gap: $spacingMd;
     }
   }
 }

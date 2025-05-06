@@ -40,6 +40,7 @@ export default {
 .app {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0px 16px;
+  padding: 0px $spacingLg;
+  background-color: $colorBackground;
 }
 </style>
