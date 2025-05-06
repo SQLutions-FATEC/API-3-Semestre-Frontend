@@ -24,13 +24,15 @@ export default {
     const route = useRoute();
     let employeeId = null;
 
-    const contracts = ref([]);
+    const activeContract = ref({});
+    const inactiveContracts = ref([]);
     const isContractModalOpened = ref(false);
 
     const fetchContracts = async () => {
       try {
         const { data } = await contract.getByEmployeeId(employeeId);
-        contracts.value = data;
+        activeContract.value = data.find((contract) => contract.active);
+        inactiveContracts.value = data.filter((contract) => !contract.active);
       } catch (error) {
         console.error('Erro buscando contratos:', error);
       }
@@ -52,9 +54,10 @@ export default {
     });
 
     return {
-      contracts,
+      activeContract,
       fetchContracts,
       formatDate,
+      inactiveContracts,
       isContractModalOpened,
       openContractModal,
     };
@@ -74,24 +77,14 @@ export default {
       </a-button>
     </div>
     <active-contract
-      :contract="{
-        company: { id: 1, name: 'Empresa Muito Boa' },
-        role: { id: 1, name: 'Soldador' },
-        start_date: '12/02/2024',
-        end_date: '24/03/2025',
-      }"
+      v-if="Object.keys(activeContract).length"
+      :contract="activeContract"
     />
-    <inactive-contracts />
-    <div class="contracts__list">
-      <div v-for="(contract, index) in contracts" :key="index" class="list">
-        <p>
-          Empresa: {{ contract.company.name }} / Função:
-          {{ contract.role.name }} / Início:
-          {{ formatDate(contract.datetime_start) }} / Fim:
-          {{ formatDate(contract.datetime_end) }}
-        </p>
-      </div>
-    </div>
+    <inactive-contracts
+      v-if="inactiveContracts.length"
+      :contracts="inactiveContracts"
+      @fetch-contracts="fetchContracts"
+    />
     <contract-modal
       v-model:open="isContractModalOpened"
       @fetch-contracts="fetchContracts"
@@ -114,17 +107,6 @@ export default {
 
   h1 {
     @include heading(large);
-  }
-  .contracts__list {
-    display: flex;
-    flex-direction: column;
-    gap: $spacingLg;
-
-    .list {
-      display: flex;
-      align-items: center;
-      gap: $spacingXxl;
-    }
   }
 }
 </style>

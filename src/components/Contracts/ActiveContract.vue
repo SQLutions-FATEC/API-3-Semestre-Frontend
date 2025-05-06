@@ -57,7 +57,12 @@ export default {
         </div>
         <div class="info">
           <h3>Data de contrato</h3>
-          <p>{{ contract.start_date }} - {{ contract.end_date }}</p>
+          <p>
+            {{
+              new Date(contract.datetime_start).toLocaleDateString('pt-BR')
+            }}
+            - {{ new Date(contract.datetime_end).toLocaleDateString('pt-BR') }}
+          </p>
         </div>
       </div>
       <div class="contract__actions">

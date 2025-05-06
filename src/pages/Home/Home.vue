@@ -58,16 +58,14 @@ export default {
           params.employee = currentFilters.value.employee;
         if (currentFilters.value.role) params.role = currentFilters.value.role;
         if (currentFilters.value.dateRange?.length === 2) {
-          params.start_date = currentFilters.value.dateRange[0].format(
-            'YYYY-MM-DD HH:mm'
-          );
-          params.end_date = currentFilters.value.dateRange[1].format(
-            'YYYY-MM-DD HH:mm'
-          );
+          params.start_date =
+            currentFilters.value.dateRange[0].format('YYYY-MM-DD HH:mm');
+          params.end_date =
+            currentFilters.value.dateRange[1].format('YYYY-MM-DD HH:mm');
         }
 
         const { data } = await clockInOut.get(params);
-        
+
         dataSource.value = data.items.map((info) => ({
           key: info.id,
           registerNumber: info.employee.register_number,
@@ -232,15 +230,5 @@ export default {
   display: flex;
   flex-direction: column;
   gap: $spacingXl;
-}
-:deep(.ant-table-cell) {
-  @include paragraph(medium);
-}
-:deep(.ant-pagination-item-active) {
-  border-color: $colorBorderSecondary;
-
-  a {
-    color: $colorTextOrange;
-  }
 }
 </style>
