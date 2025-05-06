@@ -33,13 +33,11 @@ export default {
     const isEditing = ref(false);
     const isRoleModalOpened = ref(false);
     const roleOptions = ref([]);
-    const selectedCompanyData = ref({});
     const selectedCompanyId = ref('');
     const selectedDatetime = ref([]);
-    const selectedRoleData = ref({});
     const selectedRoleId = ref('');
 
-    const addContract = async () => {
+    const addContract = async (contract) => {
       try {
         await contracts.create(contract);
       } catch (error) {
@@ -49,10 +47,8 @@ export default {
 
     const addEditContract = async () => {
       if (
-        !(
-          selectedCompanyData.value && Object.keys(selectedCompanyData.value)
-        ) ||
-        !(selectedRoleData.value && Object.keys(selectedRoleData.value)) ||
+        !selectedCompanyId.value ||
+        !selectedRoleId.value ||
         !selectedDatetime.value.length
       ) {
         return message.error(
@@ -60,14 +56,21 @@ export default {
         );
       }
 
+      const selectedCompany = companyOptions.value.find(
+        (company) => company.data.id == selectedCompanyId.value
+      );
+      const selectedRole = roleOptions.value.find(
+        (role) => role.data.id == selectedRoleId.value
+      );
+
       const contract = {
         company: {
-          id: selectedCompanyData.value.id,
-          name: selectedCompanyData.value.name,
+          id: selectedCompany.data.id,
+          name: selectedCompany.data.name,
         },
         role: {
-          id: selectedRoleData.value.id,
-          name: selectedRoleData.value.name,
+          id: selectedRole.data.id,
+          name: selectedRole.data.name,
         },
         datetime_start: selectedDatetime.value[0],
         datetime_end: selectedDatetime.value[1],
@@ -79,9 +82,7 @@ export default {
       emit('fetch-contracts');
 
       selectedCompanyId.value = '';
-      selectedCompanyData.value = {};
       selectedRoleId.value = '';
-      selectedRoleData.value = {};
       selectedDatetime.value = [];
 
       closeModal();
@@ -102,7 +103,8 @@ export default {
       ];
     };
 
-    const editContract = async () => {
+    const editContract = async (contract) => {
+      contract.id = props.contract.id;
       try {
         await contracts.edit(contract);
       } catch (error) {
@@ -143,7 +145,6 @@ export default {
     const handleCompanyChange = (value, selectedOptions) => {
       if (value && selectedOptions.length) {
         selectedCompanyId.value = value;
-        selectedCompanyData.value = selectedOptions[0].data;
       }
     };
 
@@ -154,7 +155,6 @@ export default {
           ensureAddNewIsLast();
         } else {
           selectedRoleId.value = value;
-          selectedRoleData.value = selectedOptions[0].data;
         }
       }
     };
@@ -198,10 +198,8 @@ export default {
       isRoleModalOpened,
       props,
       roleOptions,
-      selectedCompanyData,
       selectedCompanyId,
       selectedDatetime,
-      selectedRoleData,
       selectedRoleId,
     };
   },

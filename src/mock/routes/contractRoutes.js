@@ -1,6 +1,8 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import { roles } from '@/mock/seeds/roleSeeds';
 import { employees } from '@/mock/seeds/employeeSeeds';
+import contracts from '../seeds/contractSeeds';
+import { companies } from '../seeds/companySeeds';
 
 const contractRoutes = [
   mockFlag(
@@ -15,7 +17,7 @@ const contractRoutes = [
 
         return APIFailureWrapper({
           content: response,
-          errorMessage: 'Erro ao listar as funções',
+          errorMessage: 'Erro ao listar os contratos',
         });
       },
     },
@@ -26,14 +28,40 @@ const contractRoutes = [
       method: 'post',
       url: '/contracts',
       result: ({ requestBody }) => {
-        const requestObj = JSON.parse(requestBody);
+        const body = JSON.parse(requestBody);
 
-        const newRole = { id: roles.length + 1, name: requestObj.role };
+        const newRole = { id: roles.length + 1, name: body.role };
         roles.push(newRole);
 
         return APIFailureWrapper({
           content: null,
-          errorMessage: 'Erro ao adicionar a função',
+          errorMessage: 'Erro ao adicionar o contrato',
+        });
+      },
+    },
+    'on'
+  ),
+  mockFlag(
+    {
+      method: 'put',
+      url: '/contracts/:id',
+      result: ({ params, requestBody }) => {
+        const body = JSON.parse(requestBody);
+
+        let edittedContract;
+        contracts.forEach((contract) => {
+          if (contract.id == params.id) {
+            contract.company = companies.find(
+              (company) => company.id == body.company.id
+            );
+
+            edittedContract = contract;
+          }
+        });
+
+        return APIFailureWrapper({
+          content: edittedContract,
+          errorMessage: 'Erro ao editar o contrato',
         });
       },
     },
