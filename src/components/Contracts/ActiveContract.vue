@@ -3,6 +3,7 @@ import { Button, Tooltip } from 'ant-design-vue';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons-vue';
 import { ref } from 'vue';
 import ContractModal from '@/components/Modals/ContractModal.vue';
+import InactivateContractModal from '@/components/Modals/InactivateContractModal.vue';
 
 export default {
   name: 'ActiveContract',
@@ -20,11 +21,13 @@ export default {
     'contract-modal': ContractModal,
     'delete-outlined': DeleteOutlined,
     'edit-outlined': EditOutlined,
+    'inactivate-contract-modal': InactivateContractModal,
   },
 
   setup(props, { emit }) {
     const contract = props.contract;
     const isEditContractModalOpened = ref(false);
+    const isInactivateContractModalOpened = ref(false);
 
     const editContract = () => {
       isEditContractModalOpened.value = true;
@@ -35,7 +38,7 @@ export default {
     };
 
     const inactivateContract = () => {
-      // todo
+      isInactivateContractModalOpened.value = true;
     };
 
     return {
@@ -44,6 +47,7 @@ export default {
       fetchContracts,
       inactivateContract,
       isEditContractModalOpened,
+      isInactivateContractModalOpened,
     };
   },
 };
@@ -92,6 +96,11 @@ export default {
     </div>
     <contract-modal
       v-model:open="isEditContractModalOpened"
+      :contract="contract"
+      @fetch-contracts="fetchContracts"
+    />
+    <inactivate-contract-modal
+      v-model:open="isInactivateContractModalOpened"
       :contract="contract"
       @fetch-contracts="fetchContracts"
     />

@@ -67,5 +67,27 @@ const contractRoutes = [
     },
     'on'
   ),
+  mockFlag(
+    {
+      method: 'put',
+      url: '/contracts/:id/inactivate',
+      result: ({ params }) => {
+        let edittedContract;
+
+        contracts.forEach((contract) => {
+          if (contract.id == params.id) {
+            contract.active = false;
+            edittedContract = contract;
+          }
+        });
+
+        return APIFailureWrapper({
+          content: edittedContract,
+          errorMessage: 'Erro ao inativar o contrato',
+        });
+      },
+    },
+    'on'
+  ),
 ];
 export default contractRoutes;

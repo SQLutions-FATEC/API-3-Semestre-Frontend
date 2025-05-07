@@ -39,7 +39,7 @@ export default {
 
       try {
         const { data } = await contract.getByEmployeeId(employeeId, params);
-        activeContract.value = data.find((contract) => contract.active);
+        activeContract.value = data.find((contract) => contract.active) || {};
         inactiveContracts.value = data.filter((contract) => !contract.active);
       } catch (error) {
         console.error('Erro buscando contratos:', error);

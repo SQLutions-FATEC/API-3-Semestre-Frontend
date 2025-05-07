@@ -5,6 +5,7 @@ const contract = {
     api.get(`/contracts/employee/${employeeId}`, { params }),
   create: (params) => api.post('/contracts', params),
   edit: (params) => api.put(`/contracts/${params.id}`, params),
+  inactivate: (contractId) => api.put(`/contracts/${contractId}/inactivate`),
 };
 
 export default contract;

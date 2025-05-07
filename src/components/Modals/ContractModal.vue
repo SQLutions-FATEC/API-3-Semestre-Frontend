@@ -196,7 +196,6 @@ export default {
       handleCompanyChange,
       handleRoleChange,
       isRoleModalOpened,
-      props,
       roleOptions,
       selectedCompanyId,
       selectedDatetime,

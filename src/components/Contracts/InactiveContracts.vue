@@ -1,6 +1,6 @@
 <script>
 import { Table } from 'ant-design-vue';
-import { onMounted, ref } from 'vue';
+import { ref, watch } from 'vue';
 
 export default {
   name: 'InactiveContracts',
@@ -64,8 +64,8 @@ export default {
       await getContracts();
     };
 
-    onMounted(() => {
-      dataSource.value = props.contracts.map((contract) => ({
+    const updateDataSource = (contracts) => {
+      dataSource.value = contracts.map((contract) => ({
         key: contract.id,
         company: contract.company?.name,
         role: contract.role?.name,
@@ -74,7 +74,16 @@ export default {
           contract.datetime_end
         ),
       }));
-    });
+    };
+
+    watch(
+      () => props.contracts,
+      (newContracts) => {
+        updateDataSource(newContracts);
+        totalInfos.value = newContracts.length;
+      },
+      { immediate: true }
+    );
 
     return {
       columns,
