@@ -58,16 +58,14 @@ export default {
           params.employee = currentFilters.value.employee;
         if (currentFilters.value.role) params.role = currentFilters.value.role;
         if (currentFilters.value.dateRange?.length === 2) {
-          params.start_date = currentFilters.value.dateRange[0].format(
-            'YYYY-MM-DD HH:mm'
-          );
-          params.end_date = currentFilters.value.dateRange[1].format(
-            'YYYY-MM-DD HH:mm'
-          );
+          params.start_date =
+            currentFilters.value.dateRange[0].format('YYYY-MM-DD HH:mm');
+          params.end_date =
+            currentFilters.value.dateRange[1].format('YYYY-MM-DD HH:mm');
         }
 
         const { data } = await clockInOut.get(params);
-        
+
         dataSource.value = data.items.map((info) => ({
           key: info.id,
           registerNumber: info.employee.register_number,
@@ -133,6 +131,16 @@ export default {
         },
       },
       {
+        title: 'Data de entrada',
+        dataIndex: 'datetime',
+        key: 'datetime',
+      },
+      {
+        title: 'Data de saída',
+        dataIndex: 'datetime',
+        key: 'datetime',
+      },
+      {
         title: 'Empresa',
         dataIndex: 'company',
         key: 'company',
@@ -151,23 +159,6 @@ export default {
         title: 'Função',
         dataIndex: 'role',
         key: 'role',
-      },
-      {
-        title: 'Horário',
-        dataIndex: 'datetime',
-        key: 'datetime',
-      },
-      {
-        title: '',
-        dataIndex: 'direction',
-        key: 'direction',
-        customRender: ({ text }) => {
-          if (text === 'Entrada') {
-            return h(ArrowUpOutlined, { style: { color: 'green' } });
-          } else {
-            return h(ArrowDownOutlined, { style: { color: 'red' } });
-          }
-        },
       },
       {
         title: 'Ações',
