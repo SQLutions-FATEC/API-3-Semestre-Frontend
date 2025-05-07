@@ -1,6 +1,6 @@
 <script>
 import { Modal, message } from 'ant-design-vue';
-import { watch, ref } from 'vue';
+import { watch, ref, inject } from 'vue';
 import dayjs from 'dayjs';
 import company from '@/services/company';
 import contracts from '@/services/contracts';
@@ -27,6 +27,8 @@ export default {
   },
 
   setup(props, { emit }) {
+    const employeeId = inject('employeeId');
+
     const dateFormatList = 'DD/MM/YYYY HH:mm';
 
     const companyOptions = ref([]);
@@ -38,8 +40,9 @@ export default {
     const selectedRoleId = ref('');
 
     const addContract = async (contract) => {
+      const params = { ...contract, employee_id: employeeId };
       try {
-        await contracts.create(contract);
+        await contracts.create(params);
       } catch (error) {
         console.error(error);
       }

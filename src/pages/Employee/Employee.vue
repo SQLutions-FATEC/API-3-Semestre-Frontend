@@ -18,6 +18,7 @@ import { useRoute, useRouter } from 'vue-router';
 import Contracts from '@/components/Contracts/Contracts.vue';
 import { message } from 'ant-design-vue';
 import photo from '@/services/photo';
+import { provide } from 'vue';
 
 export default {
   name: 'Employee',
@@ -56,6 +57,8 @@ export default {
     const profileImage = ref(defaultProfileImage);
     const selectedFile = ref(null);
     const uploading = ref(false);
+
+    provide('employeeId', route.params.id);
 
     const beforeUpload = (file) => {
       const isJpgOrPng =
