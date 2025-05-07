@@ -96,7 +96,7 @@ export default {
     const employeeAction = async () => {
       if (
         // temporario, para fazer funcionar sem contratos, que será na próxima sprint
-        
+
         // !employeeName.value ||
         // !employeeBirthDate.value ||
         // !employeeBloodType.value ||
@@ -125,7 +125,7 @@ export default {
         blood_type: employeeBloodType.value,
         birth_date: employeeBirthDate.value,
         register_number: employeeRN.value,
-        gender: gender
+        gender: gender,
         // temporario, para fazer funcionar sem contratos, que será na próxima sprint
         // contracts: employeeContracts,
       };
@@ -196,7 +196,7 @@ export default {
         employeeBirthDate.value = dayjs(data.birth_date);
         employeeBloodType.value = data.blood_type;
         employeeRN.value = String(data.register_number);
-        gender = data.gender
+        gender = data.gender;
         fillContracts(data.contracts);
 
         pageTitle.value = `Editar ${employeeName.value}`;
@@ -450,15 +450,14 @@ export default {
         text-align: center;
 
         .employee-image__wrapper {
-          max-height: 100%;
-          max-width: 100%;
-          height: 100%;
-          width: 100%;
+          height: 250px;
+          width: 250px;
+        }
 
-          .employee-image {
-            height: 100%;
-            width: 100%;
-          }
+        .employee-image__wrapper .employee-image {
+          height: 250px;
+          width: 250px;
+          object-fit: cover;
         }
       }
     }
