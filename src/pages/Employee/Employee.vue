@@ -50,6 +50,7 @@ export default {
     const employeeRN = ref('');
     const employeeBirthDate = ref('');
     const employeeBloodType = ref('');
+    const employeeGender = ref('');
     const errorMessage = ref('');
     const isConfirmationModalOpened = ref(false);
     const pageTitle = ref('Cadastro de funcionário');
@@ -110,6 +111,7 @@ export default {
         !employeeBirthDate.value ||
         !employeeBloodType.value ||
         !employeeRN.value ||
+        !employeeGender.value ||
         profileImage.value === defaultProfileImage
       ) {
         message.error('Todos os campos são obrigatórios');
@@ -128,7 +130,7 @@ export default {
         blood_type: employeeBloodType.value,
         birth_date: employeeBirthDate.value,
         register_number: employeeRN.value,
-        gender: gender,
+        gender: employeeGender.value,
       };
 
       let employeeId;
@@ -183,7 +185,7 @@ export default {
         employeeBirthDate.value = dayjs(data.birth_date);
         employeeBloodType.value = data.blood_type;
         employeeRN.value = String(data.register_number);
-        gender = data.gender;
+        employeeGender.value = data.gender;
 
         pageTitle.value = `Editar ${employeeName.value}`;
       } catch (error) {
@@ -226,6 +228,11 @@ export default {
       { value: 'O-', label: 'O-' },
     ];
 
+    const genderOptions = [
+      { value: 'Masculino', label: 'Masculino' },
+      { value: 'Feminino', label: 'Feminino' },
+    ];
+
     onMounted(async () => {
       const employeeId = route.params.id;
       if (!!employeeId) {
@@ -256,6 +263,12 @@ export default {
       }
     };
 
+    const handleGenderChange = (value) => {
+      if (value != null) {
+        employeeGender.value = value[0];
+      }
+    };
+
     const handleDateChange = (date) => {
       employeeBirthDate.value = date;
     };
@@ -265,6 +278,7 @@ export default {
       employeeBirthDate.value = '';
       employeeRN.value = '';
       employeeBloodType.value = '';
+      employeeGender.value = '';
       employeeRN.value = '';
       profileImage.value = defaultProfileImage;
     };
@@ -286,6 +300,7 @@ export default {
       addContract,
       beforeUpload,
       bloodTypeOptions,
+      genderOptions,
       buttonAction,
       contractsRef,
       customRequest,
@@ -296,10 +311,12 @@ export default {
       employeeBloodType,
       employeeName,
       employeeRN,
+      employeeGender,
       employeeAction,
       errorMessage,
       handleBloodTypeChange,
       handleDateChange,
+      handleGenderChange,
       handleImageChange,
       isConfirmationModalOpened,
       openConfirmationModal,
@@ -338,13 +355,26 @@ export default {
             :format="dateFormatList"
             @change="handleDateChange"
           />
-          <a-cascader
-            v-model:value="employeeBloodType"
-            placeholder="Tipo Sanguíneo"
-            style="width: 100%"
-            :options="bloodTypeOptions"
-            @change="handleBloodTypeChange"
-          />
+          <a-row :gutter="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+            <a-col class="gutter-row" :span="12">
+              <a-cascader
+                v-model:value="employeeBloodType"
+                placeholder="Tipo Sanguíneo"
+                style="width: 100%"
+                :options="bloodTypeOptions"
+                @change="handleBloodTypeChange"
+              />
+            </a-col>
+            <a-col class="gutter-row" :span="12">
+              <a-cascader
+                v-model:value="employeeGender"
+                placeholder="Gênero"
+                style="width: 100%"
+                :options="genderOptions"
+                @change="handleGenderChange"
+              />
+            </a-col>
+          </a-row>
         </div>
 
         <div class="right-column">
@@ -436,15 +466,14 @@ export default {
         text-align: center;
 
         .employee-image__wrapper {
-          max-height: 100%;
-          max-width: 100%;
-          height: 100%;
-          width: 100%;
+          height: 220px;
+          width: 220px;
+        }
 
-          .employee-image {
-            height: 100%;
-            width: 100%;
-          }
+        .employee-image__wrapper .employee-image {
+          height: 220px;
+          width: 220px;
+          object-fit: cover;
         }
       }
     }
