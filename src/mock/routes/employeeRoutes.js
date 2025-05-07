@@ -38,6 +38,7 @@ const employeeRoutes = [
           birth_date: employee.birth_date,
           blood_type: employee.blood_type,
           register_number: employee.register_number,
+          gender : employee.gender,
           contracts: employee.contracts.map((contract) => {
             const selectedCompany = companies.find(
               (company) => company.id == contract.company.id
@@ -82,6 +83,7 @@ const employeeRoutes = [
           blood_type: body.blood_type,
           register_number: body.register_number,
           birth_date: body.birth_date,
+          gender : body.gender,
           // temporario, para fazer funcionar sem contratos, que será na próxima sprint
           // contracts: body.contracts,
         };
@@ -110,6 +112,7 @@ const employeeRoutes = [
             employee.blood_type = body.blood_type;
             employee.register_number = body.register_number;
             employee.birth_date = body.birth_date;
+            employee.gender = body.gender;
             employee.contracts = body.contracts;
             updateEmployeeInClockInOut(params.id, body.name);
           }
