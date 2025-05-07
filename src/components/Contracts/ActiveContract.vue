@@ -1,7 +1,7 @@
 <script>
 import { Button, Tooltip } from 'ant-design-vue';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons-vue';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import ContractModal from '@/components/Modals/ContractModal.vue';
 import InactivateContractModal from '@/components/Modals/InactivateContractModal.vue';
 
@@ -25,9 +25,10 @@ export default {
   },
 
   setup(props, { emit }) {
-    const contract = props.contract;
     const isEditContractModalOpened = ref(false);
     const isInactivateContractModalOpened = ref(false);
+
+    const contract = computed(() => props.contract);
 
     const editContract = () => {
       isEditContractModalOpened.value = true;
