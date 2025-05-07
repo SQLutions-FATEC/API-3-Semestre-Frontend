@@ -12,7 +12,8 @@ const initialClockInOut = [
     company: { id: companies[0].id, name: companies[0].name },
     role_name: 'Açougueiro',
     direction: 'Entrada',
-    date_time: '2025-03-01 07:58',
+    datetime_in: '2025-03-01 07:58',
+    datetime_out: '2025-03-01 16:40',
   },
   {
     id: 2,
@@ -24,7 +25,8 @@ const initialClockInOut = [
     company: { id: companies[0].id, name: companies[0].name },
     role_name: 'Caixa',
     direction: 'Entrada',
-    date_time: '2025-03-01 08:02',
+    datetime_in: '2025-03-01 08:02',
+    datetime_out: '2025-03-01 16:03',
   },
   {
     id: 3,
@@ -36,7 +38,8 @@ const initialClockInOut = [
     company: { id: companies[1].id, name: companies[1].name },
     role_name: 'Engenheiro Civil',
     direction: 'Entrada',
-    date_time: '2025-03-01 08:15',
+    datetime_in: '2025-03-01 08:15',
+    datetime_out: '2025-03-01 10:06',
   },
   {
     id: 4,
@@ -48,7 +51,8 @@ const initialClockInOut = [
     company: { id: companies[2].id, name: companies[2].name },
     role_name: 'Analista Financeiro',
     direction: 'Entrada',
-    date_time: '2025-03-01 08:30',
+    datetime_in: '2025-03-01 08:30',
+    datetime_out: '2025-03-01 18:20',
   },
   {
     id: 5,
@@ -60,7 +64,8 @@ const initialClockInOut = [
     company: { id: companies[1].id, name: companies[1].name },
     role_name: 'Arquiteto',
     direction: 'Entrada',
-    date_time: '2025-03-01 09:00',
+    datetime_in: '2025-03-01 09:00',
+    datetime_out: '2025-03-01 14:35',
   },
   {
     id: 6,
@@ -72,7 +77,8 @@ const initialClockInOut = [
     company: { id: companies[0].id, name: companies[0].name },
     role_name: 'Açougueiro',
     direction: 'Saída',
-    date_time: '2025-03-01 12:05',
+    datetime_in: '2025-03-01 12:05',
+    datetime_out: '2025-03-01 17:00',
   },
   {
     id: 7,
@@ -84,7 +90,8 @@ const initialClockInOut = [
     company: { id: companies[0].id, name: companies[0].name },
     role_name: 'Caixa',
     direction: 'Saída',
-    date_time: '2025-03-01 12:30',
+    datetime_in: '2025-03-01 12:30',
+    datetime_out: '2025-03-01 21:09',
   },
   {
     id: 8,
@@ -96,7 +103,8 @@ const initialClockInOut = [
     company: { id: companies[3].id, name: companies[3].name },
     role_name: 'Desenvolvedor Front-end',
     direction: 'Entrada',
-    date_time: '2025-03-01 13:15',
+    datetime_in: '2025-03-01 13:15',
+    datetime_out: '2025-03-01 20:30',
   },
   {
     id: 9,
@@ -108,7 +116,8 @@ const initialClockInOut = [
     company: { id: companies[1].id, name: companies[1].name },
     role_name: 'Engenheiro Civil',
     direction: 'Saída',
-    date_time: '2025-03-01 17:45',
+    datetime_in: '2025-03-01 17:45',
+    datetime_out: '2025-03-01 22:03',
   },
   {
     id: 10,
@@ -120,7 +129,8 @@ const initialClockInOut = [
     company: { id: companies[4].id, name: companies[4].name },
     role_name: 'Gerente de Vendas',
     direction: 'Entrada',
-    date_time: '2025-03-02 08:10',
+    datetime_in: '2025-03-02 08:10',
+    datetime_out: '2025-03-02 13:30',
   },
   {
     id: 11,
@@ -132,7 +142,8 @@ const initialClockInOut = [
     company: { id: companies[2].id, name: companies[2].name },
     role_name: 'RH Assistente',
     direction: 'Entrada',
-    date_time: '2025-03-02 08:20',
+    datetime_in: '2025-03-02 08:20',
+    datetime_out: '2025-03-02 16:11',
   },
   {
     id: 12,
@@ -144,7 +155,8 @@ const initialClockInOut = [
     company: { id: companies[1].id, name: companies[1].name },
     role_name: 'Engenheiro Elétrico',
     direction: 'Entrada',
-    date_time: '2025-03-02 08:45',
+    datetime_in: '2025-03-02 08:45',
+    datetime_out: '2025-03-02 17:17',
   },
   {
     id: 13,
@@ -156,7 +168,8 @@ const initialClockInOut = [
     company: { id: companies[2].id, name: companies[2].name },
     role_name: 'Analista Financeiro',
     direction: 'Saída',
-    date_time: '2025-03-02 17:50',
+    datetime_in: '2025-03-02 17:50',
+    datetime_out: '2025-03-02 13:02',
   },
   {
     id: 14,
@@ -168,7 +181,8 @@ const initialClockInOut = [
     company: { id: companies[0].id, name: companies[0].name },
     role_name: 'Estoquista',
     direction: 'Entrada',
-    date_time: '2025-03-03 07:30',
+    datetime_in: '2025-03-03 07:30',
+    datetime_out: '2025-03-04 00:08',
   },
   {
     id: 15,
@@ -180,7 +194,8 @@ const initialClockInOut = [
     company: { id: companies[1].id, name: companies[1].name },
     role_name: 'Arquiteto',
     direction: 'Saída',
-    date_time: '2025-03-03 18:20',
+    datetime_in: '2025-03-03 18:20',
+    datetime_out: '2025-03-03 15:42',
   },
 ];
 
