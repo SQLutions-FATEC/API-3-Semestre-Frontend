@@ -82,8 +82,6 @@ const employeeRoutes = [
           blood_type: body.blood_type,
           register_number: body.register_number,
           birth_date: body.birth_date,
-          // temporario, para fazer funcionar sem contratos, que será na próxima sprint
-          // contracts: body.contracts,
         };
         employees.push(newEmployee);
 

@@ -106,14 +106,6 @@ export default {
 
     const employeeAction = async () => {
       if (
-        // temporario, para fazer funcionar sem contratos, que será na próxima sprint
-
-        // !employeeName.value ||
-        // !employeeBirthDate.value ||
-        // !employeeBloodType.value ||
-        // !employeeRN.value ||
-        // profileImage.value === defaultProfileImage ||
-        // !employeeContracts.length
         !employeeName.value ||
         !employeeBirthDate.value ||
         !employeeBloodType.value ||
@@ -137,8 +129,6 @@ export default {
         birth_date: employeeBirthDate.value,
         register_number: employeeRN.value,
         gender: gender,
-        // temporario, para fazer funcionar sem contratos, que será na próxima sprint
-        // contracts: employeeContracts,
       };
 
       let employeeId;
