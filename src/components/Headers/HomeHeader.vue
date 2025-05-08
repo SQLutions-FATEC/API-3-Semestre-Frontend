@@ -17,22 +17,20 @@ export default {
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .home-header {
   position: sticky;
   top: 0;
   z-index: 10;
   background-color: #ffffff;
-  padding: 16px 24px;
+  padding: $spacingLg $spacingXl;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: $spacingLg;
 
   h1 {
-    font-size: 24px;
-    font-weight: 600;
+    @include heading(large);
     margin: 0;
   }
 }
