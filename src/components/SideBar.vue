@@ -4,6 +4,8 @@ import { Drawer } from 'ant-design-vue';
 import { useRouter } from 'vue-router';
 
 export default {
+  name: 'SideBar',
+
   props: {
     isOpen: {
       required: true,
@@ -13,8 +15,8 @@ export default {
 
   components: {
     'a-drawer': Drawer,
-    BankOutlined,
-    UserOutlined,
+    'bank-outlined': BankOutlined,
+    'user-outlined': UserOutlined,
   },
 
   setup(props, { emit }) {
@@ -47,18 +49,26 @@ export default {
     @close="toggleSidebar"
   >
     <template #title>
-      <router-link to="/" class="main-page-link">
-        Home
-      </router-link>
+      <router-link to="/" class="main-page-link"> Home </router-link>
     </template>
     <div class="side-bar">
-      <a-button block class="bar__button" type="text" @click="redirect('employee')">
+      <a-button
+        block
+        class="bar__button"
+        type="text"
+        @click="redirect('employee')"
+      >
         Funcionários
         <template #icon>
           <user-outlined />
         </template>
       </a-button>
-      <a-button block class="bar__button" type="text" @click="redirect('company')">
+      <a-button
+        block
+        class="bar__button"
+        type="text"
+        @click="redirect('company')"
+      >
         Empresas
         <template #icon>
           <bank-outlined />
@@ -89,7 +99,7 @@ export default {
 
     &:hover {
       background-color: $colorBackgroundSecondary !important;
-      color: $colorTextWhite
+      color: $colorTextWhite;
     }
   }
 }

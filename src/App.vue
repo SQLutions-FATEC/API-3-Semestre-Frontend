@@ -7,8 +7,8 @@ export default {
   name: 'App',
 
   components: {
-    TopBar,
-    SideBar,
+    'top-bar': TopBar,
+    'side-bar': SideBar,
   },
 
   setup() {

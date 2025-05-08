@@ -7,7 +7,7 @@ export default {
   
   components: {
     'a-button': Button,
-    MenuOutlined,
+    'menu-outlined': MenuOutlined,
   },
 
   setup(props, { emit }) {
