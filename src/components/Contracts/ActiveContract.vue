@@ -30,25 +30,25 @@ export default {
 
     const contract = computed(() => props.contract);
 
-    const editContract = () => {
-      isEditContractModalOpened.value = true;
-    };
-
-    const fetchContracts = () => {
-      emit('fetch-contracts');
+    const editContract = (edittedContract) => {
+      emit('edit-contract', edittedContract);
     };
 
     const inactivateContract = () => {
       isInactivateContractModalOpened.value = true;
     };
 
+    const openEditContractModal = () => {
+      isEditContractModalOpened.value = true;
+    };
+
     return {
       contract,
       editContract,
-      fetchContracts,
       inactivateContract,
       isEditContractModalOpened,
       isInactivateContractModalOpened,
+      openEditContractModal,
     };
   },
 };
@@ -79,7 +79,7 @@ export default {
         </div>
       </div>
       <div class="contract__actions">
-        <a-button type="primary" shape="circle" @click="editContract">
+        <a-button type="primary" shape="circle" @click="openEditContractModal">
           <template #icon>
             <edit-outlined style="color: white" />
           </template>
@@ -98,12 +98,11 @@ export default {
     <contract-modal
       v-model:open="isEditContractModalOpened"
       :contract="contract"
-      @fetch-contracts="fetchContracts"
+      @edit-contract="editContract"
     />
     <inactivate-contract-modal
       v-model:open="isInactivateContractModalOpened"
       :contract="contract"
-      @fetch-contracts="fetchContracts"
     />
   </div>
 </template>

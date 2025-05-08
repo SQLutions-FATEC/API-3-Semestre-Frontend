@@ -132,13 +132,14 @@ export default {
       let employeeId;
       try {
         if (isEditing.value) {
-          employeeId = await editEmployee(params);
-          await editContracts(employeeId);
+          employeeId = route.params.id;
+          await editEmployee(params);
+          editContract(employeeId);
           await uploadEmployeePhoto(employeeId);
         } else {
           params.contracts = employeeContracts;
           employeeId = await createEmployee(params);
-          await createContracts(employeeId);
+          createContracts(employeeId);
           await uploadEmployeePhoto(employeeId);
           clearFields();
         }
@@ -181,8 +182,8 @@ export default {
       }
     };
 
-    const editContracts = () => {
-      contractsRef.value.editContracts(employeeId);
+    const editContract = (employeeId) => {
+      contractsRef.value.editContract(employeeId);
     };
 
     const getEmployee = async (employeeId) => {

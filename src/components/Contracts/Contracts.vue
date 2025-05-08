@@ -66,13 +66,12 @@ export default {
       }
     };
 
-    const editContract = async (contract) => {
-      // contract.id = props.contract.id;
-      // try {
-      //   await contracts.edit(contract);
-      // } catch (error) {
-      //   console.error(error);
-      // }
+    const editContract = async () => {
+      try {
+        await contracts.edit(activeContract.value);
+      } catch (error) {
+        console.error(error);
+      }
     };
 
     const fetchContracts = async (pagination) => {
@@ -96,13 +95,15 @@ export default {
       return dayjs(dateString).format('DD/MM/YYYY HH:mm');
     };
 
-    const openContractModal = () => {
-      isContractModalOpened.value = true;
+    const modifyContract = async (edittedContract) => {
+      activeContract.value = {
+        id: activeContract.value.id,
+        ...edittedContract,
+      };
     };
 
-    const modifyContract = (edittedContract) => {
-      console.log('oi');
-      activeContract.value = edittedContract;
+    const openContractModal = () => {
+      isContractModalOpened.value = true;
     };
 
     onMounted(() => {
@@ -115,6 +116,7 @@ export default {
     expose({
       clearFields,
       createContracts,
+      editContract,
     });
 
     return {
@@ -124,8 +126,8 @@ export default {
       formatDate,
       inactiveContracts,
       isContractModalOpened,
-      openContractModal,
       modifyContract,
+      openContractModal,
     };
   },
 };
@@ -145,7 +147,7 @@ export default {
     <active-contract
       v-if="Object.keys(activeContract).length"
       :contract="activeContract"
-      @fetch-contracts="fetchContracts"
+      @edit-contract="modifyContract"
     />
     <inactive-contracts
       v-if="inactiveContracts.length"
@@ -155,7 +157,6 @@ export default {
     <contract-modal
       v-model:open="isContractModalOpened"
       @add-contract="addContract"
-      @edit-contract="modifyContract"
     />
   </div>
 </template>

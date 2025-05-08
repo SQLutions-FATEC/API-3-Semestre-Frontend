@@ -72,8 +72,8 @@ export default {
         datetime_end: selectedDatetime.value[1],
       };
 
-      if (isEditing.value) await editContract(contract);
-      else await addContract(contract);
+      if (isEditing.value) editContract(contract);
+      else addContract(contract);
 
       selectedCompanyId.value = '';
       selectedRoleId.value = '';
@@ -98,8 +98,6 @@ export default {
     };
 
     const editContract = (edittedContract) => {
-      console.log(edittedContract);
-      // parei aqui, evento nao esta chegando
       emit('edit-contract', edittedContract);
     };
 
