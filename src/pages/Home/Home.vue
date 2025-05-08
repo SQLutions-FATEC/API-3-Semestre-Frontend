@@ -205,18 +205,21 @@ export default {
 <template>
   <div class="home">
     <home-header />
-    <a-table
-      :dataSource="dataSource"
-      :columns="columns"
-      :pagination="{
-        current: currentPage,
-        pageSize: pageSize,
-        total: totalInfos,
-        showSizeChanger: true,
-        pageSizeOptions: ['10', '20', '50'],
-      }"
-      @change="handleTableChange"
-    />
+    <div class="table-container">
+      <a-table
+        :dataSource="dataSource"
+        :columns="columns"
+        :pagination="{
+          current: currentPage,
+          pageSize: pageSize,
+          total: totalInfos,
+          showSizeChanger: true,
+          pageSizeOptions: ['10', '20', '50'],
+        }"
+        :scroll="{ y: 'calc(100vh - 300px)' }"
+        @change="handleTableChange"
+      />
+    </div>
     <edit-clock-in-modal
       v-if="isEditClockInOpened"
       :clock-in="selectedClockIn"
@@ -228,21 +231,34 @@ export default {
 
 <style lang="scss" scoped>
 .home {
-  padding: 24px 0 64px 0;
+  padding: $spacingLg 0 $spacingXxl 0;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: $spacingXl;
+}
+
+.table-container {
+  :deep(.ant-table-container) {
+    overflow: auto;
+  }
+
+  :deep(.ant-table-thead) {
+    position: sticky;
+    top: 180px;
+    z-index: 9;
+    background: white;
+  }
 }
 
 :deep(.ant-table-cell) {
-  font-size: 14px;
+  @include paragraph(medium);
 }
 
 :deep(.ant-pagination-item-active) {
-  border-color: #d9d9d9;
+  border-color: $colorBorderSecondary;
 
   a {
-    color: #fa8c16;
+    color: $colorTextOrange;
   }
 }
 </style>
