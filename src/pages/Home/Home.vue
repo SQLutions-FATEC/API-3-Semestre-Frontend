@@ -67,7 +67,7 @@ export default {
         }
 
         const { data } = await clockInOut.get(params);
-        
+
         dataSource.value = data.items.map((info) => ({
           key: info.id,
           registerNumber: info.employee.register_number,
@@ -228,19 +228,21 @@ export default {
 
 <style lang="scss" scoped>
 .home {
-  padding: $spacingLg 0px $spacingXxl 0px;
+  padding: 24px 0 64px 0;
   display: flex;
   flex-direction: column;
-  gap: $spacingXl;
+  gap: 32px;
 }
+
 :deep(.ant-table-cell) {
-  @include paragraph(medium);
+  font-size: 14px;
 }
+
 :deep(.ant-pagination-item-active) {
-  border-color: $colorBorderSecondary;
+  border-color: #d9d9d9;
 
   a {
-    color: $colorTextOrange;
+    color: #fa8c16;
   }
 }
 </style>
