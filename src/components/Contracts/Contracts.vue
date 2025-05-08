@@ -14,10 +14,10 @@ export default {
 
   components: {
     'a-modal': Modal,
-    ActiveContract,
-    InactiveContracts,
-    ContractModal,
-    PlusOutlined,
+    'active-contract': ActiveContract,
+    'inactive-contracts': InactiveContracts,
+    'contract-modal': ContractModal,
+    'plus-outlined': PlusOutlined,
   },
 
   setup(props, { expose }) {

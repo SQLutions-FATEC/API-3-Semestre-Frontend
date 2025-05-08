@@ -15,8 +15,8 @@ export default {
 
   components: {
     'a-drawer': Drawer,
-    BankOutlined,
-    UserOutlined,
+    'bank-outlined': BankOutlined,
+    'user-outlined': UserOutlined,
   },
 
   setup(props, { emit }) {

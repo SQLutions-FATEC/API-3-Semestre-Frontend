@@ -24,7 +24,7 @@ export default {
   },
 
   components: {
-    DownloadOutlined,
+    'download-outlined': DownloadOutlined,
   },
 
   setup(props) {
