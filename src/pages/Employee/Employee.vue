@@ -133,6 +133,7 @@ export default {
       try {
         if (isEditing.value) {
           employeeId = await editEmployee(params);
+          await editContracts(employeeId);
           await uploadEmployeePhoto(employeeId);
         } else {
           params.contracts = employeeContracts;
@@ -178,6 +179,10 @@ export default {
           config: error.config,
         });
       }
+    };
+
+    const editContracts = () => {
+      contractsRef.value.editContracts(employeeId);
     };
 
     const getEmployee = async (employeeId) => {

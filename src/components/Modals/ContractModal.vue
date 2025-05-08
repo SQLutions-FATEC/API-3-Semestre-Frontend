@@ -37,8 +37,8 @@ export default {
     const selectedDatetime = ref([]);
     const selectedRoleId = ref('');
 
-    const addContract = async (contract) => {
-      emit('add-contract', contract);
+    const addContract = (newContract) => {
+      emit('add-contract', newContract);
     };
 
     const addEditContract = async () => {
@@ -97,13 +97,10 @@ export default {
       ];
     };
 
-    const editContract = async (contract) => {
-      contract.id = props.contract.id;
-      try {
-        await contracts.edit(contract);
-      } catch (error) {
-        console.error(error);
-      }
+    const editContract = (edittedContract) => {
+      console.log(edittedContract);
+      // parei aqui, evento nao esta chegando
+      emit('edit-contract', edittedContract);
     };
 
     const fetchCompanies = async () => {

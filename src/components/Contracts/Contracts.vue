@@ -66,6 +66,15 @@ export default {
       }
     };
 
+    const editContract = async (contract) => {
+      // contract.id = props.contract.id;
+      // try {
+      //   await contracts.edit(contract);
+      // } catch (error) {
+      //   console.error(error);
+      // }
+    };
+
     const fetchContracts = async (pagination) => {
       if (pagination) currentPagination.value = pagination;
 
@@ -75,7 +84,7 @@ export default {
       };
 
       try {
-        const { data } = await contract.getByEmployeeId(employeeId, params);
+        const { data } = await contracts.getByEmployeeId(employeeId, params);
         activeContract.value = data.find((contract) => contract.active) || {};
         inactiveContracts.value = data.filter((contract) => !contract.active);
       } catch (error) {
@@ -89,6 +98,11 @@ export default {
 
     const openContractModal = () => {
       isContractModalOpened.value = true;
+    };
+
+    const modifyContract = (edittedContract) => {
+      console.log('oi');
+      activeContract.value = edittedContract;
     };
 
     onMounted(() => {
@@ -111,6 +125,7 @@ export default {
       inactiveContracts,
       isContractModalOpened,
       openContractModal,
+      modifyContract,
     };
   },
 };
@@ -140,6 +155,7 @@ export default {
     <contract-modal
       v-model:open="isContractModalOpened"
       @add-contract="addContract"
+      @edit-contract="modifyContract"
     />
   </div>
 </template>
