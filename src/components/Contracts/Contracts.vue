@@ -1,5 +1,5 @@
 <script>
-import { Modal } from 'ant-design-vue';
+import { Modal, message } from 'ant-design-vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -23,6 +23,7 @@ export default {
   setup(props, { expose }) {
     const route = useRoute();
     let employeeId = null;
+    let inactivatedContractId = null;
 
     const activeContract = ref({});
     const currentPagination = ref({ page: 1, size: 5 });
@@ -66,11 +67,27 @@ export default {
       }
     };
 
-    const editContract = async () => {
+    const deleteContract = async () => {
       try {
-        await contracts.edit(activeContract.value);
+        await contracts.inactivate(inactivatedContractId);
+        message.success('O contrato foi inativado');
       } catch (error) {
-        console.error(error);
+        message.error(
+          'Houve um problema ao desativar o contrato. Tente novamente'
+        );
+        console.error('Erro ao desabilitar contrato:', error);
+      }
+    };
+
+    const editContract = async () => {
+      if (!!Object.keys(activeContract.value).length) {
+        try {
+          await contracts.edit(activeContract.value);
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        deleteContract();
       }
     };
 
@@ -93,6 +110,17 @@ export default {
 
     const formatDate = (dateString) => {
       return dayjs(dateString).format('DD/MM/YYYY HH:mm');
+    };
+
+    const inactivateContract = (inactivatedContractId) => {
+      activeContract.value.active = false;
+      inactiveContracts.value = [
+        ...inactiveContracts.value,
+        activeContract.value,
+      ];
+      activeContract.value = {};
+
+      inactivatedContractId = inactivatedContractId;
     };
 
     const modifyContract = async (edittedContract) => {
@@ -124,6 +152,7 @@ export default {
       addContract,
       fetchContracts,
       formatDate,
+      inactivateContract,
       inactiveContracts,
       isContractModalOpened,
       modifyContract,
@@ -148,6 +177,7 @@ export default {
       v-if="Object.keys(activeContract).length"
       :contract="activeContract"
       @edit-contract="modifyContract"
+      @inactivate-contract="inactivateContract"
     />
     <inactive-contracts
       v-if="inactiveContracts.length"

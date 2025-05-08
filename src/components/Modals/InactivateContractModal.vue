@@ -1,6 +1,5 @@
 <script>
-import { Modal, message } from 'ant-design-vue';
-import contracts from '@/services/contracts';
+import { Modal } from 'ant-design-vue';
 
 export default {
   name: 'InactivateContractModal',
@@ -21,18 +20,9 @@ export default {
   },
 
   setup(props, { emit }) {
-    const inactivateContract = async () => {
-      try {
-        await contracts.inactivate(props.contract.id);
-        message.success('O contrato foi inativado');
-        closeModal();
-        emit('fetch-contracts');
-      } catch (error) {
-        message.error(
-          'Houve um problema ao desativar o contrato. Tente novamente'
-        );
-        console.error('Erro ao desabilitar contrato:', error);
-      }
+    const inactivateContract = () => {
+      emit('inactivate-contract', props.contract.id);
+      closeModal();
     };
 
     const closeModal = () => {

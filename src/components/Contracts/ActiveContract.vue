@@ -34,12 +34,16 @@ export default {
       emit('edit-contract', edittedContract);
     };
 
-    const inactivateContract = () => {
-      isInactivateContractModalOpened.value = true;
+    const inactivateContract = (inactivatedContractId) => {
+      emit('inactivate-contract', inactivatedContractId);
     };
 
     const openEditContractModal = () => {
       isEditContractModalOpened.value = true;
+    };
+
+    const openInactivateContractModal = () => {
+      isInactivateContractModalOpened.value = true;
     };
 
     return {
@@ -49,6 +53,7 @@ export default {
       isEditContractModalOpened,
       isInactivateContractModalOpened,
       openEditContractModal,
+      openInactivateContractModal,
     };
   },
 };
@@ -87,7 +92,7 @@ export default {
         <a-button
           class="delete-button"
           shape="circle"
-          @click="inactivateContract"
+          @click="openInactivateContractModal"
         >
           <template #icon>
             <delete-outlined style="color: white" />
@@ -103,6 +108,7 @@ export default {
     <inactivate-contract-modal
       v-model:open="isInactivateContractModalOpened"
       :contract="contract"
+      @inactivate-contract="inactivateContract"
     />
   </div>
 </template>
