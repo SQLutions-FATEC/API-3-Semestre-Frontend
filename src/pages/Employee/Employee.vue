@@ -18,7 +18,6 @@ import { useRoute, useRouter } from 'vue-router';
 import Contracts from '@/components/Contracts/Contracts.vue';
 import { message } from 'ant-design-vue';
 import photo from '@/services/photo';
-import { provide } from 'vue';
 
 export default {
   name: 'Employee',
@@ -57,8 +56,6 @@ export default {
     const profileImage = ref(defaultProfileImage);
     const selectedFile = ref(null);
     const uploading = ref(false);
-
-    provide('employeeId', route.params.id);
 
     const beforeUpload = (file) => {
       const isJpgOrPng =
@@ -138,8 +135,9 @@ export default {
           employeeId = await editEmployee(params);
           await uploadEmployeePhoto(employeeId);
         } else {
-          params.contracts = employeeContracts.map((contract) => contract.id);
+          params.contracts = employeeContracts;
           employeeId = await createEmployee(params);
+          await createContracts(employeeId);
           await uploadEmployeePhoto(employeeId);
           clearFields();
         }
@@ -161,6 +159,10 @@ export default {
           config: error.config,
         });
       }
+    };
+
+    const createContracts = (employeeId) => {
+      contractsRef.value.createContracts(employeeId);
     };
 
     const editEmployee = async (params) => {
@@ -281,6 +283,7 @@ export default {
       employeeGender.value = '';
       employeeRN.value = '';
       profileImage.value = defaultProfileImage;
+      contractsRef.value.clearFields();
     };
 
     const validateRNInput = (event) => {

@@ -84,9 +84,7 @@ const employeeRoutes = [
           register_number: body.register_number,
           birth_date: body.birth_date,
           gender: body.gender,
-          contracts: contracts.filter((contract) =>
-            body.contracts.includes(contract.id)
-          ),
+          contracts: body.contracts,
         };
         employees.push(newEmployee);
 
