@@ -42,7 +42,6 @@ export default {
     const dateFormatList = ['DD/MM/YYYY'];
     const defaultProfileImage = '/assets/altave.jpg';
     let employeeContracts = [];
-    let gender = 'F';
 
     const buttonAction = ref('Cadastrar');
     const contractsRef = ref(null);
@@ -139,6 +138,7 @@ export default {
           employeeId = await editEmployee(params);
           await uploadEmployeePhoto(employeeId);
         } else {
+          params.contracts = employeeContracts.map((contract) => contract.id);
           employeeId = await createEmployee(params);
           await uploadEmployeePhoto(employeeId);
           clearFields();
