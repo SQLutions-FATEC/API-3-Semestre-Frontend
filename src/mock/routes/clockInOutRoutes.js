@@ -55,7 +55,7 @@ const clockInOutRoutes = [
   mockFlag(
     {
       method: 'put',
-      url: '/clock_in',
+      url: '/clock_in/:id',
       result: ({ requestBody }) => {
         const requestObj = JSON.parse(requestBody);
         const clockInOut = getClockInOut();
