@@ -5,19 +5,51 @@ export default {
   name: 'Dashboard',
 
   setup() {
-    const fetchDailyRegisters = () => {};
+    const clockInQtt = ref(0);
+    const clockOutQtt = ref(0);
 
-    const fetchEmployeesByGender = () => {};
+    const fetchDailyRegisters = () => {
+      try {
+        const { data } = await dashboard.getDailyRegisters()
+        return data
+      } catch (error) {
+        console.error(error)
+      }
+    };
 
-    const fetchHoursWorkedByRole = () => {};
+    const fetchEmployeesByGender = () => {
+      try {
+        const { data } = await dashboard.getEmployeesByGender()
+        return data
+      } catch (error) {
+        console.error(error)
+      }
+    };
 
-    onMounted(() => {
+    const fetchHoursWorkedByRole = () => {
+      try {
+        const { data } = await dashboard.getHoursWorkedByRole()
+        return data
+      } catch (error) {
+        console.error(error)
+      }
+    };
+
+    onMounted(async () => {
       const [dailyRegisters, hoursWorkedByRole, employeesByGender] =
-        Promise.all(
+        await Promise.all(
           fetchDailyRegisters(),
           fetchHoursWorkedByRole(),
           fetchEmployeesByGender()
         );
+        if (dailyRegisters.status === 'fulfilled') {
+          clockInQtt.value = dailyRegisters.value.clockIn;
+          clockOutQtt.value = dailyRegisters.value.clockOut;
+        }
+        if (hoursWorkedByRole.status === 'fulfilled') {
+        }
+        if (employeesByGender.status === 'fulfilled') {
+        }
     });
     return {};
   },

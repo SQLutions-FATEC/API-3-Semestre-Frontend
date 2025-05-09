@@ -1,0 +1,12 @@
+import api from './api';
+
+const dashboard = {
+  getDailyRegisters: (companyId) =>
+    api.get(`/dashboard/company/${companyId}/daily-registers`),
+  getEmployeesByGender: (companyId) =>
+    api.get(`/dashboard/company/${companyId}/employee-gender`),
+  getHoursWorkedByRole: (companyId) =>
+    api.get(`/dashboard/company/${companyId}/hours-worked-by-role`),
+};
+
+export default dashboard;
