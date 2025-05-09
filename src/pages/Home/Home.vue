@@ -74,9 +74,10 @@ export default {
           company: info.company.name,
           companyId: info.company.id,
           role: info.role_name,
-          datetime_in: info.datetime_in,
-          datetime_out: info.datetime_out,
+          date_time_in: info.date_time_in,
+          date_time_out: info.date_time_out,
           direction: info.direction,
+          worked_hours: info.worked_hours,
         }));
         totalInfos.value = data.total;
 
@@ -133,12 +134,12 @@ export default {
       },
       {
         title: 'Data de entrada',
-        dataIndex: 'datetime_in',
+        dataIndex: 'date_time_in',
         key: 'datetime',
       },
       {
         title: 'Data de saída',
-        dataIndex: 'datetime_out',
+        dataIndex: 'date_time_out',
         key: 'datetime',
       },
       {
