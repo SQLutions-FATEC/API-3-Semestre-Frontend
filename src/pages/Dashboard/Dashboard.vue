@@ -81,10 +81,9 @@ export default {
           fetchHoursWorkedByRole(),
           fetchEmployeesByGender(),
         ]);
-      if (dailyRegisters.status === 'fulfilled') {
-        clockInQtt.value = dailyRegisters.value.clockIn;
-        clockOutQtt.value = dailyRegisters.value.clockOut;
-      }
+      clockInQtt.value = dailyRegisters.clock_in;
+      clockOutQtt.value = dailyRegisters.clock_out;
+
       if (hoursWorkedByRole.status === 'fulfilled') {
       }
       if (employeesByGender.status === 'fulfilled') {
@@ -122,8 +121,17 @@ export default {
     </div>
     <div class="dashboard__content">
       <div class="daily-registers">
-        <span>{{ clockInQtt }}</span>
-        <span>{{ clockOutQtt }}</span>
+        <h2>Pontos registrados (diário)</h2>
+        <div class="register__content">
+          <div class="col-6">
+            <h3>Entradas</h3>
+            <span>{{ clockInQtt }}</span>
+          </div>
+          <div class="col-6">
+            <h3>Saída</h3>
+            <span>{{ clockOutQtt }}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -150,9 +158,36 @@ export default {
     gap: $spacingXxl;
 
     .daily-registers {
-      padding: $spacingMd $spacingXl;
-      background-color: $colorBackgroundNeutral;
-      border-radius: $borderRadiusSm;
+      display: flex;
+      flex-direction: column;
+      gap: $spacingSm;
+
+      h2 {
+        @include paragraph(medium);
+      }
+      .register__content {
+        display: flex;
+        width: 220px;
+        background-color: $colorBackgroundNeutral;
+        border-radius: $borderRadiusSm;
+        padding: $spacingMd $spacingXl;
+
+        h3 {
+          @include paragraph(large);
+        }
+        span {
+          @include label(large);
+        }
+        .col-6 {
+          display: flex;
+          flex-direction: column;
+          gap: $spacingMd;
+          flex: 0 0 50%;
+          max-width: 50%;
+          box-sizing: border-box;
+          text-align: center;
+        }
+      }
     }
   }
 }

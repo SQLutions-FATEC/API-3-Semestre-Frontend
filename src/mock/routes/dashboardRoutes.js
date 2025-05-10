@@ -6,7 +6,7 @@ const dashboardRoutes = [
       method: 'get',
       url: '/dashboard/company/:company_id/daily-registers',
       result: () => {
-        const response = {};
+        const response = { clock_in: 10, clock_out: 5 };
 
         return APIFailureWrapper({
           content: response,
