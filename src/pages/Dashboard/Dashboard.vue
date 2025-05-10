@@ -3,12 +3,18 @@ import { onMounted, ref } from 'vue';
 import { Cascader } from 'ant-design-vue';
 import company from '@/services/company';
 import dashboard from '@/services/dashboard';
+import DailyRegisters from '@/components/DailyRegisters.vue';
+import GraphEmployeesByGender from '@/components/Graphs/GraphEmployeesByGender.vue';
+import GraphHoursWorkedByRole from '@/components/Graphs/GraphHoursWorkedByRole.vue';
 
 export default {
   name: 'Dashboard',
 
   components: {
     'a-cascader': Cascader,
+    'daily-registers': DailyRegisters,
+    'graph-employees-by-gender': GraphEmployeesByGender,
+    'graph-hours-worked-by-role': GraphHoursWorkedByRole,
   },
 
   setup() {
@@ -120,18 +126,13 @@ export default {
       />
     </div>
     <div class="dashboard__content">
-      <div class="daily-registers">
-        <h2>Pontos registrados (diário)</h2>
-        <div class="register__content">
-          <div class="col-6">
-            <h3>Entradas</h3>
-            <span>{{ clockInQtt }}</span>
-          </div>
-          <div class="col-6">
-            <h3>Saída</h3>
-            <span>{{ clockOutQtt }}</span>
-          </div>
-        </div>
+      <daily-registers
+        :clock-in-qtt="clockInQtt"
+        :clock-out-qtt="clockOutQtt"
+      />
+      <div class="content__graphs">
+        <graph-hours-worked-by-role class="graph-container" />
+        <graph-employees-by-gender class="graph-container" />
       </div>
     </div>
   </div>
@@ -157,36 +158,14 @@ export default {
     flex-wrap: wrap;
     gap: $spacingXxl;
 
-    .daily-registers {
+    .content__graphs {
       display: flex;
-      flex-direction: column;
-      gap: $spacingSm;
+      gap: $spacingXxl;
 
-      h2 {
-        @include paragraph(medium);
-      }
-      .register__content {
-        display: flex;
-        width: 220px;
+      .graph-container {
         background-color: $colorBackgroundNeutral;
-        border-radius: $borderRadiusSm;
-        padding: $spacingMd $spacingXl;
-
-        h3 {
-          @include paragraph(large);
-        }
-        span {
-          @include label(large);
-        }
-        .col-6 {
-          display: flex;
-          flex-direction: column;
-          gap: $spacingMd;
-          flex: 0 0 50%;
-          max-width: 50%;
-          box-sizing: border-box;
-          text-align: center;
-        }
+        border: 1px solid $colorBorder;
+        padding: $spacingXxl;
       }
     }
   }
