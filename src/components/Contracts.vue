@@ -1,5 +1,5 @@
 <script>
-import { DatePicker } from 'ant-design-vue';
+import { Cascader, DatePicker } from 'ant-design-vue';
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import { onMounted, ref } from 'vue';
 import company from '@/services/company';
@@ -10,6 +10,7 @@ export default {
   name: 'Contracts',
 
   components: {
+    'a-cascader': Cascader,
     'a-range-picker': DatePicker.RangePicker,
     CloseOutlined,
     PlusOutlined,
@@ -37,7 +38,9 @@ export default {
         !(selectedRoleData.value && Object.keys(selectedRoleData.value)) ||
         !selectedDatetime.value.length
       ) {
-        return message.error('Empresa, função e datas de contrato devem estar preenchidos')
+        return message.error(
+          'Empresa, função e datas de contrato devem estar preenchidos'
+        );
       }
 
       const contract = {
