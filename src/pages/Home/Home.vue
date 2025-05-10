@@ -216,7 +216,7 @@ export default {
           showSizeChanger: true,
           pageSizeOptions: ['10', '20', '50'],
         }"
-        :scroll="{ y: 'calc(100vh - 300px)' }"
+        :scroll="{ y: 'calc(100vh - 380px)' }"
         @change="handleTableChange"
       />
     </div>
