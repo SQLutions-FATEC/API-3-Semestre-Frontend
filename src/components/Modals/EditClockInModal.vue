@@ -90,6 +90,8 @@ export default {
     title="Editar horário de movimentação"
     :open="true"
     :confirm-loading="loading"
+    cancelText="Cancelar"
+    okText="Salvar"
     @cancel="handleClose"
     @ok="editClockIn"
   >
