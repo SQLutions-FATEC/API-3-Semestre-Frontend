@@ -50,7 +50,6 @@ export default {
         date_time_in: clockInTime.value,
         date_time_out: clockOutTime.value,
         employee: props.clockIn.employeeId,
-        direction: props.clockIn.direction,
       };
       try {
         await clockInOut.edit(params);
