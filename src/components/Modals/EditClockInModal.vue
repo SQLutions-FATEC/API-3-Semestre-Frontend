@@ -27,6 +27,7 @@ export default {
 
   setup(props, { emit }) {
     const clockInTime = ref('');
+    const clockOutTime = ref('');
     const companyName = ref('');
     const employeeName = ref('');
     const employeeRole = ref('');
@@ -46,9 +47,9 @@ export default {
       loading.value = true;
       const params = {
         id: props.clockIn.key,
-        date_time: clockInTime.value,
+        date_time_in: clockInTime.value,
+        date_time_out: clockOutTime.value,
         employee: props.clockIn.employeeId,
-        direction: props.clockIn.direction
       };
       try {
         await clockInOut.edit(params);
@@ -65,11 +66,13 @@ export default {
       employeeName.value = props.clockIn.employee;
       companyName.value = props.clockIn.company;
       employeeRole.value = props.clockIn.role;
-      clockInTime.value = props.clockIn.datetime;
+      clockInTime.value = props.clockIn.date_time_in;
+      clockOutTime.value = props.clockIn.date_time_out;
     });
 
     return {
       clockInTime,
+      clockOutTime,
       companyName,
       editClockIn,
       employeeName,
@@ -87,6 +90,8 @@ export default {
     title="Editar horário de movimentação"
     :open="true"
     :confirm-loading="loading"
+    cancelText="Cancelar"
+    okText="Salvar"
     @cancel="handleClose"
     @ok="editClockIn"
   >
@@ -123,7 +128,14 @@ export default {
       <div class="col-12">
         <at-number-input
           v-model:value="clockInTime"
-          placeholder="Horário do registro"
+          placeholder="Horário de entrada"
+          mask="####-##-## ##:##"
+        />
+      </div>
+      <div class="col-12">
+        <at-number-input
+          v-model:value="clockOutTime"
+          placeholder="Horário de saída"
           mask="####-##-## ##:##"
         />
       </div>
