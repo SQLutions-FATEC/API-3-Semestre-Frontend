@@ -1,6 +1,7 @@
 import { createServer } from 'miragejs';
 import companyRoutes from './src/mock/routes/companyRoutes';
 import clockInOutRoutes from './src/mock/routes/clockInOutRoutes';
+import dashboardRoutes from './src/mock/routes/dashboardRoutes';
 import employeeRoutes from './src/mock/routes/employeeRoutes';
 import roleRoutes from './src/mock/routes/roleRoutes';
 import photoRoutes from './src/mock/routes/photoRoutes';
@@ -10,6 +11,7 @@ export function makeServer() {
     const routes = [
       ...companyRoutes,
       ...clockInOutRoutes,
+      ...dashboardRoutes,
       ...employeeRoutes,
       ...photoRoutes,
       ...roleRoutes,
