@@ -14,22 +14,54 @@
 
 ## Linux
 
-1. Baixe o node e o npm `sudo apt update`
-   `sudo apt install nodejs npm`
-2. (Opcional) Baixe o NVM `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash`
-3. Rode o comando `nvm use` para utilizar a versão do node do projeto e, consequentemente, do npm, localizada no arquivo `.nvmrc`
+1. Baixe o node e o npm
+
+```
+sudo apt update
+```
+
+```
+sudo apt install nodejs npm
+```
+
+2. (Opcional) Baixe o NVM
+
+```
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+```
+
+3. Rode o comando
+
+```
+nvm use
+```
+
+para utilizar a versão do node do projeto e, consequentemente, do npm, localizada no arquivo `.nvmrc`
 
 ## Windows
 
-1. Baixe o node v23 pelo site `https://nodejs.org/en/download` e instale
+1. Baixe o node v23 pelo site e instale
+
+```
+https://nodejs.org/en/download
+```
 
 ## Passos seguintes (para ambos Linux e Windows)
 
-1. Rode o comando `npm install`
+1. Rode o comando
+
+```
+npm install
+```
+
 2. (Opcional) Lint / Formatter
+
    2.1. Se estiver usando VsCode, instale o plugin do `Prettier` e `Eslint`
+
    2.2. Use o atalho `Ctrl + Shift + P`, digite `settings` e procure o do vscode
+
    2.2.1. Adicione no arquivo:
+
    ```
       {
          "editor.codeActionsOnSave": {
@@ -40,10 +72,34 @@
          "prettier.requireConfig": true
       }
    ```
+
 3. Após instalada as dependências, crie um arquivo `.env` na pasta raiz e copie o `.env.example` para o dentro do arquivo recém criado
+
 4. Para executar o frontend
-   4.1. (Com backend) Rode o comando `npm run dev` para subir o projeto localmente na porta `5173`, com a porta `8080` falando com backend
-   4.2. (Sem backend) Rode o comando `npm run mock`para subir o projeto localmente na porta `5173` com dados fictícios
+
+   4.1. (Com backend) Rode o comando
+
+   ```
+   npm run dev
+   ```
+
+   para subir o projeto localmente na porta `5173`, com a porta `8080` falando com backend
+
+   4.2. (Sem backend) Rode o comando
+
+   ```
+   npm run mock
+   ```
+
+   para subir o projeto localmente na porta `5173` com dados fictícios
+
+# Como buildar o projeto para produção
+
+Compila e minifica o projeto para produção:
+
+```
+npm run build
+```
 
 # Estrutura do projeto
 
@@ -82,10 +138,12 @@ Seguiremos o Conventional Commits, com algumas alterações. Para facilitar o di
 
 ## Commits
 
-- `<tipo> (<ID da tarefa no Jira>): <breve descrição em inglês>`
-  Exemplo: feat (47): updates the readme with commits pattern
+`<tipo> (<ID da tarefa no Jira>): <breve descrição em inglês>`
+
+Exemplo: feat (47): updates the readme with commits pattern
 
 ## Branch
 
-- `SCRUM-<ID da tarefa no Jira>/<breve descrição em inglês>`
-  Exemplo: SCRUM-47/update-readme
+`SCRUM-<ID da tarefa no Jira>/<breve descrição em inglês>`
+
+Exemplo: SCRUM-47/update-readme
