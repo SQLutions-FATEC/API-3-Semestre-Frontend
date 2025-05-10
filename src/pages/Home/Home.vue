@@ -67,7 +67,7 @@ export default {
         }
 
         const { data } = await clockInOut.get(params);
-        
+
         dataSource.value = data.items.map((info) => ({
           key: info.id,
           registerNumber: info.employee.register_number,
@@ -205,18 +205,21 @@ export default {
 <template>
   <div class="home">
     <home-header />
-    <a-table
-      :dataSource="dataSource"
-      :columns="columns"
-      :pagination="{
-        current: currentPage,
-        pageSize: pageSize,
-        total: totalInfos,
-        showSizeChanger: true,
-        pageSizeOptions: ['10', '20', '50'],
-      }"
-      @change="handleTableChange"
-    />
+    <div class="table-container">
+      <a-table
+        :dataSource="dataSource"
+        :columns="columns"
+        :pagination="{
+          current: currentPage,
+          pageSize: pageSize,
+          total: totalInfos,
+          showSizeChanger: true,
+          pageSizeOptions: ['10', '20', '50'],
+        }"
+        :scroll="{ y: 'calc(100vh - 380px)' }"
+        @change="handleTableChange"
+      />
+    </div>
     <edit-clock-in-modal
       v-if="isEditClockInOpened"
       :clock-in="selectedClockIn"
@@ -228,14 +231,29 @@ export default {
 
 <style lang="scss" scoped>
 .home {
-  padding: $spacingLg 0px $spacingXxl 0px;
+  padding: $spacingLg 0 $spacingXxl 0;
   display: flex;
   flex-direction: column;
   gap: $spacingXl;
 }
+
+.table-container {
+  :deep(.ant-table-container) {
+    overflow: auto;
+  }
+
+  :deep(.ant-table-thead) {
+    position: sticky;
+    top: 180px;
+    z-index: 9;
+    background: white;
+  }
+}
+
 :deep(.ant-table-cell) {
   @include paragraph(medium);
 }
+
 :deep(.ant-pagination-item-active) {
   border-color: $colorBorderSecondary;
 
