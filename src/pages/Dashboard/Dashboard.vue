@@ -131,8 +131,8 @@ export default {
         :clock-out-qtt="clockOutQtt"
       />
       <div class="content__graphs">
-        <graph-hours-worked-by-role class="graph-container" />
-        <graph-employees-by-gender class="graph-container" />
+        <graph-hours-worked-by-role class="col-6" />
+        <graph-employees-by-gender class="col-6" />
       </div>
     </div>
   </div>
@@ -153,21 +153,30 @@ export default {
     }
   }
   .dashboard__content {
-    padding: $spacingXxl 0px;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: $spacingXxl;
+    padding: $spacingXxl 0px;
 
     .content__graphs {
       display: flex;
       gap: $spacingXxl;
-
-      .graph-container {
-        background-color: $colorBackgroundNeutral;
-        border: 1px solid $colorBorder;
-        padding: $spacingXxl;
-      }
     }
   }
+}
+:deep(.graph-container) {
+  background-color: $colorBackgroundNeutral;
+  border: 1px solid $colorBorder;
+  border-radius: $borderRadiusSm;
+  padding: $spacingMd $spacingXl;
+}
+:deep(.col-6) {
+  display: flex;
+  flex-direction: column;
+  gap: $spacingMd;
+  flex: 0 0 50%;
+  max-width: 50%;
+  box-sizing: border-box;
+  text-align: center;
 }
 </style>
