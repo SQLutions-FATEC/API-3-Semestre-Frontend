@@ -1,4 +1,8 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
+import {
+  dailyRegisters,
+  weeklyHoursWorkedByRole,
+} from '@/mock/seeds/dashboardSeeds';
 
 const dashboardRoutes = [
   mockFlag(
@@ -6,7 +10,10 @@ const dashboardRoutes = [
       method: 'get',
       url: '/dashboard/company/:company_id/daily-registers',
       result: () => {
-        const response = { clock_in: 10, clock_out: 5 };
+        const response = {
+          clock_in: dailyRegisters.clockInQtt,
+          clock_out: dailyRegisters.clockOutQtt,
+        };
 
         return APIFailureWrapper({
           content: response,
@@ -36,7 +43,12 @@ const dashboardRoutes = [
       method: 'get',
       url: '/dashboard/company/:company_id/hours-worked-by-role',
       result: () => {
-        const response = {};
+        const response = weeklyHoursWorkedByRole.map((obj) => {
+          return {
+            role: obj.role,
+            hours_worked: obj.hoursWorked,
+          };
+        });
 
         return APIFailureWrapper({
           content: response,

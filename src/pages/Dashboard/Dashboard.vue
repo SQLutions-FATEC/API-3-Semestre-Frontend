@@ -22,6 +22,7 @@ export default {
     const clockOutQtt = ref(0);
     const companies = ref([]);
     const companyOptions = ref([]);
+    const roleHoursObj = ref({});
     const selectedCompanyId = ref(null);
 
     const fetchCompanies = async () => {
@@ -90,8 +91,15 @@ export default {
       clockInQtt.value = dailyRegisters.clock_in;
       clockOutQtt.value = dailyRegisters.clock_out;
 
-      if (hoursWorkedByRole.status === 'fulfilled') {
-      }
+      roleHoursObj.value = hoursWorkedByRole.reduce(
+        (acc, item) => {
+          acc['labels'].push(item.role);
+          acc['hours'].push(item.hours_worked);
+          return acc;
+        },
+        { labels: [], hours: [] }
+      );
+
       if (employeesByGender.status === 'fulfilled') {
       }
     });
@@ -101,6 +109,7 @@ export default {
       clockOutQtt,
       companyOptions,
       handleCompanyChange,
+      roleHoursObj,
       selectedCompanyId,
     };
   },
@@ -131,7 +140,7 @@ export default {
         :clock-out-qtt="clockOutQtt"
       />
       <div class="content__graphs">
-        <graph-hours-worked-by-role class="col-6" />
+        <graph-hours-worked-by-role :data="roleHoursObj" class="col-6" />
         <graph-employees-by-gender class="col-6" />
       </div>
     </div>

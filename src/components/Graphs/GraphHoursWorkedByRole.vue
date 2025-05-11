@@ -9,6 +9,8 @@ import {
   CategoryScale,
   LinearScale,
 } from 'chart.js';
+import { ref } from 'vue';
+import { generateRandomColors } from '@/utils';
 
 ChartJS.register(
   Title,
@@ -26,30 +28,93 @@ export default {
     BarChart: Bar,
   },
 
-  data() {
-    return {
-      chartData: {
-        labels: ['Cargo 1', 'Cargo 2', 'Cargo 3', 'Cargo 4'],
-        datasets: [
-          {
-            label: 'Horas Trabalhadas',
-            data: [12, 19, 3, 5],
-            backgroundColor: ['#74bfe5', '#ff5f00', '#4d4d4d', '#a6a6a6'],
-          },
-        ],
-      },
-      chartOptions: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          title: {
-            display: false,
-            text: 'Horas Trabalhadas por Cargo',
-          },
+  props: {
+    data: {
+      required: true,
+      type: Object,
+    },
+  },
+
+  setup(props) {
+    const minValue = Math.min(...props.data.hours);
+    const maxValue = Math.max(...props.data.hours);
+
+    const chartOptions = {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: false,
+        },
+        title: {
+          display: false,
+          text: 'Horas Trabalhadas por Cargo',
         },
       },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Cargos',
+            color: '#4c4c4c',
+            font: {
+              size: 14,
+              weight: 'bold',
+            },
+          },
+          ticks: {
+            color: '#4c4c4c',
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Horas',
+            color: '#4c4c4c',
+            font: {
+              size: 14,
+              weight: 'bold',
+            },
+          },
+          ticks: {
+            color: '#4c4c4c',
+          },
+          min: minValue - 10,
+          max: maxValue + 10,
+        },
+      },
+      animation: {
+        onComplete: (chart) => {
+          const ctx = chart.chart.ctx;
+          const datasets = chart.chart.data.datasets;
+          const meta = chart.chart.getDatasetMeta(0);
+          meta.data.forEach((bar, index) => {
+            const value = datasets[0].data[index];
+            const x = bar.x;
+            const y = bar.y - 5;
+            ctx.save();
+            ctx.font = 'bold 12px Arial';
+            ctx.fillStyle = '#4c4c4c';
+            ctx.textAlign = 'center';
+            ctx.fillText(value, x, y);
+            ctx.restore();
+          });
+        },
+      },
+    };
+
+    const chartData = ref({
+      labels: props.data.labels,
+      datasets: [
+        {
+          data: props.data.hours,
+          backgroundColor: generateRandomColors(props.data.labels.length),
+        },
+      ],
+    });
+
+    return {
+      chartData,
+      chartOptions,
     };
   },
 };
@@ -57,8 +122,10 @@ export default {
 
 <template>
   <div class="graph-hours-worked-by-role">
-    <h2>Horas Trabalhadas por Cargo</h2>
-    <BarChart :data="chartData" :options="chartOptions" />
+    <h2>Horas Trabalhadas por Cargo (Semanal)</h2>
+    <div class="graph-container">
+      <BarChart :data="chartData" :options="chartOptions" />
+    </div>
   </div>
 </template>
 
