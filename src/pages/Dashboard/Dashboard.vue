@@ -65,27 +65,7 @@ export default {
       }
     };
 
-    const fetchHoursWorkedByRole = async () => {
-      try {
-        const { data } = await dashboard.getHoursWorkedByRole(
-          selectedCompanyId.value
-        );
-        return data;
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const handleCompanyChange = (value, selectedOptions) => {
-      if (value && selectedOptions.length) {
-        selectedCompanyId.value = value;
-      }
-    };
-
-    onMounted(async () => {
-      await fetchCompanies();
-      selectedCompanyId.value = companies.value[0].id;
-
+    const fetchGraphsInfos = async () => {
       loadingGraphs.value = true;
 
       const [dailyRegisters, hoursWorkedByRole, employeesByGender] =
@@ -109,6 +89,31 @@ export default {
       employeesGenderObj.value = employeesByGender;
 
       loadingGraphs.value = false;
+    };
+
+    const fetchHoursWorkedByRole = async () => {
+      try {
+        const { data } = await dashboard.getHoursWorkedByRole(
+          selectedCompanyId.value
+        );
+        return data;
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const handleCompanyChange = async (value, selectedOptions) => {
+      if (value && selectedOptions.length) {
+        selectedCompanyId.value = value;
+        await fetchGraphsInfos();
+      }
+    };
+
+    onMounted(async () => {
+      await fetchCompanies();
+      selectedCompanyId.value = companies.value[0].id;
+
+      await fetchGraphsInfos();
     });
 
     return {

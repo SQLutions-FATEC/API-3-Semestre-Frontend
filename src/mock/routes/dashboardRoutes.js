@@ -10,10 +10,10 @@ const dashboardRoutes = [
     {
       method: 'get',
       url: '/dashboard/company/:company_id/daily-registers',
-      result: () => {
+      result: ({ params }) => {
         const response = {
-          clock_in: dailyRegisters.clockInQtt,
-          clock_out: dailyRegisters.clockOutQtt,
+          clock_in: dailyRegisters[params.company_id].clockInQtt,
+          clock_out: dailyRegisters[params.company_id].clockOutQtt,
         };
 
         return APIFailureWrapper({
@@ -28,8 +28,8 @@ const dashboardRoutes = [
     {
       method: 'get',
       url: '/dashboard/company/:company_id/employee-gender',
-      result: () => {
-        const response = employeesByGender;
+      result: ({ params }) => {
+        const response = employeesByGender[params.company_id];
 
         return APIFailureWrapper({
           content: response,
@@ -43,13 +43,15 @@ const dashboardRoutes = [
     {
       method: 'get',
       url: '/dashboard/company/:company_id/hours-worked-by-role',
-      result: () => {
-        const response = weeklyHoursWorkedByRole.map((obj) => {
-          return {
-            role: obj.role,
-            hours_worked: obj.hoursWorked,
-          };
-        });
+      result: ({ params }) => {
+        const response = weeklyHoursWorkedByRole[params.company_id].map(
+          (obj) => {
+            return {
+              role: obj.role,
+              hours_worked: obj.hoursWorked,
+            };
+          }
+        );
 
         return APIFailureWrapper({
           content: response,
