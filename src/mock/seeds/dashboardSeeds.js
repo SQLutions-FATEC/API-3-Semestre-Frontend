@@ -20,4 +20,6 @@ const weeklyHoursWorkedByRole = [
   },
 ];
 
-export { dailyRegisters, weeklyHoursWorkedByRole };
+const employeesByGender = { male: 8, female: 1 };
+
+export { dailyRegisters, employeesByGender, weeklyHoursWorkedByRole };

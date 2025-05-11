@@ -1,6 +1,7 @@
 import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import {
   dailyRegisters,
+  employeesByGender,
   weeklyHoursWorkedByRole,
 } from '@/mock/seeds/dashboardSeeds';
 
@@ -28,7 +29,7 @@ const dashboardRoutes = [
       method: 'get',
       url: '/dashboard/company/:company_id/employee-gender',
       result: () => {
-        const response = {};
+        const response = employeesByGender;
 
         return APIFailureWrapper({
           content: response,

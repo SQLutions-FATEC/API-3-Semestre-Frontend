@@ -1,6 +1,6 @@
 <script>
 import { onMounted, ref } from 'vue';
-import { Cascader } from 'ant-design-vue';
+import { Cascader, Spin } from 'ant-design-vue';
 import company from '@/services/company';
 import dashboard from '@/services/dashboard';
 import DailyRegisters from '@/components/DailyRegisters.vue';
@@ -12,6 +12,7 @@ export default {
 
   components: {
     'a-cascader': Cascader,
+    'a-spin': Spin,
     'daily-registers': DailyRegisters,
     'graph-employees-by-gender': GraphEmployeesByGender,
     'graph-hours-worked-by-role': GraphHoursWorkedByRole,
@@ -22,8 +23,10 @@ export default {
     const clockOutQtt = ref(0);
     const companies = ref([]);
     const companyOptions = ref([]);
+    const employeesGenderObj = ref({});
     const roleHoursObj = ref({});
     const selectedCompanyId = ref(null);
+    const loadingGraphs = ref(true);
 
     const fetchCompanies = async () => {
       try {
@@ -82,6 +85,9 @@ export default {
     onMounted(async () => {
       await fetchCompanies();
       selectedCompanyId.value = companies.value[0].id;
+
+      loadingGraphs.value = true;
+
       const [dailyRegisters, hoursWorkedByRole, employeesByGender] =
         await Promise.all([
           fetchDailyRegisters(),
@@ -100,15 +106,18 @@ export default {
         { labels: [], hours: [] }
       );
 
-      if (employeesByGender.status === 'fulfilled') {
-      }
+      employeesGenderObj.value = employeesByGender;
+
+      loadingGraphs.value = false;
     });
 
     return {
       clockInQtt,
       clockOutQtt,
       companyOptions,
+      employeesGenderObj,
       handleCompanyChange,
+      loadingGraphs,
       roleHoursObj,
       selectedCompanyId,
     };
@@ -134,14 +143,20 @@ export default {
         @change="handleCompanyChange"
       />
     </div>
-    <div class="dashboard__content">
+    <a-spin
+      v-if="loadingGraphs"
+      class="loader"
+      size="large"
+      :spinning="loadingGraphs"
+    />
+    <div v-else class="dashboard__content">
       <daily-registers
         :clock-in-qtt="clockInQtt"
         :clock-out-qtt="clockOutQtt"
       />
       <div class="content__graphs">
-        <graph-hours-worked-by-role :data="roleHoursObj" class="col-6" />
-        <graph-employees-by-gender class="col-6" />
+        <graph-hours-worked-by-role class="col-6" :data="roleHoursObj" />
+        <graph-employees-by-gender class="col-6" :data="employeesGenderObj" />
       </div>
     </div>
   </div>
@@ -161,6 +176,12 @@ export default {
       @include heading(large);
     }
   }
+  .loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 160px);
+  }
   .dashboard__content {
     display: flex;
     flex-direction: column;
@@ -169,6 +190,7 @@ export default {
 
     .content__graphs {
       display: flex;
+      justify-content: space-around;
       gap: $spacingXxl;
     }
   }
