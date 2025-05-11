@@ -174,8 +174,8 @@ export default {
   display: flex;
   flex-direction: column;
   gap: $spacingMd;
-  flex: 0 0 50%;
-  max-width: 50%;
+  flex: 0 0 calc(50% - (#{$spacingXxl} / 2));
+  max-width: calc(50% - (#{$spacingXxl} / 2));
   box-sizing: border-box;
   text-align: center;
 }

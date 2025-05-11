@@ -42,7 +42,8 @@ export default {
   }
   .register__content {
     display: flex;
-    width: 220px;
+    width: 240px;
+    gap: $spacingXxl;
 
     h3 {
       @include paragraph(large);
