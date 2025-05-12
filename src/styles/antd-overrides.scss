@@ -28,8 +28,11 @@ body {
 
 .ant-btn {
   background-color: $colorSecondary;
+  color: $colorTextWhite;
 }
 
 .ant-btn:hover {
   background-color: $colorSecondaryHighlight !important;
+  border-color: $colorBorderSecondaryHighlight !important;
+  color: $colorTextWhite !important;
 }
