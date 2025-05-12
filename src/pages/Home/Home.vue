@@ -76,7 +76,6 @@ export default {
           role: info.role_name,
           date_time_in: info.date_time_in,
           date_time_out: info.date_time_out,
-          direction: info.direction,
           worked_hours: info.worked_hours,
         }));
         totalInfos.value = data.total;
