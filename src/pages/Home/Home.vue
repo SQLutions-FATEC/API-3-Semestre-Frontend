@@ -165,6 +165,18 @@ export default {
         title: 'Horas trabalhadas',
         dataIndex: 'worked_hours',
         key: 'double',
+        customRender: ({ text }) => {
+          const convertToHoursMinutes = (decimalHours) => {
+            if (isNaN(decimalHours)) return '00:00';
+
+            const hours = Math.floor(decimalHours);
+            const minutes = Math.round((decimalHours - hours) * 60);
+
+            return `${hours}h${minutes.toString().padStart(2, '0')}min`;
+          };
+
+          return convertToHoursMinutes(text);
+        },
       },
       {
         title: 'Ações',
