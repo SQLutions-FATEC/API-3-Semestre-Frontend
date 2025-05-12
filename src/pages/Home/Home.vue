@@ -162,6 +162,11 @@ export default {
         key: 'role',
       },
       {
+        title: 'Horas trabalhadas',
+        dataIndex: 'worked_hours',
+        key: 'double',
+      },
+      {
         title: 'Ações',
         key: 'actions',
         customRender: ({ record }) => {
