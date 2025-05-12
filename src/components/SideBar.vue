@@ -1,5 +1,9 @@
 <script>
-import { BankOutlined, UserOutlined } from '@ant-design/icons-vue';
+import {
+  BankOutlined,
+  DashboardOutlined,
+  UserOutlined,
+} from '@ant-design/icons-vue';
 import { Drawer } from 'ant-design-vue';
 import { useRouter } from 'vue-router';
 
@@ -16,6 +20,7 @@ export default {
   components: {
     'a-drawer': Drawer,
     'bank-outlined': BankOutlined,
+    'dashboard-outlined': DashboardOutlined,
     'user-outlined': UserOutlined,
   },
 
@@ -72,6 +77,17 @@ export default {
         Empresas
         <template #icon>
           <bank-outlined />
+        </template>
+      </a-button>
+      <a-button
+        block
+        class="bar__button"
+        type="text"
+        @click="redirect('dashboard')"
+      >
+        Dashboard
+        <template #icon>
+          <dashboard-outlined />
         </template>
       </a-button>
     </div>
