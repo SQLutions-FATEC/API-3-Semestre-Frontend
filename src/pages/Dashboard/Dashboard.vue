@@ -161,9 +161,13 @@ export default {
       />
       <div class="content__graphs">
         <graph-hours-worked-by-role class="col-6" :data="roleHoursObj" />
-        <graph-employees-by-gender class="col-6" :data="employeesGenderObj" />
+        <graph-employees-by-gender
+          class="col-6 gender-graph"
+          :data="employeesGenderObj"
+        />
       </div>
     </div>
+    <h1>Alertas</h1>
   </div>
 </template>
 
