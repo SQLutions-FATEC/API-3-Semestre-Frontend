@@ -6,6 +6,7 @@ import dashboard from '@/services/dashboard';
 import DailyRegisters from '@/components/DailyRegisters.vue';
 import GraphEmployeesByGender from '@/components/Graphs/GraphEmployeesByGender.vue';
 import GraphHoursWorkedByRole from '@/components/Graphs/GraphHoursWorkedByRole.vue';
+import WithoutMatchRegisters from '@/components/DashboardAlerts/WithoutMatchRegisters.vue';
 
 export default {
   name: 'Dashboard',
@@ -16,6 +17,7 @@ export default {
     'daily-registers': DailyRegisters,
     'graph-employees-by-gender': GraphEmployeesByGender,
     'graph-hours-worked-by-role': GraphHoursWorkedByRole,
+    'without-match-registers': WithoutMatchRegisters,
   },
 
   setup() {
@@ -26,6 +28,7 @@ export default {
     const employeesGenderObj = ref({});
     const roleHoursObj = ref({});
     const selectedCompanyId = ref(null);
+    const singleRegisters = ref([]);
     const loadingGraphs = ref(true);
 
     const fetchCompanies = async () => {
@@ -65,15 +68,31 @@ export default {
       }
     };
 
-    const fetchGraphsInfos = async () => {
+    const fetchSingleRegisters = async () => {
+      try {
+        const { data } = await dashboard.getSingleRegisters(
+          selectedCompanyId.value
+        );
+        return data;
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const fetchAlertsAndGraphsInfos = async () => {
       loadingGraphs.value = true;
 
-      const [dailyRegisters, hoursWorkedByRole, employeesByGender] =
-        await Promise.all([
-          fetchDailyRegisters(),
-          fetchHoursWorkedByRole(),
-          fetchEmployeesByGender(),
-        ]);
+      const [
+        dailyRegisters,
+        hoursWorkedByRole,
+        employeesByGender,
+        withoutMatchRegisters,
+      ] = await Promise.all([
+        fetchDailyRegisters(),
+        fetchHoursWorkedByRole(),
+        fetchEmployeesByGender(),
+        fetchSingleRegisters(),
+      ]);
       clockInQtt.value = dailyRegisters.clock_in;
       clockOutQtt.value = dailyRegisters.clock_out;
 
@@ -87,6 +106,8 @@ export default {
       );
 
       employeesGenderObj.value = employeesByGender;
+
+      singleRegisters.value = withoutMatchRegisters;
 
       loadingGraphs.value = false;
     };
@@ -105,7 +126,7 @@ export default {
     const handleCompanyChange = async (value, selectedOptions) => {
       if (value && selectedOptions.length) {
         selectedCompanyId.value = value;
-        await fetchGraphsInfos();
+        await fetchAlertsAndGraphsInfos();
       }
     };
 
@@ -113,7 +134,7 @@ export default {
       await fetchCompanies();
       selectedCompanyId.value = companies.value[0].id;
 
-      await fetchGraphsInfos();
+      await fetchAlertsAndGraphsInfos();
     });
 
     return {
@@ -125,6 +146,7 @@ export default {
       loadingGraphs,
       roleHoursObj,
       selectedCompanyId,
+      singleRegisters,
     };
   },
 };
@@ -166,8 +188,9 @@ export default {
           :data="employeesGenderObj"
         />
       </div>
+      <h1>Alertas</h1>
+      <without-match-registers :data="singleRegisters" />
     </div>
-    <h1>Alertas</h1>
   </div>
 </template>
 

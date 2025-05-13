@@ -4,6 +4,7 @@ import {
   employeesByGender,
   weeklyHoursWorkedByRole,
 } from '@/mock/seeds/dashboardSeeds';
+import { getClockInOut } from '@/mock/seeds/clockInOutSeeds';
 
 const dashboardRoutes = [
   mockFlag(
@@ -56,6 +57,31 @@ const dashboardRoutes = [
         return APIFailureWrapper({
           content: response,
           errorMessage: 'Erro ao listar os horas trabalhadas por função',
+        });
+      },
+    },
+    'on'
+  ),
+  mockFlag(
+    {
+      method: 'get',
+      url: '/dashboard/company/:company_id/without-match-registers',
+      result: ({ params }) => {
+        const filteredRegisters = getClockInOut().filter(
+          (item) => item.company.id == params.company_id
+        );
+        const response = filteredRegisters.filter(
+          (item) =>
+            item.direction === 'Entrada' &&
+            !filteredRegisters.some(
+              (i) =>
+                i.employee.id === item.employee.id && i.direction === 'Saída'
+            )
+        );
+
+        return APIFailureWrapper({
+          content: response,
+          errorMessage: 'Erro ao listar os registros sem par',
         });
       },
     },

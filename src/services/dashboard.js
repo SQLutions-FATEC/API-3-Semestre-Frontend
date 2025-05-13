@@ -7,6 +7,8 @@ const dashboard = {
     api.get(`/dashboard/company/${companyId}/employee-gender`),
   getHoursWorkedByRole: (companyId) =>
     api.get(`/dashboard/company/${companyId}/hours-worked-by-role`),
+  getSingleRegisters: (companyId) =>
+    api.get(`/dashboard/company/${companyId}/without-match-registers`),
 };
 
 export default dashboard;
