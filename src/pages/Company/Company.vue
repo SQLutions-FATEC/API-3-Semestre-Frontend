@@ -1,5 +1,5 @@
 <script>
-import { Button, Modal } from 'ant-design-vue';
+import { Button, Modal, message } from 'ant-design-vue';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { validateCnpj } from '@/utils/validations/cnpj';
@@ -7,7 +7,6 @@ import company from '@/services/company';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import AtInput from '@/components/Input/AtInput.vue';
 import { computed } from 'vue';
-import { message } from 'ant-design-vue';
 
 export default {
   name: 'Company',
@@ -166,7 +165,7 @@ export default {
       <div class="content__action">
         <a-button
           v-if="showDeleteButton"
-          danger
+          class="delete-button"
           style="width: 250px"
           @click="openConfirmationModal"
         >
@@ -186,9 +185,7 @@ export default {
       title="Deletar empresa"
       @ok="deleteCompany"
     >
-      <span>
-        Tem certeza que deseja deletar a empresa {{ tradeName }}?
-      </span>
+      <span> Tem certeza que deseja deletar a empresa {{ tradeName }}? </span>
     </a-modal>
   </div>
 </template>
@@ -215,6 +212,17 @@ export default {
       display: flex;
       justify-content: center;
       gap: $spacingMd;
+
+      .delete-button {
+        background-color: transparent;
+        border-color: $colorError;
+        color: $colorError;
+
+        &:hover {
+          background-color: $colorBackgroundError !important;
+          color: $colorWhite;
+        }
+      }
     }
   }
 }

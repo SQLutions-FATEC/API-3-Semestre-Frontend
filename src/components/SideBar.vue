@@ -8,6 +8,8 @@ import { Drawer } from 'ant-design-vue';
 import { useRouter } from 'vue-router';
 
 export default {
+  name: 'SideBar',
+
   props: {
     isOpen: {
       required: true,

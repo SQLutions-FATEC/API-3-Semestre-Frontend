@@ -245,7 +245,6 @@ export default {
   flex-direction: column;
   gap: $spacingXl;
 }
-
 .table-container {
   :deep(.ant-table-container) {
     overflow: auto;

@@ -1,85 +1,89 @@
 <script>
-import { DatePicker } from 'ant-design-vue';
-import { CloseOutlined, PlusOutlined } from '@ant-design/icons-vue';
-import { onMounted, ref } from 'vue';
+import { Modal, message } from 'ant-design-vue';
+import { watch, ref } from 'vue';
+import dayjs from 'dayjs';
 import company from '@/services/company';
+import contracts from '@/services/contracts';
+import RoleModal from '@/components/Modals/RoleModal.vue';
 import role from '@/services/role';
-import { message } from 'ant-design-vue';
 
 export default {
-  name: 'Contracts',
+  name: 'ContractModal',
+
+  props: {
+    contract: {
+      default: {},
+      type: Object,
+    },
+    open: {
+      required: true,
+      type: Boolean,
+    },
+  },
 
   components: {
-    'a-range-picker': DatePicker.RangePicker,
-    CloseOutlined,
-    PlusOutlined,
+    'a-modal': Modal,
+    'role-modal': RoleModal,
   },
 
   setup(props, { emit }) {
     const dateFormatList = 'DD/MM/YYYY HH:mm';
 
     const companyOptions = ref([]);
+    const isEditing = ref(false);
     const isRoleModalOpened = ref(false);
-    const newRole = ref('');
     const roleOptions = ref([]);
     const selectedCompanyId = ref('');
-    const selectedCompanyData = ref({});
     const selectedDatetime = ref([]);
     const selectedRoleId = ref('');
-    const selectedRoleData = ref({});
-    const selectedContracts = ref([]);
 
-    const addContract = () => {
+    const addContract = (newContract) => {
+      emit('add-contract', newContract);
+    };
+
+    const addEditContract = async () => {
       if (
-        !(
-          selectedCompanyData.value && Object.keys(selectedCompanyData.value)
-        ) ||
-        !(selectedRoleData.value && Object.keys(selectedRoleData.value)) ||
+        !selectedCompanyId.value ||
+        !selectedRoleId.value ||
         !selectedDatetime.value.length
       ) {
-        return message.error('Empresa, função e datas de contrato devem estar preenchidos')
+        return message.error(
+          'Empresa, função e datas de contrato devem estar preenchidos'
+        );
       }
+
+      const selectedCompany = companyOptions.value.find(
+        (company) => company.data.id == selectedCompanyId.value
+      );
+      const selectedRole = roleOptions.value.find(
+        (role) => role.data.id == selectedRoleId.value
+      );
 
       const contract = {
         company: {
-          id: selectedCompanyData.value.id,
-          name: selectedCompanyData.value.name,
+          id: selectedCompany.data.id,
+          name: selectedCompany.data.name,
         },
         role: {
-          id: selectedRoleData.value.id,
-          name: selectedRoleData.value.name,
+          id: selectedRole.data.id,
+          name: selectedRole.data.name,
         },
         datetime_start: selectedDatetime.value[0],
         datetime_end: selectedDatetime.value[1],
       };
 
-      emit('add-contract', contract);
-      selectedContracts.value.push(contract);
+      if (isEditing.value) editContract(contract);
+      else addContract(contract);
 
       selectedCompanyId.value = '';
-      selectedCompanyData.value = {};
       selectedRoleId.value = '';
-      selectedRoleData.value = {};
       selectedDatetime.value = [];
+
+      closeModal();
     };
 
-    const addRole = async () => {
-      if (newRole.value.trim()) {
-        const params = {
-          role: newRole.value,
-        };
-        try {
-          await role.post(params);
-          newRole.value = '';
-        } catch (error) {
-          console.error(error);
-        }
-        isRoleModalOpened.value = false;
-        selectedRoleId.value = '';
-        selectedRoleData.value = {};
-        await fetchRoles();
-        ensureAddNewIsLast();
-      }
+    const closeModal = () => {
+      emit('update:open', false);
     };
 
     const ensureAddNewIsLast = () => {
@@ -91,6 +95,10 @@ export default {
         ...regularOptions,
         { value: 'add-new', label: '➕ Adicionar Função' },
       ];
+    };
+
+    const editContract = (edittedContract) => {
+      emit('edit-contract', edittedContract);
     };
 
     const fetchCompanies = async () => {
@@ -116,20 +124,16 @@ export default {
           data: item,
           key: item.id,
         }));
+
         ensureAddNewIsLast();
       } catch (error) {
         console.error('Erro ao buscar funções:', error);
       }
     };
 
-    const fillContracts = (contracts) => {
-      selectedContracts.value = contracts;
-    };
-
     const handleCompanyChange = (value, selectedOptions) => {
       if (value && selectedOptions.length) {
         selectedCompanyId.value = value;
-        selectedCompanyData.value = selectedOptions[0].data;
       }
     };
 
@@ -140,7 +144,6 @@ export default {
           ensureAddNewIsLast();
         } else {
           selectedRoleId.value = value;
-          selectedRoleData.value = selectedOptions[0].data;
         }
       }
     };
@@ -149,47 +152,56 @@ export default {
       isRoleModalOpened.value = true;
     };
 
-    const removeContract = (index) => {
-      selectedContracts.value.splice(index, 1);
-    };
-
-    const resetContracts = () => {
-      selectedContracts.value = [];
-    };
-
-    onMounted(async () => {
+    const loadData = async () => {
       await Promise.all([fetchCompanies(), fetchRoles()]);
-    });
+
+      if (isEditing.value) {
+        selectedCompanyId.value = props.contract.company.id;
+        selectedRoleId.value = props.contract.role.id;
+        selectedDatetime.value = [
+          dayjs(props.contract.datetime_start),
+          dayjs(props.contract.datetime_end),
+        ];
+      }
+    };
+
+    watch(
+      () => props.open,
+      async (isOpen) => {
+        if (isOpen) {
+          isEditing.value = !!Object.keys(props.contract).length;
+          await loadData();
+        }
+      },
+      { immediate: true }
+    );
 
     return {
-      addContract,
-      addRole,
+      addEditContract,
+      closeModal,
       companyOptions,
       dateFormatList,
-      fillContracts,
+      fetchRoles,
       handleCompanyChange,
       handleRoleChange,
       isRoleModalOpened,
-      newRole,
-      openRoleModal,
-      removeContract,
-      resetContracts,
       roleOptions,
       selectedCompanyId,
-      selectedCompanyData,
-      selectedContracts,
       selectedDatetime,
       selectedRoleId,
-      selectedRoleData,
     };
   },
 };
 </script>
 
 <template>
-  <div class="contracts">
-    <h1>Contratos</h1>
-    <div class="contracts__content">
+  <a-modal
+    title="Novo Contrato"
+    :open="open"
+    @cancel="closeModal"
+    @ok="addEditContract"
+  >
+    <div class="contract-modal">
       <a-cascader
         v-model:value="selectedCompanyId"
         placeholder="Empresa"
@@ -227,62 +239,16 @@ export default {
         :placeholder="['Data início', 'Data fim']"
         :time-picker-props="{ format: 'HH:mm' }"
       />
-      <a-button type="primary" @click="addContract">
-        <template #icon>
-          <plus-outlined />
-        </template>
-        Adicionar Contrato
-      </a-button>
     </div>
-    <div class="contracts__list">
-      <div
-        v-for="(contract, index) in selectedContracts"
-        :key="index"
-        class="list"
-      >
-        <p>
-          Empresa: {{ contract.company.name }} / Função:
-          {{ contract.role.name }} / Início: {{ contract.datetime_start }} /
-          Fim:
-          {{ contract.datetime_end }}
-        </p>
-        <a-button type="primary" shape="circle" @click="removeContract(index)">
-          <template #icon>
-            <close-outlined />
-          </template>
-        </a-button>
-      </div>
-    </div>
-    <a-modal v-model:open="isRoleModalOpened" title="Nova Função" @ok="addRole">
-      <a-input v-model:value="newRole" placeholder="Digite a nova função" />
-    </a-modal>
-  </div>
+    <role-modal v-model:open="isRoleModalOpened" @fetch-roles="fetchRoles" />
+  </a-modal>
 </template>
 
 <style lang="scss" scoped>
-.contracts {
+.contract-modal {
+  padding: $spacingXl 0px;
   display: flex;
   flex-direction: column;
-  gap: $spacingLg;
-  flex: 1 1 auto;
-
-  h1 {
-    @include heading(large);
-  }
-  .contracts__content {
-    display: flex;
-    gap: $spacingXxl;
-  }
-  .contracts__list {
-    display: flex;
-    flex-direction: column;
-    gap: $spacingLg;
-
-    .list {
-      display: flex;
-      align-items: center;
-      gap: $spacingXxl;
-    }
-  }
+  gap: $spacingXl;
 }
 </style>
