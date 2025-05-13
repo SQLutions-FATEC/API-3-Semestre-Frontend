@@ -55,14 +55,15 @@ const clockInOutRoutes = [
   mockFlag(
     {
       method: 'put',
-      url: '/clock_in',
+      url: '/clock_in/:id',
       result: ({ requestBody }) => {
         const requestObj = JSON.parse(requestBody);
         const clockInOut = getClockInOut();
 
         clockInOut.forEach((info) => {
-          if (info.register_number == requestObj.register_number) {
-            info.date_time = requestObj.clock_in_time;
+          if (info.id == requestObj.id) {
+            info.date_time_in = requestObj.date_time_in;
+            info.date_time_out = requestObj.date_time_out;
           }
         });
 

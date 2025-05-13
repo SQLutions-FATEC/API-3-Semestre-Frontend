@@ -74,8 +74,9 @@ export default {
           company: info.company.name,
           companyId: info.company.id,
           role: info.role_name,
-          datetime: info.date_time,
-          direction: info.direction,
+          date_time_in: info.date_time_in,
+          date_time_out: info.date_time_out,
+          worked_hours: info.worked_hours,
         }));
         totalInfos.value = data.total;
 
@@ -131,6 +132,16 @@ export default {
         },
       },
       {
+        title: 'Data de entrada',
+        dataIndex: 'date_time_in',
+        key: 'datetime',
+      },
+      {
+        title: 'Data de saída',
+        dataIndex: 'date_time_out',
+        key: 'datetime',
+      },
+      {
         title: 'Empresa',
         dataIndex: 'company',
         key: 'company',
@@ -151,20 +162,20 @@ export default {
         key: 'role',
       },
       {
-        title: 'Horário',
-        dataIndex: 'datetime',
-        key: 'datetime',
-      },
-      {
-        title: '',
-        dataIndex: 'direction',
-        key: 'direction',
+        title: 'Horas trabalhadas',
+        dataIndex: 'worked_hours',
+        key: 'double',
         customRender: ({ text }) => {
-          if (text === 'Entrada') {
-            return h(ArrowUpOutlined, { style: { color: 'green' } });
-          } else {
-            return h(ArrowDownOutlined, { style: { color: 'red' } });
-          }
+          const convertToHoursMinutes = (decimalHours) => {
+            if (isNaN(decimalHours)) return '00:00';
+
+            const hours = Math.floor(decimalHours);
+            const minutes = Math.round((decimalHours - hours) * 60);
+
+            return `${hours}h${minutes.toString().padStart(2, '0')}min`;
+          };
+
+          return convertToHoursMinutes(text);
         },
       },
       {

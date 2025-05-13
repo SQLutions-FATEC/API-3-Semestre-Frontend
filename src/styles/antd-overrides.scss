@@ -48,6 +48,7 @@ body {
 .ant-btn-primary {
   background-color: $colorSecondary;
   border-color: $colorSecondary;
+  color: $colorTextWhite;
   font-weight: 600;
 
   &:hover {
@@ -78,4 +79,10 @@ body {
   a {
     color: $colorTextOrange !important;
   }
+}
+
+.ant-btn:hover {
+  background-color: $colorSecondaryHighlight !important;
+  border-color: $colorBorderSecondaryHighlight !important;
+  color: $colorTextWhite !important;
 }
