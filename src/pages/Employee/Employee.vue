@@ -4,11 +4,18 @@ import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import employee from '@/services/employee';
 import { CameraOutlined } from '@ant-design/icons-vue';
 import { validateRN } from '@/utils/validations/registerNumber';
-import { Button, Cascader, DatePicker, Upload, Modal } from 'ant-design-vue';
+import {
+  Button,
+  Cascader,
+  DatePicker,
+  Divider,
+  Upload,
+  Modal,
+} from 'ant-design-vue';
 import dayjs from 'dayjs';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import Contracts from '@/components/Contracts.vue';
+import Contracts from '@/components/Contracts/Contracts.vue';
 import { message } from 'ant-design-vue';
 import photo from '@/services/photo';
 
@@ -19,6 +26,7 @@ export default {
     'a-button': Button,
     'a-cascader': Cascader,
     'a-date-picker': DatePicker,
+    'a-divider': Divider,
     'a-modal': Modal,
     'at-input': AtInput,
     'at-number-input': AtNumberInput,
@@ -33,7 +41,6 @@ export default {
     const dateFormatList = ['DD/MM/YYYY'];
     const defaultProfileImage = '/assets/altave.jpg';
     let employeeContracts = [];
-    let gender = 'F';
 
     const buttonAction = ref('Cadastrar');
     const contractsRef = ref(null);
@@ -96,14 +103,6 @@ export default {
 
     const employeeAction = async () => {
       if (
-        // temporario, para fazer funcionar sem contratos, que será na próxima sprint
-
-        // !employeeName.value ||
-        // !employeeBirthDate.value ||
-        // !employeeBloodType.value ||
-        // !employeeRN.value ||
-        // profileImage.value === defaultProfileImage ||
-        // !employeeContracts.length
         !employeeName.value ||
         !employeeBirthDate.value ||
         !employeeBloodType.value ||
@@ -128,17 +127,19 @@ export default {
         birth_date: employeeBirthDate.value,
         register_number: employeeRN.value,
         gender: employeeGender.value,
-        // temporario, para fazer funcionar sem contratos, que será na próxima sprint
-        // contracts: employeeContracts,
       };
 
       let employeeId;
       try {
         if (isEditing.value) {
-          employeeId = await editEmployee(params);
+          employeeId = route.params.id;
+          await editEmployee(params);
+          editContract(employeeId);
           await uploadEmployeePhoto(employeeId);
         } else {
+          params.contracts = employeeContracts;
           employeeId = await createEmployee(params);
+          createContracts(employeeId);
           await uploadEmployeePhoto(employeeId);
           clearFields();
         }
@@ -162,6 +163,10 @@ export default {
       }
     };
 
+    const createContracts = (employeeId) => {
+      contractsRef.value.createContracts(employeeId);
+    };
+
     const editEmployee = async (params) => {
       try {
         const { data } = await employee.edit(params);
@@ -177,18 +182,8 @@ export default {
       }
     };
 
-    const fillContracts = (contracts) => {
-      const formattedContracts = [];
-      contracts.forEach((contract) => {
-        formattedContracts.push({
-          company: contract.company,
-          role: contract.role,
-          datetime_start: contract.datetime_start,
-          datetime_end: contract.datetime_end,
-        });
-      });
-      employeeContracts = formattedContracts;
-      contractsRef.value.fillContracts(formattedContracts);
+    const editContract = (employeeId) => {
+      contractsRef.value.editContract(employeeId);
     };
 
     const getEmployee = async (employeeId) => {
@@ -199,7 +194,6 @@ export default {
         employeeBloodType.value = data.blood_type;
         employeeRN.value = String(data.register_number);
         employeeGender.value = data.gender;
-        fillContracts(data.contracts);
 
         pageTitle.value = `Editar ${employeeName.value}`;
       } catch (error) {
@@ -250,7 +244,7 @@ export default {
     onMounted(async () => {
       const employeeId = route.params.id;
       if (!!employeeId) {
-        buttonAction.value = 'Editar';
+        buttonAction.value = 'Confirmar edição';
         isEditing.value = true;
         await Promise.all([getEmployee(employeeId), getPhoto(employeeId)]);
       }
@@ -294,8 +288,8 @@ export default {
       employeeBloodType.value = '';
       employeeGender.value = '';
       employeeRN.value = '';
-      contractsRef.value.resetContracts();
       profileImage.value = defaultProfileImage;
+      contractsRef.value.clearFields();
     };
 
     const validateRNInput = (event) => {
@@ -417,11 +411,12 @@ export default {
           </a-upload>
         </div>
       </div>
+      <a-divider />
       <contracts ref="contractsRef" @add-contract="addContract" />
       <div class="content__action">
         <a-button
           v-if="showDeleteButton"
-          danger
+          class="delete-button"
           style="width: 250px"
           @click="openConfirmationModal"
         >
@@ -501,6 +496,17 @@ export default {
       display: flex;
       justify-content: center;
       gap: $spacingMd;
+
+      .delete-button {
+        background-color: transparent;
+        border-color: $colorError;
+        color: $colorError;
+
+        &:hover {
+          background-color: $colorBackgroundError !important;
+          color: $colorWhite;
+        }
+      }
     }
   }
 }
@@ -509,5 +515,8 @@ export default {
   height: 100% !important;
   width: 100% !important;
   margin: 0px !important;
+}
+.ant-divider-horizontal {
+  margin: 0px;
 }
 </style>

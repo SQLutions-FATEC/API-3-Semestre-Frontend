@@ -11,7 +11,6 @@ const photo = {
         'Content-Type': 'multipart/form-data',
       },
     }),
-  // create: (payload) => api.post('/photos/upload', payload),
 };
 
 export default photo;
