@@ -58,16 +58,14 @@ export default {
           params.employee = currentFilters.value.employee;
         if (currentFilters.value.role) params.role = currentFilters.value.role;
         if (currentFilters.value.dateRange?.length === 2) {
-          params.start_date = currentFilters.value.dateRange[0].format(
-            'YYYY-MM-DD HH:mm'
-          );
-          params.end_date = currentFilters.value.dateRange[1].format(
-            'YYYY-MM-DD HH:mm'
-          );
+          params.start_date =
+            currentFilters.value.dateRange[0].format('YYYY-MM-DD HH:mm');
+          params.end_date =
+            currentFilters.value.dateRange[1].format('YYYY-MM-DD HH:mm');
         }
 
         const { data } = await clockInOut.get(params);
-        
+
         dataSource.value = data.items.map((info) => ({
           key: info.id,
           registerNumber: info.employee.register_number,
@@ -76,8 +74,9 @@ export default {
           company: info.company.name,
           companyId: info.company.id,
           role: info.role_name,
-          datetime: info.date_time,
-          direction: info.direction,
+          date_time_in: info.date_time_in,
+          date_time_out: info.date_time_out,
+          worked_hours: info.worked_hours,
         }));
         totalInfos.value = data.total;
 
@@ -133,6 +132,16 @@ export default {
         },
       },
       {
+        title: 'Data de entrada',
+        dataIndex: 'date_time_in',
+        key: 'datetime',
+      },
+      {
+        title: 'Data de saída',
+        dataIndex: 'date_time_out',
+        key: 'datetime',
+      },
+      {
         title: 'Empresa',
         dataIndex: 'company',
         key: 'company',
@@ -153,20 +162,20 @@ export default {
         key: 'role',
       },
       {
-        title: 'Horário',
-        dataIndex: 'datetime',
-        key: 'datetime',
-      },
-      {
-        title: '',
-        dataIndex: 'direction',
-        key: 'direction',
+        title: 'Horas trabalhadas',
+        dataIndex: 'worked_hours',
+        key: 'double',
         customRender: ({ text }) => {
-          if (text === 'Entrada') {
-            return h(ArrowUpOutlined, { style: { color: 'green' } });
-          } else {
-            return h(ArrowDownOutlined, { style: { color: 'red' } });
-          }
+          const convertToHoursMinutes = (decimalHours) => {
+            if (isNaN(decimalHours)) return '00:00';
+
+            const hours = Math.floor(decimalHours);
+            const minutes = Math.round((decimalHours - hours) * 60);
+
+            return `${hours}h${minutes.toString().padStart(2, '0')}min`;
+          };
+
+          return convertToHoursMinutes(text);
         },
       },
       {
@@ -205,18 +214,21 @@ export default {
 <template>
   <div class="home">
     <home-header />
-    <a-table
-      :dataSource="dataSource"
-      :columns="columns"
-      :pagination="{
-        current: currentPage,
-        pageSize: pageSize,
-        total: totalInfos,
-        showSizeChanger: true,
-        pageSizeOptions: ['10', '20', '50'],
-      }"
-      @change="handleTableChange"
-    />
+    <div class="table-container">
+      <a-table
+        :dataSource="dataSource"
+        :columns="columns"
+        :pagination="{
+          current: currentPage,
+          pageSize: pageSize,
+          total: totalInfos,
+          showSizeChanger: true,
+          pageSizeOptions: ['10', '20', '50'],
+        }"
+        :scroll="{ y: 'calc(100vh - 380px)' }"
+        @change="handleTableChange"
+      />
+    </div>
     <edit-clock-in-modal
       v-if="isEditClockInOpened"
       :clock-in="selectedClockIn"
@@ -228,14 +240,29 @@ export default {
 
 <style lang="scss" scoped>
 .home {
-  padding: $spacingLg 0px $spacingXxl 0px;
+  padding: $spacingLg 0 $spacingXxl 0;
   display: flex;
   flex-direction: column;
   gap: $spacingXl;
 }
+
+.table-container {
+  :deep(.ant-table-container) {
+    overflow: auto;
+  }
+
+  :deep(.ant-table-thead) {
+    position: sticky;
+    top: 180px;
+    z-index: 9;
+    background: white;
+  }
+}
+
 :deep(.ant-table-cell) {
   @include paragraph(medium);
 }
+
 :deep(.ant-pagination-item-active) {
   border-color: $colorBorderSecondary;
 

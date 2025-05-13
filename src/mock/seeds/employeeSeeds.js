@@ -45,7 +45,7 @@ const employees = [
   },
   {
     id: 3,
-    name: 'Welington',
+    name: 'Welington Torres',
     blood_type: 'B-',
     register_number: '76542397833',
     birth_date: '1998-11-12T02:00:00.000+00:00',
