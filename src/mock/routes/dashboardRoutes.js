@@ -70,14 +70,19 @@ const dashboardRoutes = [
         const filteredRegisters = getClockInOut().filter(
           (item) => item.company.id == params.company_id
         );
-        const response = filteredRegisters.filter(
-          (item) =>
-            item.direction === 'Entrada' &&
-            !filteredRegisters.some(
-              (i) =>
-                i.employee.id === item.employee.id && i.direction === 'Saída'
-            )
-        );
+
+        const response = filteredRegisters
+          .filter(
+            (item) =>
+              (!item.date_time_in && item.date_time_out) ||
+              (item.date_time_in && !item.date_time_out)
+          )
+          .sort((a, b) => {
+            const dateA = new Date(a.date_time_in || a.date_time_out);
+            const dateB = new Date(b.date_time_in || b.date_time_out);
+            return dateB - dateA;
+          })
+          .slice(0, 5);
 
         return APIFailureWrapper({
           content: response,

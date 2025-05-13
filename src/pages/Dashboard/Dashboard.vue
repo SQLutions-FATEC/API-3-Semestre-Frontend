@@ -189,7 +189,10 @@ export default {
         />
       </div>
       <h1>Alertas</h1>
-      <without-match-registers :data="singleRegisters" />
+      <div class="content__graphs">
+        <without-match-registers class="col-6" :data="singleRegisters" />
+        <without-match-registers class="col-6" :data="singleRegisters" />
+      </div>
     </div>
   </div>
 </template>

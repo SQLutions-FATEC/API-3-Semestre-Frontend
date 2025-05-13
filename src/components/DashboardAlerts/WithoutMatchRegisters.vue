@@ -1,7 +1,8 @@
 <script>
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons-vue';
 import { Table } from 'ant-design-vue';
-import { ref } from 'vue';
+import { h, ref } from 'vue';
+import { formatDate } from '@/utils';
 
 export default {
   name: 'WithoutMatchRegisters',
@@ -62,15 +63,15 @@ export default {
       },
     ];
 
-    // dataSource.value = props.data.items.map((info) => ({
-    //   key: info.id,
-    //   registerNumber: info.employee.register_number,
-    //   employee: info.employee.name,
-    //   company: info.company.name,
-    //   role: info.role_name,
-    //   datetime: info.date_time_in,
-    //   direction: info.date_time_in ? 'Entrada' : 'Saída',
-    // }));
+    dataSource.value = props.data.map((info) => ({
+      key: info.id,
+      registerNumber: info.employee.register_number,
+      employee: info.employee.name,
+      company: info.company.name,
+      role: info.role_name,
+      datetime: formatDate(info.date_time_in || info.date_time_out),
+      direction: info.date_time_in ? 'Entrada' : 'Saída',
+    }));
 
     return {
       columns,
@@ -87,11 +88,7 @@ export default {
       <a-table
         :dataSource="dataSource"
         :columns="columns"
-        :pagination="{
-          current: 1,
-          pageSize: 1,
-          total: 5,
-        }"
+        :pagination="false"
       />
     </div>
   </div>
