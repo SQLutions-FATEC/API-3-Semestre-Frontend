@@ -1,5 +1,5 @@
 <script>
-import { Cascader, DatePicker, message } from 'ant-design-vue';
+import { Cascader, DatePicker, message, Modal } from 'ant-design-vue';
 import { watch, ref } from 'vue';
 import dayjs from 'dayjs';
 import company from '@/services/company';
