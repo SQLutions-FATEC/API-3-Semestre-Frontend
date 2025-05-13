@@ -1,7 +1,8 @@
 @forward './__border-radius.module.scss';
 @forward './__fonts.module.scss';
 @forward './__spacers.module.scss';
-@import './__fonts.module.scss';
+@forward './__colors.module.scss';
+@use './__fonts.module.scss' as fonts;
 
 h1,
 h2,
@@ -12,6 +13,6 @@ h6,
 p,
 span,
 a {
-  font-family: $fontFamily !important;
+  font-family: fonts.$fontFamily !important;
   margin-bottom: 0px;
 }
