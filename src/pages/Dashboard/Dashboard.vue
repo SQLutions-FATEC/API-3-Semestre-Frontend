@@ -237,10 +237,12 @@ export default {
     height: calc(100vh - 160px);
   }
   .dashboard__content {
+    max-height: calc(100vh - 154px);
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: $spacingXxl;
-    padding: $spacingXxl 0px;
+    padding: $spacingXxl $spacingSm $spacingXxl 0px;
 
     .content__graphs {
       display: flex;
