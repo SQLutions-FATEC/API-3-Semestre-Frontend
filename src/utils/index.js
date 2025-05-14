@@ -1,3 +1,9 @@
+import dayjs from 'dayjs';
+
+const formatDate = (dateString) => {
+  return dayjs(dateString).format('DD/MM/YYYY HH:mm');
+};
+
 const generateRandomColors = (count) => {
   const colors = [];
   for (let index = 0; index < count; index++) {
@@ -9,4 +15,4 @@ const generateRandomColors = (count) => {
   return colors;
 };
 
-export { generateRandomColors };
+export { formatDate, generateRandomColors };
