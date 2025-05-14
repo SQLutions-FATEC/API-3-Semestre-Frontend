@@ -5,6 +5,8 @@ import {
   weeklyHoursWorkedByRole,
 } from '@/mock/seeds/dashboardSeeds';
 import { getClockInOut } from '@/mock/seeds/clockInOutSeeds';
+import contracts from '@/mock/seeds/contractSeeds';
+import { employees } from '@/mock/seeds/employeeSeeds';
 
 const dashboardRoutes = [
   mockFlag(
@@ -87,6 +89,45 @@ const dashboardRoutes = [
         return APIFailureWrapper({
           content: response,
           errorMessage: 'Erro ao listar os registros sem par',
+        });
+      },
+    },
+    'on'
+  ),
+  mockFlag(
+    {
+      method: 'get',
+      url: '/dashboard/company/:company_id/contracts-to-expire',
+      result: ({ params }) => {
+        const response = contracts
+          .filter(
+            (contract) =>
+              contract.active && contract.company.id == params.company_id
+          )
+          .sort((a, b) => {
+            const dateA = new Date(a.datetime_end);
+            const dateB = new Date(b.datetime_end);
+            return dateB - dateA;
+          })
+          .map((contract) => {
+            const employee = employees.find((item) =>
+              item.contracts.includes(contract)
+            );
+
+            return {
+              company: { id: contract.company.id, name: contract.company.name },
+              employee: {
+                name: employee.name,
+                register_number: employee.register_number,
+              },
+              datetime_end: contract.datetime_end,
+            };
+          })
+          .slice(0, 5);
+
+        return APIFailureWrapper({
+          content: response,
+          errorMessage: 'Erro ao listar os próximos contract a vencer',
         });
       },
     },

@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import { Cascader, Spin } from 'ant-design-vue';
 import company from '@/services/company';
 import dashboard from '@/services/dashboard';
+import ContractsToExpire from '@/components/DashboardAlerts/ContractsToExpire.vue';
 import DailyRegisters from '@/components/DailyRegisters.vue';
 import GraphEmployeesByGender from '@/components/Graphs/GraphEmployeesByGender.vue';
 import GraphHoursWorkedByRole from '@/components/Graphs/GraphHoursWorkedByRole.vue';
@@ -15,6 +16,7 @@ export default {
     'a-cascader': Cascader,
     'a-spin': Spin,
     'daily-registers': DailyRegisters,
+    'contracts-to-expire': ContractsToExpire,
     'graph-employees-by-gender': GraphEmployeesByGender,
     'graph-hours-worked-by-role': GraphHoursWorkedByRole,
     'without-match-registers': WithoutMatchRegisters,
@@ -25,11 +27,12 @@ export default {
     const clockOutQtt = ref(0);
     const companies = ref([]);
     const companyOptions = ref([]);
+    const contractsToExpire = ref([]);
     const employeesGenderObj = ref({});
+    const loadingGraphs = ref(true);
     const roleHoursObj = ref({});
     const selectedCompanyId = ref(null);
     const singleRegisters = ref([]);
-    const loadingGraphs = ref(true);
 
     const fetchCompanies = async () => {
       try {
@@ -41,6 +44,17 @@ export default {
           data: item,
           key: item.id,
         }));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const fetchContractsToExpire = async () => {
+      try {
+        const { data } = await dashboard.getContractsToExpire(
+          selectedCompanyId.value
+        );
+        return data;
       } catch (error) {
         console.error(error);
       }
@@ -87,11 +101,13 @@ export default {
         hoursWorkedByRole,
         employeesByGender,
         withoutMatchRegisters,
+        contractsAboutToExpire,
       ] = await Promise.all([
         fetchDailyRegisters(),
         fetchHoursWorkedByRole(),
         fetchEmployeesByGender(),
         fetchSingleRegisters(),
+        fetchContractsToExpire(),
       ]);
       clockInQtt.value = dailyRegisters.clock_in;
       clockOutQtt.value = dailyRegisters.clock_out;
@@ -108,6 +124,8 @@ export default {
       employeesGenderObj.value = employeesByGender;
 
       singleRegisters.value = withoutMatchRegisters;
+
+      contractsToExpire.value = contractsAboutToExpire;
 
       loadingGraphs.value = false;
     };
@@ -141,6 +159,7 @@ export default {
       clockInQtt,
       clockOutQtt,
       companyOptions,
+      contractsToExpire,
       employeesGenderObj,
       handleCompanyChange,
       loadingGraphs,
@@ -191,7 +210,7 @@ export default {
       <h1>Alertas</h1>
       <div class="content__graphs">
         <without-match-registers class="col-6" :data="singleRegisters" />
-        <without-match-registers class="col-6" :data="singleRegisters" />
+        <contracts-to-expire class="col-6" :data="contractsToExpire" />
       </div>
     </div>
   </div>

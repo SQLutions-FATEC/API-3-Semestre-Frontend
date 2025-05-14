@@ -1,6 +1,8 @@
 import api from './api';
 
 const dashboard = {
+  getContractsToExpire: (companyId) =>
+    api.get(`/dashboard/company/${companyId}/contracts-to-expire`),
   getDailyRegisters: (companyId) =>
     api.get(`/dashboard/company/${companyId}/daily-registers`),
   getEmployeesByGender: (companyId) =>

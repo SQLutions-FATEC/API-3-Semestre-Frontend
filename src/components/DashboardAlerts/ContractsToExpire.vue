@@ -1,16 +1,13 @@
 <script>
-import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons-vue';
 import { Table } from 'ant-design-vue';
-import { h, ref } from 'vue';
+import { ref } from 'vue';
 import { formatDate } from '@/utils';
 
 export default {
-  name: 'WithoutMatchRegisters',
+  name: 'ContractsToExpire',
 
   components: {
     'a-table': Table,
-    'arrow-up-outlined': ArrowUpOutlined,
-    'arrow-down-outlined': ArrowDownOutlined,
   },
 
   props: {
@@ -48,26 +45,9 @@ export default {
         ellipsis: true,
       },
       {
-        title: 'Função',
-        dataIndex: 'role',
-        key: 'role',
-      },
-      {
-        title: 'Horário',
+        title: 'Vencimento',
         dataIndex: 'datetime',
         key: 'datetime',
-      },
-      {
-        title: '',
-        dataIndex: 'direction',
-        key: 'direction',
-        customRender: ({ text }) => {
-          if (text === 'Entrada') {
-            return h(ArrowUpOutlined, { style: { color: 'green' } });
-          } else {
-            return h(ArrowDownOutlined, { style: { color: 'red' } });
-          }
-        },
       },
     ];
 
@@ -76,9 +56,7 @@ export default {
       registerNumber: info.employee.register_number,
       employee: info.employee.name,
       company: info.company.name,
-      role: info.role_name,
-      datetime: formatDate(info.date_time_in || info.date_time_out),
-      direction: info.date_time_in ? 'Entrada' : 'Saída',
+      datetime: formatDate(info.datetime_end),
     }));
 
     return {
@@ -90,8 +68,8 @@ export default {
 </script>
 
 <template>
-  <div class="without-match-registers">
-    <h2>Registros sem par</h2>
+  <div class="contracts-to-expire">
+    <h2>Próximos contratos a vencer</h2>
     <div class="graph-container">
       <a-table
         :dataSource="dataSource"
@@ -103,7 +81,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-.without-match-registers {
+.contracts-to-expire {
   display: flex;
   flex-direction: column;
   gap: $spacingSm;
