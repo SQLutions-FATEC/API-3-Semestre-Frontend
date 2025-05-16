@@ -1,5 +1,6 @@
 <script>
 import HomeHeader from '@/components/Headers/HomeHeader.vue';
+import dayjs from 'dayjs';
 import EditClockInModal from '@/components/Modals/EditClockInModal.vue';
 import clockInOut from '@/services/clockInOut';
 import { eventBus } from '@/utils/eventBus';
@@ -132,15 +133,17 @@ export default {
         },
       },
       {
-        title: 'Data de entrada',
-        dataIndex: 'date_time_in',
-        key: 'datetime',
-      },
-      {
-        title: 'Data de saída',
-        dataIndex: 'date_time_out',
-        key: 'datetime',
-      },
+         title: 'Data de entrada',
+         dataIndex: 'date_time_in',
+         key: 'datetime_in',
+         customRender: ({ text }) => dayjs(text).format('DD/MM/YYYY HH:mm'),
+       },
+       {
+         title: 'Data de saída',
+         dataIndex: 'date_time_out',
+         key: 'datetime_out',
+         customRender: ({ text }) => text ? dayjs(text).format('DD/MM/YYYY HH:mm') : '',
+       },
       {
         title: 'Empresa',
         dataIndex: 'company',
