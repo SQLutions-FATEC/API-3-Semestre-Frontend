@@ -1,39 +1,27 @@
-<script>
-import { ref } from 'vue';
+<script setup>
+import { ref, inject } from 'vue';
 import TopBar from '@/components/TopBar.vue';
 import SideBar from '@/components/SideBar.vue';
 
-export default {
-  name: 'App',
+const locale = inject('locale');
 
-  components: {
-    'top-bar': TopBar,
-    'side-bar': SideBar,
-  },
+const isSidebarOpen = ref(false);
 
-  setup() {
-    const isSidebarOpen = ref(false);
-
-    const toggleSidebar = () => {
-      isSidebarOpen.value = !isSidebarOpen.value;
-    };
-
-    return {
-      isSidebarOpen,
-      toggleSidebar,
-    };
-  },
+const toggleSidebar = () => {
+  isSidebarOpen.value = !isSidebarOpen.value;
 };
 </script>
 
 <template>
-  <div>
-    <top-bar @toggle-sidebar="toggleSidebar" />
-    <side-bar :is-open="isSidebarOpen" @toggle-sidebar="toggleSidebar" />
-    <div class="app">
-      <router-view :key="$route.fullPath" />
+  <a-config-provider :locale="locale">
+    <div>
+      <top-bar @toggle-sidebar="toggleSidebar" />
+      <side-bar :is-open="isSidebarOpen" @toggle-sidebar="toggleSidebar" />
+      <div class="app">
+        <router-view :key="$route.fullPath" />
+      </div>
     </div>
-  </div>
+  </a-config-provider>
 </template>
 
 <style lang="scss" scoped>

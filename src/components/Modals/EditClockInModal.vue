@@ -125,20 +125,24 @@ export default {
           disabled
         />
       </div>
-      <div class="col-12">
-        <at-number-input
-          v-model:value="clockInTime"
-          placeholder="Horário de entrada"
-          mask="####-##-## ##:##"
-        />
-      </div>
-      <div class="col-12">
-        <at-number-input
-          v-model:value="clockOutTime"
-          placeholder="Horário de saída"
-          mask="####-##-## ##:##"
-        />
-      </div>
+      <div class="col-6">
+         <a-date-picker
+           v-model:value="clockInTime"
+           show-time
+           format="DD/MM/YYYY HH:mm"
+           placeholder="Horário de entrada"
+           style="width: 100%"
+         />
+       </div>
+       <div class="col-6">
+         <a-date-picker
+           v-model:value="clockOutTime"
+           show-time
+           format="DD/MM/YYYY HH:mm"
+           placeholder="Horário de saída"
+           style="width: 100%"
+         />
+       </div>
     </div>
   </a-modal>
 </template>

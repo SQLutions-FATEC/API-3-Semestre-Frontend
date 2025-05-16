@@ -294,7 +294,7 @@ export default {
 
     const validateRNInput = (event) => {
       const newValue = event.target.value;
-      errorMessage.value = validateRN(newValue);
+      errorMessage.value = validateRN(newValue.replace(/\D/g, ''));
     };
 
     const verifyAge = (birthDate) => {
@@ -353,7 +353,7 @@ export default {
           <at-number-input
             v-model:value="employeeRN"
             placeholder="Número de registro"
-            mask="###########"
+            mask="###.#####.##-#"
             :error-message="errorMessage"
             @input="validateRNInput"
           />
