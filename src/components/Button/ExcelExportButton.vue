@@ -45,7 +45,7 @@ export default {
 
     const exportToExcel = async () => {
       if (!props.data || props.data.length === 0) {
-        return message.error('Nenhum dado disponível para exportação')
+        return message.error('Nenhum dado disponível para exportação');
       }
 
       isLoading.value = true;
@@ -80,7 +80,7 @@ export default {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } catch (error) {
-        message.error('Erro na exportação:', error)
+        message.error('Erro na exportação:', error);
       } finally {
         isLoading.value = false;
       }
@@ -99,8 +99,11 @@ export default {
       });
     };
 
+    const exportAllToExcel = async () => {};
+
     return {
       exportToExcel,
+      exportAllToExcel,
       isLoading,
     };
   },
@@ -113,5 +116,11 @@ export default {
       <download-outlined />
     </template>
     Exportar para Excel
+  </a-button>
+  <a-button type="primary" :loading="isLoading" @click="exportAllToExcel">
+    <template #icon>
+      <download-outlined />
+    </template>
+    Exportar todos os registros
   </a-button>
 </template>
