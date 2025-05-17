@@ -1,8 +1,9 @@
 import api from './api';
 
 const clockInOut = {
-  get: (params = { page: 1, size: 10 }) =>
-    api.get('/clock_in/search', { params }),
+  get: (
+    params = { page: params.page, size: params.size, export: params.export }
+  ) => api.get('/clock_in/search', { params }),
   edit: (params) => api.put(`/clock_in/${params.id}`, params),
 };
 

@@ -34,6 +34,7 @@ export default {
     const pageSize = ref(10);
     const selectedClockIn = ref({});
     const totalInfos = ref(0);
+    const exportExcel = ref(false);
 
     const closeEditModal = () => {
       isEditClockInOpened.value = false;
@@ -44,6 +45,7 @@ export default {
         const params = {
           page: currentPage.value,
           size: pageSize.value,
+          export: exportExcel.value,
         };
 
         if (filters) {

@@ -101,8 +101,11 @@ export default {
       });
     };
 
+    const exportAllToExcel = async () => {};
+
     return {
       exportToExcel,
+      exportAllToExcel,
       isLoading,
     };
   },
@@ -115,5 +118,11 @@ export default {
       <download-outlined />
     </template>
     Exportar para Excel
+  </a-button>
+  <a-button type="primary" :loading="isLoading" @click="exportAllToExcel">
+    <template #icon>
+      <download-outlined />
+    </template>
+    Exportar todos os registros
   </a-button>
 </template>
