@@ -14,7 +14,16 @@ const employeeRoutes = [
       method: 'get',
       url: '/employee',
       result: () => {
-        const response = employees;
+        const response = employees.map((employee) => {
+          return {
+            id: employee.id,
+            name: employee.name,
+            blood_type: employee.blood_type,
+            register_number: employee.register_number,
+            birth_date: employee.birth_date,
+            gender: employee.gender,
+          };
+        });
 
         return APIFailureWrapper({
           content: response,

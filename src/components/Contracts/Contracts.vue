@@ -3,7 +3,6 @@ import { Modal, message } from 'ant-design-vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { formatDate } from '@/utils';
 import ActiveContract from '@/components/Contracts/ActiveContract.vue';
 import InactiveContracts from '@/components/Contracts/InactiveContracts.vue';
 import ContractModal from '@/components/Modals/ContractModal.vue';
@@ -147,7 +146,6 @@ export default {
       activeContract,
       addContract,
       fetchContracts,
-      formatDate,
       inactivateContract,
       inactiveContracts,
       isContractModalOpened,

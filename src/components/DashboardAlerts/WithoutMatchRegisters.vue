@@ -2,7 +2,7 @@
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons-vue';
 import { Table } from 'ant-design-vue';
 import { h, ref } from 'vue';
-import { formatDate } from '@/utils';
+import { formatDateTime } from '@/utils';
 
 export default {
   name: 'WithoutMatchRegisters',
@@ -77,7 +77,7 @@ export default {
       employee: info.employee.name,
       company: info.company.name,
       role: info.role_name,
-      datetime: formatDate(info.date_time_in || info.date_time_out),
+      datetime: formatDateTime(info.date_time_in || info.date_time_out),
       direction: info.date_time_in ? 'Entrada' : 'Saída',
     }));
 

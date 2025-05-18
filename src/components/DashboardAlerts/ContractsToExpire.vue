@@ -1,7 +1,7 @@
 <script>
 import { Table } from 'ant-design-vue';
 import { ref } from 'vue';
-import { formatDate } from '@/utils';
+import { formatDateTime } from '@/utils';
 
 export default {
   name: 'ContractsToExpire',
@@ -56,7 +56,7 @@ export default {
       registerNumber: info.employee.register_number,
       employee: info.employee.name,
       company: info.company.name,
-      datetime: formatDate(info.datetime_end),
+      datetime: formatDateTime(info.datetime_end),
     }));
 
     return {
