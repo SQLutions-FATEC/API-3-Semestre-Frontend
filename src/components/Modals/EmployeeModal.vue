@@ -55,7 +55,6 @@ export default {
     const defaultProfileImage = '/assets/altave.jpg';
     let employeeContracts = [];
 
-    const buttonAction = ref('Cadastrar');
     const contractsRef = ref(null);
     const employeeName = ref('');
     const employeeRN = ref('');
@@ -68,25 +67,6 @@ export default {
     const selectedFile = ref(null);
     const uploading = ref(false);
 
-    const addEmployee = async () => {
-      if (newRole.value.trim()) {
-        const params = {};
-
-        try {
-          await employee.create(params);
-          await fetchEmployees();
-        } catch (error) {
-          console.error(error);
-        }
-
-        closeModal();
-      }
-    };
-
-    const closeModal = () => {
-      emit('update:open', false);
-    };
-
     const beforeUpload = (file) => {
       const isJpgOrPng =
         file.type === 'image/jpeg' || file.type === 'image/png';
@@ -98,6 +78,10 @@ export default {
         message.error('A imagem deve ser menor que 2MB!');
       }
       return isJpgOrPng && isLt2M;
+    };
+
+    const closeModal = () => {
+      emit('update:open', false);
     };
 
     const handleImageChange = (info) => {
@@ -273,7 +257,6 @@ export default {
       const employeeId = props.employeeId;
 
       if (!!employeeId) {
-        buttonAction.value = 'Editar';
         isEditing.value = true;
         await Promise.all([getEmployee(employeeId), getPhoto(employeeId)]);
       }
@@ -315,22 +298,16 @@ export default {
       return dayjs().diff(birthDate, 'year');
     };
 
-    const showDeleteButton = computed(() => {
-      return isEditing.value;
-    });
-
     const modalTitle = computed(() => {
       return isEditing.value ? 'Editar Funcionário' : 'Cadastrar Funcionário';
     });
 
     return {
-      addEmployee,
       closeModal,
       addContract,
       beforeUpload,
       bloodTypeOptions,
       genderOptions,
-      buttonAction,
       contractsRef,
       customRequest,
       dateFormatList,
@@ -348,7 +325,6 @@ export default {
       handleImageChange,
       modalTitle,
       profileImage,
-      showDeleteButton,
       uploading,
       validateRNInput,
     };
@@ -360,8 +336,9 @@ export default {
   <a-modal
     :open="open"
     :title="modalTitle"
+    :width="800"
     @cancel="closeModal"
-    @ok="addEmployee"
+    @ok="employeeAction"
   >
     <div class="employee-modal">
       <div class="modal__content">
@@ -425,16 +402,6 @@ export default {
       </div>
       <a-divider />
       <contracts ref="contractsRef" @add-contract="addContract" />
-      <div class="modal__action">
-        <a-button
-          type="primary"
-          style="width: 250px"
-          :loading="uploading"
-          @click="employeeAction"
-        >
-          {{ buttonAction }}
-        </a-button>
-      </div>
     </div>
   </a-modal>
 </template>
@@ -464,8 +431,6 @@ export default {
       display: flex;
       gap: $spacingSm;
     }
-  }
-  .modal__action {
   }
 }
 :deep(.ant-upload),

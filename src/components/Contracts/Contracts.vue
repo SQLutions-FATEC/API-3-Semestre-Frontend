@@ -159,7 +159,7 @@ export default {
 <template>
   <div class="contracts">
     <div class="contracts__header">
-      <h1>Contratos</h1>
+      <h2>Contratos</h2>
       <a-button type="primary" @click="openContractModal">
         <template #icon>
           <plus-outlined />
@@ -174,10 +174,13 @@ export default {
       @inactivate-contract="inactivateContract"
     />
     <inactive-contracts
-      v-if="inactiveContracts.length"
+      v-else-if="inactiveContracts.length"
       :contracts="inactiveContracts"
       @fetch-contracts="fetchContracts"
     />
+    <div v-else class="contracts__empty-state">
+      <p>Nenhum contrato encontrado.</p>
+    </div>
     <contract-modal
       v-model:open="isContractModalOpened"
       @add-contract="addContract"
@@ -196,10 +199,17 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
 
-  h1 {
-    @include heading(large);
+    h2 {
+      @include label(medium);
+    }
+  }
+  .contracts__empty-state {
+    margin: $spacingLg auto;
+
+    p {
+      @include paragraph(medium);
+    }
   }
 }
 </style>

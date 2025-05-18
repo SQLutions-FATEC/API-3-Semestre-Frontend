@@ -138,12 +138,13 @@ export default {
 
     .contract__infos {
       display: flex;
-      gap: $spacingXxl;
+      gap: $spacingMd;
+      align-items: center;
 
       .info {
         display: flex;
         gap: $spacingMd;
-        align-items: baseline;
+        align-items: center;
 
         h3 {
           @include heading(xsmall);
@@ -151,13 +152,13 @@ export default {
           font-size: 14px;
         }
         p {
-          @include paragraph(large);
+          @include paragraph(medium);
         }
       }
     }
     .contract__actions {
       display: flex;
-      gap: $spacingXl;
+      gap: $spacingMd;
 
       .delete-button {
         background-color: $colorBackgroundError;
