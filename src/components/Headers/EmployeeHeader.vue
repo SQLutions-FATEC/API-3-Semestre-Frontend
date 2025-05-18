@@ -1,19 +1,25 @@
 <script>
 import { Button } from 'ant-design-vue';
+import EmployeeModal from '@/components/Modals/EmployeeModal.vue';
+import { ref } from 'vue';
 
 export default {
   name: 'EmployeeHeader',
 
   components: {
     'a-button': Button,
+    'employee-modal': EmployeeModal,
   },
 
   setup() {
+    const isEmployeeModalOpened = ref(false);
+
     const openEmployeeModal = () => {
-      this.$emit('open-employee-modal');
+      isEmployeeModalOpened.value = true;
     };
 
     return {
+      isEmployeeModalOpened,
       openEmployeeModal,
     };
   },
@@ -26,6 +32,7 @@ export default {
     <a-button type="primary" @click="openEmployeeModal">
       Adicionar funcionário
     </a-button>
+    <employee-modal v-model:open="isEmployeeModalOpened" />
   </div>
 </template>
 

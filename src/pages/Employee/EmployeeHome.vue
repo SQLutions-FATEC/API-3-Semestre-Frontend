@@ -1,25 +1,40 @@
 <script>
-import { ref, onMounted } from 'vue';
-import { Table } from 'ant-design-vue';
-import { h } from 'vue';
-import { RouterLink } from 'vue-router';
+import { ref, onMounted, provide } from 'vue';
+import { Button, Modal, Table } from 'ant-design-vue';
 import employee from '@/services/employee';
 import { formatDate } from '@/utils';
 import EmployeeHeader from '@/components/Headers/EmployeeHeader.vue';
+import EmployeeModal from '@/components/Modals/EmployeeModal.vue';
 
 export default {
   name: 'EmployeeHome',
 
   components: {
+    'a-button': Button,
+    'a-modal': Modal,
     'a-table': Table,
     'employee-header': EmployeeHeader,
+    'employee-modal': EmployeeModal,
   },
 
   setup() {
     const currentPage = ref(1);
+    const dataSource = ref([]);
+    const isConfirmationModalOpened = ref(false);
+    const isEmployeeModalOpened = ref(false);
     const pageSize = ref(10);
     const totalInfos = ref(0);
-    const dataSource = ref([]);
+
+    const deleteEmployee = async () => {
+      try {
+        const employeeId = route.params.id;
+        await employee.delete(employeeId);
+        isConfirmationModalOpened.value = false;
+        router.push({ name: 'Home' });
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
     const fetchEmployees = async () => {
       try {
@@ -43,10 +58,20 @@ export default {
       }
     };
 
+    provide('fetchEmployees', fetchEmployees);
+
     const handleTableChange = async (pagination) => {
       currentPage.value = pagination.current;
       pageSize.value = pagination.pageSize;
       await fetchEmployees();
+    };
+
+    const openConfirmationModal = () => {
+      isConfirmationModalOpened.value = true;
+    };
+
+    const openEmployeeModal = () => {
+      isEmployeeModalOpened.value = true;
     };
 
     onMounted(fetchEmployees);
@@ -81,11 +106,16 @@ export default {
 
     return {
       columns,
-      dataSource,
       currentPage,
+      dataSource,
+      deleteEmployee,
+      handleTableChange,
+      isConfirmationModalOpened,
+      isEmployeeModalOpened,
+      openConfirmationModal,
+      openEmployeeModal,
       pageSize,
       totalInfos,
-      handleTableChange,
     };
   },
 };
@@ -109,6 +139,24 @@ export default {
         @change="handleTableChange"
       />
     </div>
+    <employee-modal v-model:open="isEmployeeModalOpened" />
+    <a-modal
+      v-model:open="isConfirmationModalOpened"
+      title="Deletar funcionário"
+      @ok="deleteEmployee"
+    >
+      <span> Tem certeza que deseja deletar o funcionário? </span>
+    </a-modal>
+    <a-button
+      class="delete-button"
+      style="width: 250px"
+      @click="openConfirmationModal"
+    >
+      Deletar funcionario
+    </a-button>
+    <a-button type="primary" style="width: 250px" @click="openEmployeeModal">
+      Editar funcionário
+    </a-button>
   </div>
 </template>
 
@@ -135,6 +183,16 @@ export default {
     a {
       color: $colorTextOrange;
     }
+  }
+}
+.delete-button {
+  background-color: transparent;
+  border-color: $colorError;
+  color: $colorError;
+
+  &:hover {
+    background-color: $colorBackgroundError !important;
+    color: $colorWhite;
   }
 }
 </style>
