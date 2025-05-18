@@ -108,7 +108,7 @@ export default {
   margin-top: $spacingLg;
 
   .bar__button {
-    @include label(medium);
+    @include paragraph(medium);
     height: 40px;
     border-radius: 0px;
     background-color: transparent;
