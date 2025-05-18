@@ -5,12 +5,14 @@ import { h } from 'vue';
 import { RouterLink } from 'vue-router';
 import employee from '@/services/employee';
 import { formatDate } from '@/utils';
+import EmployeeHeader from '@/components/Headers/EmployeeHeader.vue';
 
 export default {
   name: 'EmployeeHome',
 
   components: {
     'a-table': Table,
+    'employee-header': EmployeeHeader,
   },
 
   setup() {
@@ -26,7 +28,7 @@ export default {
           size: pageSize.value,
         });
 
-        dataSource.value = data.map((employee) => ({
+        dataSource.value = data.items.map((employee) => ({
           key: employee.id,
           birthDate: formatDate(employee.birth_date),
           registerNumber: employee.register_number,
@@ -59,16 +61,6 @@ export default {
         title: 'Nome do funcionário',
         dataIndex: 'name',
         key: 'name',
-        customRender: ({ text, record }) => {
-          return h(
-            RouterLink,
-            {
-              to: { path: `/employee/${record.key}` },
-              style: { color: 'inherit', textDecoration: 'underline' },
-            },
-            () => text
-          );
-        },
       },
       {
         title: 'Gênero',
@@ -101,20 +93,22 @@ export default {
 
 <template>
   <div class="employee-home">
-    <h1>Funcionários</h1>
-    <a-table
-      :dataSource="dataSource"
-      :columns="columns"
-      :pagination="{
-        current: currentPage,
-        pageSize: pageSize,
-        total: totalInfos,
-        showSizeChanger: true,
-        pageSizeOptions: ['10', '20', '50'],
-      }"
-      :scroll="{ y: 'calc(100vh - 200px)' }"
-      @change="handleTableChange"
-    />
+    <employee-header />
+    <div class="table-container">
+      <a-table
+        :dataSource="dataSource"
+        :columns="columns"
+        :pagination="{
+          current: currentPage,
+          pageSize: pageSize,
+          total: totalInfos,
+          showSizeChanger: true,
+          pageSizeOptions: ['10', '20', '50'],
+        }"
+        :scroll="{ y: 'calc(100vh - 296px)' }"
+        @change="handleTableChange"
+      />
+    </div>
   </div>
 </template>
 
@@ -125,8 +119,22 @@ export default {
   flex-direction: column;
   gap: $spacingXl;
 
-  h1 {
-    @include heading(large);
+  .table-container {
+    :deep(.ant-table-container) {
+      overflow: auto;
+    }
+  }
+
+  :deep(.ant-table-cell) {
+    @include paragraph(medium);
+  }
+
+  :deep(.ant-pagination-item-active) {
+    border-color: $colorBorderSecondary;
+
+    a {
+      color: $colorTextOrange;
+    }
   }
 }
 </style>

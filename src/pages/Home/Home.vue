@@ -225,7 +225,7 @@ export default {
           showSizeChanger: true,
           pageSizeOptions: ['10', '20', '50'],
         }"
-        :scroll="{ y: 'calc(100vh - 380px)' }"
+        :scroll="{ y: 'calc(100vh - 420px)' }"
         @change="handleTableChange"
       />
     </div>
@@ -248,13 +248,6 @@ export default {
 .table-container {
   :deep(.ant-table-container) {
     overflow: auto;
-  }
-
-  :deep(.ant-table-thead) {
-    position: sticky;
-    top: 180px;
-    z-index: 9;
-    background: white;
   }
 }
 

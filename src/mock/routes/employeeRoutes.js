@@ -26,7 +26,7 @@ const employeeRoutes = [
         });
 
         return APIFailureWrapper({
-          content: response,
+          content: { items: response, total: response.length },
           errorMessage: 'Erro ao listar os funcionários',
         });
       },
