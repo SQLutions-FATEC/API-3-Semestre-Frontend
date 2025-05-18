@@ -8,7 +8,7 @@ export default {
   name: 'GraphEmployeesByGender',
 
   components: {
-    PieChart: Pie,
+    'pie-chart': Pie,
   },
 
   props: {
@@ -54,7 +54,7 @@ export default {
   <div class="graph-employees-by-gender">
     <h2>Quantidade de funcionários por gênero</h2>
     <div class="graph-container pie-chart">
-      <PieChart :data="chartData" :options="chartOptions" />
+      <pie-chart :data="chartData" :options="chartOptions" />
     </div>
   </div>
 </template>

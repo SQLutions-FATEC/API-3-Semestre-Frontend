@@ -3,9 +3,11 @@ import { onMounted, ref } from 'vue';
 import { Cascader, Spin } from 'ant-design-vue';
 import company from '@/services/company';
 import dashboard from '@/services/dashboard';
+import ContractsToExpire from '@/components/DashboardAlerts/ContractsToExpire.vue';
 import DailyRegisters from '@/components/DailyRegisters.vue';
 import GraphEmployeesByGender from '@/components/Graphs/GraphEmployeesByGender.vue';
 import GraphHoursWorkedByRole from '@/components/Graphs/GraphHoursWorkedByRole.vue';
+import WithoutMatchRegisters from '@/components/DashboardAlerts/WithoutMatchRegisters.vue';
 
 export default {
   name: 'Dashboard',
@@ -14,8 +16,10 @@ export default {
     'a-cascader': Cascader,
     'a-spin': Spin,
     'daily-registers': DailyRegisters,
+    'contracts-to-expire': ContractsToExpire,
     'graph-employees-by-gender': GraphEmployeesByGender,
     'graph-hours-worked-by-role': GraphHoursWorkedByRole,
+    'without-match-registers': WithoutMatchRegisters,
   },
 
   setup() {
@@ -23,10 +27,12 @@ export default {
     const clockOutQtt = ref(0);
     const companies = ref([]);
     const companyOptions = ref([]);
+    const contractsToExpire = ref([]);
     const employeesGenderObj = ref({});
+    const loadingGraphs = ref(true);
     const roleHoursObj = ref({});
     const selectedCompanyId = ref(null);
-    const loadingGraphs = ref(true);
+    const singleRegisters = ref([]);
 
     const fetchCompanies = async () => {
       try {
@@ -38,6 +44,17 @@ export default {
           data: item,
           key: item.id,
         }));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const fetchContractsToExpire = async () => {
+      try {
+        const { data } = await dashboard.getContractsToExpire(
+          selectedCompanyId.value
+        );
+        return data;
       } catch (error) {
         console.error(error);
       }
@@ -65,15 +82,33 @@ export default {
       }
     };
 
-    const fetchGraphsInfos = async () => {
+    const fetchSingleRegisters = async () => {
+      try {
+        const { data } = await dashboard.getSingleRegisters(
+          selectedCompanyId.value
+        );
+        return data;
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const fetchAlertsAndGraphsInfos = async () => {
       loadingGraphs.value = true;
 
-      const [dailyRegisters, hoursWorkedByRole, employeesByGender] =
-        await Promise.all([
-          fetchDailyRegisters(),
-          fetchHoursWorkedByRole(),
-          fetchEmployeesByGender(),
-        ]);
+      const [
+        dailyRegisters,
+        hoursWorkedByRole,
+        employeesByGender,
+        withoutMatchRegisters,
+        contractsAboutToExpire,
+      ] = await Promise.all([
+        fetchDailyRegisters(),
+        fetchHoursWorkedByRole(),
+        fetchEmployeesByGender(),
+        fetchSingleRegisters(),
+        fetchContractsToExpire(),
+      ]);
       clockInQtt.value = dailyRegisters.clock_in;
       clockOutQtt.value = dailyRegisters.clock_out;
 
@@ -87,6 +122,10 @@ export default {
       );
 
       employeesGenderObj.value = employeesByGender;
+
+      singleRegisters.value = withoutMatchRegisters;
+
+      contractsToExpire.value = contractsAboutToExpire;
 
       loadingGraphs.value = false;
     };
@@ -105,7 +144,7 @@ export default {
     const handleCompanyChange = async (value, selectedOptions) => {
       if (value && selectedOptions.length) {
         selectedCompanyId.value = value;
-        await fetchGraphsInfos();
+        await fetchAlertsAndGraphsInfos();
       }
     };
 
@@ -113,18 +152,20 @@ export default {
       await fetchCompanies();
       selectedCompanyId.value = companies.value[0].id;
 
-      await fetchGraphsInfos();
+      await fetchAlertsAndGraphsInfos();
     });
 
     return {
       clockInQtt,
       clockOutQtt,
       companyOptions,
+      contractsToExpire,
       employeesGenderObj,
       handleCompanyChange,
       loadingGraphs,
       roleHoursObj,
       selectedCompanyId,
+      singleRegisters,
     };
   },
 };
@@ -161,7 +202,15 @@ export default {
       />
       <div class="content__graphs">
         <graph-hours-worked-by-role class="col-6" :data="roleHoursObj" />
-        <graph-employees-by-gender class="col-6" :data="employeesGenderObj" />
+        <graph-employees-by-gender
+          class="col-6 gender-graph"
+          :data="employeesGenderObj"
+        />
+      </div>
+      <h1>Alertas</h1>
+      <div class="content__graphs">
+        <without-match-registers class="col-6" :data="singleRegisters" />
+        <contracts-to-expire class="col-6" :data="contractsToExpire" />
       </div>
     </div>
   </div>
@@ -188,10 +237,12 @@ export default {
     height: calc(100vh - 160px);
   }
   .dashboard__content {
+    max-height: calc(100vh - 154px);
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: $spacingXxl;
-    padding: $spacingXxl 0px;
+    padding: $spacingXxl $spacingSm $spacingXxl 0px;
 
     .content__graphs {
       display: flex;

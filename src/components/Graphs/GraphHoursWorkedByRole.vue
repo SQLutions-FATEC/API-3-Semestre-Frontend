@@ -25,7 +25,7 @@ export default {
   name: 'GraphHoursWorkedByRole',
 
   components: {
-    BarChart: Bar,
+    'bar-chart': Bar,
   },
 
   props: {
@@ -124,7 +124,7 @@ export default {
   <div class="graph-hours-worked-by-role">
     <h2>Horas Trabalhadas por Cargo (Semanal)</h2>
     <div class="graph-container">
-      <BarChart :data="chartData" :options="chartOptions" />
+      <bar-chart :data="chartData" :options="chartOptions" />
     </div>
   </div>
 </template>
