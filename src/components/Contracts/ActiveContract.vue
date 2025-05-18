@@ -114,6 +114,8 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:color';
+
 .active-contract {
   display: flex;
   gap: $spacingMd;
@@ -162,8 +164,14 @@ export default {
         border-color: $colorError;
 
         &:hover {
-          background-color: darken($colorBackgroundError, 15%) !important;
-          border-color: darken($colorBackgroundError, 15%) !important;
+          background-color: color.adjust(
+            $colorBackgroundError,
+            $lightness: -15%
+          ) !important;
+          border-color: color.adjust(
+            $colorBackgroundError,
+            $lightness: -15%
+          ) !important;
         }
       }
     }
