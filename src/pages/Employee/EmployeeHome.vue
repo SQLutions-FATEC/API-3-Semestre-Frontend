@@ -1,6 +1,7 @@
 <script>
-import { ref, onMounted, provide } from 'vue';
+import { ref, onMounted, provide, h } from 'vue';
 import { Button, Modal, Table } from 'ant-design-vue';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import employee from '@/services/employee';
 import { formatDate } from '@/utils';
 import EmployeeHeader from '@/components/Headers/EmployeeHeader.vue';
@@ -24,13 +25,13 @@ export default {
     const isEmployeeModalOpened = ref(false);
     const pageSize = ref(10);
     const totalInfos = ref(0);
+    const selectedEmployee = ref(null);
 
     const deleteEmployee = async () => {
       try {
-        const employeeId = route.params.id;
-        await employee.delete(employeeId);
+        await employee.delete(selectedEmployee.value.key);
         isConfirmationModalOpened.value = false;
-        router.push({ name: 'Home' });
+        await fetchEmployees();
       } catch (error) {
         console.error(error);
       }
@@ -74,6 +75,16 @@ export default {
       isEmployeeModalOpened.value = true;
     };
 
+    const openEditModal = (employee) => {
+      isEmployeeModalOpened.value = true;
+      selectedEmployee.value = employee;
+    };
+
+    const openDeleteModal = (employee) => {
+      isConfirmationModalOpened.value = true;
+      selectedEmployee.value = employee;
+    };
+
     onMounted(fetchEmployees);
 
     const columns = [
@@ -102,6 +113,36 @@ export default {
         dataIndex: 'birthDate',
         key: 'birthDate',
       },
+      {
+        title: 'Ações',
+        key: 'actions',
+        customRender: ({ record }) => {
+          return [
+            h(
+              Button,
+              {
+                type: 'primary',
+                shape: 'circle',
+                icon: h(EditOutlined),
+                style: { marginRight: '8px' },
+                onClick: () => openEditModal(record),
+              },
+              null
+            ),
+            h(
+              Button,
+              {
+                class: 'delete-button',
+                type: 'danger',
+                shape: 'circle',
+                icon: h(DeleteOutlined),
+                onClick: () => openDeleteModal(record),
+              },
+              null
+            ),
+          ];
+        },
+      },
     ];
 
     return {
@@ -115,6 +156,7 @@ export default {
       openConfirmationModal,
       openEmployeeModal,
       pageSize,
+      selectedEmployee,
       totalInfos,
     };
   },
@@ -139,28 +181,27 @@ export default {
         @change="handleTableChange"
       />
     </div>
-    <employee-modal v-model:open="isEmployeeModalOpened" />
+    <employee-modal
+      v-model:open="isEmployeeModalOpened"
+      :employee-id="selectedEmployee.key"
+    />
     <a-modal
       v-model:open="isConfirmationModalOpened"
       title="Deletar funcionário"
       @ok="deleteEmployee"
     >
-      <span> Tem certeza que deseja deletar o funcionário? </span>
+      <span>
+        Tem certeza que deseja deletar o funcionário
+        <strong>{{ selectedEmployee?.name }}</strong
+        >?
+      </span>
     </a-modal>
-    <a-button
-      class="delete-button"
-      style="width: 250px"
-      @click="openConfirmationModal"
-    >
-      Deletar funcionario
-    </a-button>
-    <a-button type="primary" style="width: 250px" @click="openEmployeeModal">
-      Editar funcionário
-    </a-button>
   </div>
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:color';
+
 .employee-home {
   padding: $spacingLg 0 $spacingXxl 0;
   display: flex;
@@ -185,14 +226,20 @@ export default {
     }
   }
 }
-.delete-button {
-  background-color: transparent;
+:deep(.delete-button) {
+  background-color: $colorBackgroundError;
   border-color: $colorError;
-  color: $colorError;
+  color: $colorWhite;
 
   &:hover {
-    background-color: $colorBackgroundError !important;
-    color: $colorWhite;
+    background-color: color.adjust(
+      $colorBackgroundError,
+      $lightness: -15%
+    ) !important;
+    border-color: color.adjust(
+      $colorBackgroundError,
+      $lightness: -15%
+    ) !important;
   }
 }
 </style>
