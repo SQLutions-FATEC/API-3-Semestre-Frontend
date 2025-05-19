@@ -65,7 +65,7 @@ export default {
       }
     };
 
-    provide('fetchEmployees', fetchEmployees);
+    provide('apiCall', fetchEmployees);
 
     const handleTableChange = async (pagination) => {
       currentPage.value = pagination.current;
@@ -182,7 +182,7 @@ export default {
           showSizeChanger: true,
           pageSizeOptions: ['10', '20', '50'],
         }"
-        :scroll="{ y: 'calc(100vh - 296px)' }"
+        :scroll="{ y: 'calc(100vh - 312px)' }"
         @change="handleTableChange"
       />
     </div>
@@ -209,7 +209,7 @@ export default {
 @use 'sass:color';
 
 .employee-home {
-  padding: $spacingLg 0 $spacingXxl 0;
+  padding: $spacingXxl 0px;
   display: flex;
   flex-direction: column;
   gap: $spacingXl;

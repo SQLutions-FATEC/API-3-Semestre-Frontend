@@ -48,9 +48,8 @@ export default {
   },
 
   setup(props, { emit }) {
-    const fetchEmployees = inject('fetchEmployees');
+    const apiCall = inject('apiCall');
     const route = useRoute();
-    const router = useRouter();
     const dateFormatList = ['DD/MM/YYYY'];
     const defaultProfileImage = '/assets/altave.jpg';
     let employeeContracts = [];
@@ -135,7 +134,6 @@ export default {
       }
 
       const params = {
-        id: route.params.id,
         name: employeeName.value,
         blood_type: employeeBloodType.value,
         birth_date: employeeBirthDate.value,
@@ -143,16 +141,15 @@ export default {
         gender: employeeGender.value,
       };
 
-      let employeeId;
       try {
         if (isEditing.value) {
-          employeeId = route.params.id;
+          params.id = props.employeeId;
           await editEmployee(params);
-          editContract(employeeId);
-          await uploadEmployeePhoto(employeeId);
+          editContract(props.employeeId);
+          await uploadEmployeePhoto(props.employeeId);
         } else {
           params.contracts = employeeContracts;
-          employeeId = await createEmployee(params);
+          const employeeId = await createEmployee(params);
           createContracts(employeeId);
           await uploadEmployeePhoto(employeeId);
           clearFields();
@@ -162,7 +159,7 @@ export default {
       }
 
       closeModal();
-      await fetchEmployees();
+      await apiCall();
     };
 
     const createEmployee = async (params) => {

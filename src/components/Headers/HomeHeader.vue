@@ -20,14 +20,12 @@ export default {
 <style lang="scss" scoped>
 .home-header {
   background-color: $colorBackgroundWhite;
-  padding: $spacingLg $spacingXl;
   display: flex;
   flex-direction: column;
   gap: $spacingLg;
 
   h1 {
     @include heading(large);
-    margin: 0;
   }
 }
 </style>
