@@ -2,8 +2,7 @@
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons-vue';
 import { Table } from 'ant-design-vue';
 import { h, ref } from 'vue';
-import { formatDateTime } from '@/utils';
-import { registerNumberMask } from '../../utils';
+import { formatDateTime, registerNumberMask } from '@/utils';
 
 export default {
   name: 'WithoutMatchRegisters',

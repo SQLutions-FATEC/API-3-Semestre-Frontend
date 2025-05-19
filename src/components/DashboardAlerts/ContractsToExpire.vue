@@ -1,8 +1,7 @@
 <script>
 import { Table } from 'ant-design-vue';
 import { ref } from 'vue';
-import { formatDateTime } from '@/utils';
-import { registerNumberMask } from '../../utils';
+import { formatDateTime, registerNumberMask } from '@/utils';
 
 export default {
   name: 'ContractsToExpire',

@@ -3,10 +3,9 @@ import { ref, onMounted, provide, h } from 'vue';
 import { Button, Modal, Table } from 'ant-design-vue';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import employee from '@/services/employee';
-import { formatDate } from '@/utils';
+import { formatDate, registerNumberMask } from '@/utils';
 import EmployeeHeader from '@/components/Headers/EmployeeHeader.vue';
 import EmployeeModal from '@/components/Modals/EmployeeModal.vue';
-import { registerNumberMask } from '../../utils';
 
 export default {
   name: 'EmployeeHome',
