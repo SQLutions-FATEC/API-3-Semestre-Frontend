@@ -11,6 +11,13 @@ import contracts from '@/services/contracts';
 export default {
   name: 'Contracts',
 
+  props: {
+    employeeId: {
+      default: null,
+      type: Number,
+    },
+  },
+
   components: {
     'a-modal': Modal,
     'active-contract': ActiveContract,
@@ -130,7 +137,8 @@ export default {
     };
 
     onMounted(() => {
-      employeeId = route.params.id;
+      employeeId = props.employeeId;
+
       if (!!employeeId) {
         fetchContracts();
       }
@@ -174,11 +182,14 @@ export default {
       @inactivate-contract="inactivateContract"
     />
     <inactive-contracts
-      v-else-if="inactiveContracts.length"
+      v-if="inactiveContracts.length"
       :contracts="inactiveContracts"
       @fetch-contracts="fetchContracts"
     />
-    <div v-else class="contracts__empty-state">
+    <div
+      v-if="!Object.keys(activeContract).length && !inactiveContracts.length"
+      class="contracts__empty-state"
+    >
       <p>Nenhum contrato encontrado.</p>
     </div>
     <contract-modal

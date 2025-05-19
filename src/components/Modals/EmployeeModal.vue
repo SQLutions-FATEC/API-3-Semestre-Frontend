@@ -401,7 +401,11 @@ export default {
         </div>
       </div>
       <a-divider />
-      <contracts ref="contractsRef" @add-contract="addContract" />
+      <contracts
+        ref="contractsRef"
+        :employee-id="employeeId"
+        @add-contract="addContract"
+      />
     </div>
   </a-modal>
 </template>

@@ -32,7 +32,10 @@ export default {
     <a-button type="primary" @click="openEmployeeModal">
       Adicionar funcionário
     </a-button>
-    <employee-modal v-model:open="isEmployeeModalOpened" />
+    <employee-modal
+      v-if="isEmployeeModalOpened"
+      v-model:open="isEmployeeModalOpened"
+    />
   </div>
 </template>
 

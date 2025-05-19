@@ -25,7 +25,7 @@ export default {
     const isEmployeeModalOpened = ref(false);
     const pageSize = ref(10);
     const totalInfos = ref(0);
-    const selectedEmployee = ref(null);
+    const selectedEmployee = ref({});
 
     const deleteEmployee = async () => {
       try {
@@ -71,18 +71,14 @@ export default {
       isConfirmationModalOpened.value = true;
     };
 
-    const openEmployeeModal = () => {
-      isEmployeeModalOpened.value = true;
-    };
-
-    const openEditModal = (employee) => {
-      isEmployeeModalOpened.value = true;
+    const openEmployeeModal = (employee) => {
       selectedEmployee.value = employee;
+      isEmployeeModalOpened.value = true;
     };
 
     const openDeleteModal = (employee) => {
-      isConfirmationModalOpened.value = true;
       selectedEmployee.value = employee;
+      isConfirmationModalOpened.value = true;
     };
 
     onMounted(fetchEmployees);
@@ -125,7 +121,7 @@ export default {
                 shape: 'circle',
                 icon: h(EditOutlined),
                 style: { marginRight: '8px' },
-                onClick: () => openEditModal(record),
+                onClick: () => openEmployeeModal(record),
               },
               null
             ),
@@ -182,6 +178,7 @@ export default {
       />
     </div>
     <employee-modal
+      v-if="isEmployeeModalOpened"
       v-model:open="isEmployeeModalOpened"
       :employee-id="selectedEmployee.key"
     />
