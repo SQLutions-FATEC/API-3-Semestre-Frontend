@@ -2,6 +2,7 @@
 import { Table } from 'ant-design-vue';
 import { ref } from 'vue';
 import { formatDateTime } from '@/utils';
+import { registerNumberMask } from '../../utils';
 
 export default {
   name: 'ContractsToExpire',
@@ -25,13 +26,7 @@ export default {
         title: 'Número de registro',
         dataIndex: 'registerNumber',
         key: 'registerNumber',
-        customRender: ({ text }) => {
-          const masked = text.replace(
-            /^(\d{3})(\d{5})(\d{2})(\d{1})$/,
-            '$1.$2.$3-$4'
-          );
-          return masked;
-        },
+        customRender: ({ text }) => registerNumberMask(text),
       },
       {
         title: 'Funcionário',

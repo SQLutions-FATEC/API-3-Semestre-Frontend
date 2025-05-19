@@ -11,6 +11,7 @@ import {
 import { Button, Select, Table } from 'ant-design-vue';
 import { h, onBeforeUnmount, onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
+import { registerNumberMask } from '../../utils';
 
 export default {
   name: 'Home',
@@ -115,6 +116,7 @@ export default {
         title: 'Número de registro',
         dataIndex: 'registerNumber',
         key: 'registerNumber',
+        customRender: ({ text }) => registerNumberMask(text),
       },
       {
         title: 'Funcionário',

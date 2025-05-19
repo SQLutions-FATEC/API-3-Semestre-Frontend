@@ -160,6 +160,9 @@ export default {
       } catch (error) {
         console.error(error);
       }
+
+      closeModal();
+      await fetchEmployees();
     };
 
     const createEmployee = async (params) => {
@@ -372,7 +375,7 @@ export default {
         <at-number-input
           v-model:value="employeeRN"
           placeholder="Número de registro"
-          mask="###########"
+          mask="###.#####.##-#"
           :error-message="errorMessage"
           @input="validateRNInput"
         />
@@ -419,7 +422,7 @@ export default {
   .modal__content {
     display: flex;
     flex-direction: column;
-    gap: $spacingMd;
+    gap: $spacingXxl;
 
     .content__image {
       height: 220px;

@@ -6,6 +6,7 @@ import employee from '@/services/employee';
 import { formatDate } from '@/utils';
 import EmployeeHeader from '@/components/Headers/EmployeeHeader.vue';
 import EmployeeModal from '@/components/Modals/EmployeeModal.vue';
+import { registerNumberMask } from '../../utils';
 
 export default {
   name: 'EmployeeHome',
@@ -23,6 +24,7 @@ export default {
     const dataSource = ref([]);
     const isConfirmationModalOpened = ref(false);
     const isEmployeeModalOpened = ref(false);
+    const loading = ref(false);
     const pageSize = ref(10);
     const totalInfos = ref(0);
     const selectedEmployee = ref({});
@@ -38,6 +40,8 @@ export default {
     };
 
     const fetchEmployees = async () => {
+      loading.value = true;
+
       try {
         const { data } = await employee.getAll({
           page: currentPage.value,
@@ -56,6 +60,8 @@ export default {
         totalInfos.value = data.total;
       } catch (error) {
         console.error('Erro ao buscar funcionários:', error);
+      } finally {
+        loading.value = false;
       }
     };
 
@@ -88,6 +94,7 @@ export default {
         title: 'Número de registro',
         dataIndex: 'registerNumber',
         key: 'registerNumber',
+        customRender: ({ text }) => registerNumberMask(text),
       },
       {
         title: 'Nome do funcionário',
@@ -149,6 +156,7 @@ export default {
       handleTableChange,
       isConfirmationModalOpened,
       isEmployeeModalOpened,
+      loading,
       openConfirmationModal,
       openEmployeeModal,
       pageSize,
@@ -166,6 +174,7 @@ export default {
       <a-table
         :dataSource="dataSource"
         :columns="columns"
+        :loading="loading"
         :pagination="{
           current: currentPage,
           pageSize: pageSize,
