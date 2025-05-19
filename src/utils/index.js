@@ -1,7 +1,11 @@
 import dayjs from 'dayjs';
 
-const formatDate = (dateString) => {
+const formatDateTime = (dateString) => {
   return dayjs(dateString).format('DD/MM/YYYY HH:mm');
+};
+
+const formatDate = (dateString) => {
+  return dayjs(dateString).format('DD/MM/YYYY');
 };
 
 const generateRandomColors = (count) => {
@@ -15,4 +19,9 @@ const generateRandomColors = (count) => {
   return colors;
 };
 
-export { formatDate, generateRandomColors };
+const registerNumberMask = (text) => {
+  const masked = text.replace(/^(\d{3})(\d{5})(\d{2})(\d{1})$/, '$1.$2.$3-$4');
+  return masked;
+};
+
+export { formatDate, formatDateTime, generateRandomColors, registerNumberMask };

@@ -2,7 +2,7 @@
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons-vue';
 import { Table } from 'ant-design-vue';
 import { h, ref } from 'vue';
-import { formatDate } from '@/utils';
+import { formatDateTime, registerNumberMask } from '@/utils';
 
 export default {
   name: 'WithoutMatchRegisters',
@@ -28,13 +28,7 @@ export default {
         title: 'Número de registro',
         dataIndex: 'registerNumber',
         key: 'registerNumber',
-        customRender: ({ text }) => {
-          const masked = text.replace(
-            /^(\d{3})(\d{5})(\d{2})(\d{1})$/,
-            '$1.$2.$3-$4'
-          );
-          return masked;
-        },
+        customRender: ({ text }) => registerNumberMask(text),
       },
       {
         title: 'Funcionário',
@@ -77,7 +71,7 @@ export default {
       employee: info.employee.name,
       company: info.company.name,
       role: info.role_name,
-      datetime: formatDate(info.date_time_in || info.date_time_out),
+      datetime: formatDateTime(info.date_time_in || info.date_time_out),
       direction: info.date_time_in ? 'Entrada' : 'Saída',
     }));
 

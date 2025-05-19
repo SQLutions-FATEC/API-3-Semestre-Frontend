@@ -18,7 +18,8 @@ body {
 .ant-tabs-tab,
 .ant-alert-message,
 .ant-notification-notice-message,
-.ant-typography {
+.ant-typography,
+.ant-picker {
   font-family:
     $fontFamily,
     -apple-system,
@@ -33,10 +34,7 @@ body {
 .ant-input:focus,
 .ant-input-affix-wrapper:focus,
 .ant-input-focused,
-.ant-select-focused:not(.ant-select-disabled).ant-select:not(
-    .ant-select-customize-input
-  )
-  .ant-select-selector,
+.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector,
 .ant-picker-focused,
 .ant-input:hover,
 .ant-input-affix-wrapper:hover,
@@ -73,6 +71,7 @@ body {
 .ant-table-cell {
   @include paragraph(medium);
 }
+
 .ant-pagination-item-active {
   border-color: $colorBorderSecondary !important;
 
@@ -85,4 +84,8 @@ body {
   background-color: $colorSecondaryHighlight !important;
   border-color: $colorBorderSecondaryHighlight !important;
   color: $colorTextWhite !important;
+}
+
+.ant-divider {
+  margin: 0px;
 }

@@ -3,7 +3,6 @@ import { Modal, message } from 'ant-design-vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { formatDate } from '@/utils';
 import ActiveContract from '@/components/Contracts/ActiveContract.vue';
 import InactiveContracts from '@/components/Contracts/InactiveContracts.vue';
 import ContractModal from '@/components/Modals/ContractModal.vue';
@@ -11,6 +10,13 @@ import contracts from '@/services/contracts';
 
 export default {
   name: 'Contracts',
+
+  props: {
+    employeeId: {
+      default: null,
+      type: Number,
+    },
+  },
 
   components: {
     'a-modal': Modal,
@@ -131,7 +137,8 @@ export default {
     };
 
     onMounted(() => {
-      employeeId = route.params.id;
+      employeeId = props.employeeId;
+
       if (!!employeeId) {
         fetchContracts();
       }
@@ -147,7 +154,6 @@ export default {
       activeContract,
       addContract,
       fetchContracts,
-      formatDate,
       inactivateContract,
       inactiveContracts,
       isContractModalOpened,
@@ -161,7 +167,7 @@ export default {
 <template>
   <div class="contracts">
     <div class="contracts__header">
-      <h1>Contratos</h1>
+      <h2>Contratos</h2>
       <a-button type="primary" @click="openContractModal">
         <template #icon>
           <plus-outlined />
@@ -180,6 +186,12 @@ export default {
       :contracts="inactiveContracts"
       @fetch-contracts="fetchContracts"
     />
+    <div
+      v-if="!Object.keys(activeContract).length && !inactiveContracts.length"
+      class="contracts__empty-state"
+    >
+      <p>Nenhum contrato encontrado.</p>
+    </div>
     <contract-modal
       v-model:open="isContractModalOpened"
       @add-contract="addContract"
@@ -198,10 +210,17 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
 
-  h1 {
-    @include heading(large);
+    h2 {
+      @include label(medium);
+    }
+  }
+  .contracts__empty-state {
+    margin: $spacingLg auto;
+
+    p {
+      @include paragraph(medium);
+    }
   }
 }
 </style>
