@@ -1,9 +1,9 @@
 <script setup>
-import { ref, inject } from 'vue';
+import ptBR from 'ant-design-vue/es/locale/pt_BR'
+const locale = ptBR
+import { ref } from 'vue';
 import TopBar from '@/components/TopBar.vue';
 import SideBar from '@/components/SideBar.vue';
-
-const locale = inject('locale');
 
 const isSidebarOpen = ref(false);
 

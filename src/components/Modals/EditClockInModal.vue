@@ -1,11 +1,10 @@
 <script>
-import { Modal } from 'ant-design-vue';
-import { ref } from 'vue';
-import { onMounted } from 'vue';
+import { Modal, message } from 'ant-design-vue';
+import { ref, onMounted } from 'vue';
 import AtInput from '@/components/Input/AtInput.vue';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import clockInOut from '@/services/clockInOut';
-import { message } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 export default {
   name: 'EditClockInModal',
@@ -26,17 +25,15 @@ export default {
   emits: ['close', 'reload'],
 
   setup(props, { emit }) {
-    const clockInTime = ref('');
-    const clockOutTime = ref('');
+    const clockInTime = ref(null);
+    const clockOutTime = ref(null);
     const companyName = ref('');
     const employeeName = ref('');
     const employeeRole = ref('');
     const loading = ref(false);
     const registerNumber = ref('');
 
-    const handleClose = () => {
-      emit('close');
-    };
+    const handleClose = () => emit('close');
 
     const handleCloseAndReload = () => {
       emit('reload');
@@ -47,8 +44,8 @@ export default {
       loading.value = true;
       const params = {
         id: props.clockIn.key,
-        date_time_in: clockInTime.value,
-        date_time_out: clockOutTime.value,
+        date_time_in: clockInTime.value?.toISOString(),
+        date_time_out: clockOutTime.value?.toISOString(),
         employee: props.clockIn.employeeId,
       };
       try {
@@ -66,8 +63,8 @@ export default {
       employeeName.value = props.clockIn.employee;
       companyName.value = props.clockIn.company;
       employeeRole.value = props.clockIn.role;
-      clockInTime.value = props.clockIn.date_time_in;
-      clockOutTime.value = props.clockIn.date_time_out;
+      clockInTime.value = dayjs(props.clockIn.date_time_in);
+      clockOutTime.value = dayjs(props.clockIn.date_time_out);
     });
 
     return {
@@ -126,28 +123,28 @@ export default {
         />
       </div>
       <div class="col-6">
-         <a-date-picker
-           v-model:value="clockInTime"
-           show-time
-           format="DD/MM/YYYY HH:mm"
-           placeholder="Horário de entrada"
-           style="width: 100%"
-         />
-       </div>
-       <div class="col-6">
-         <a-date-picker
-           v-model:value="clockOutTime"
-           show-time
-           format="DD/MM/YYYY HH:mm"
-           placeholder="Horário de saída"
-           style="width: 100%"
-         />
-       </div>
+        <a-date-picker
+          v-model:value="clockInTime"
+          show-time
+          format="DD/MM/YYYY HH:mm"
+          placeholder="Horário de entrada"
+          style="width: 100%"
+        />
+      </div>
+      <div class="col-6">
+        <a-date-picker
+          v-model:value="clockOutTime"
+          show-time
+          format="DD/MM/YYYY HH:mm"
+          placeholder="Horário de saída"
+          style="width: 100%"
+        />
+      </div>
     </div>
   </a-modal>
 </template>
 
-<style land="scss" scoped>
+<style lang="scss" scoped>
 .edit-clock-in-modal {
   display: flex;
   flex-wrap: wrap;

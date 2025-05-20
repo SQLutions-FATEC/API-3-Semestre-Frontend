@@ -26,6 +26,4 @@ if (
   makeServer();
 }
 
-app.provide('locale', ptBR);
-
 app.mount('#app');

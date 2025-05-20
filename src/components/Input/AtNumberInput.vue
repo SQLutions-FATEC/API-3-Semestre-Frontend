@@ -28,7 +28,7 @@ export default {
     },
   },
 
-  emits: ['update:value', 'input'], // Adicionei o evento 'input' aqui
+  emits: ['update:value', 'input'],
 
   directives: { mask },
 
