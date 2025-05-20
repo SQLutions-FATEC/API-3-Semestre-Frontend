@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import xlsx from 'node-xlsx';
 import { message } from 'ant-design-vue';
 import { DownloadOutlined } from '@ant-design/icons-vue';
+import clockInOut from '@/services/clockInOut';
 
 export default {
   props: {
@@ -43,17 +44,24 @@ export default {
       return results;
     };
 
-    const exportToExcel = async () => {
-      if (!props.data || props.data.length === 0) {
+    const exportToExcel = async (customData = null) => {
+      const dataToExport = customData || props.data;
+      console.log(
+        'Dados brutos recebidos:',
+        JSON.parse(JSON.stringify(dataToExport))
+      );
+
+      if (!dataToExport || dataToExport.length === 0) {
         return message.error('Nenhum dado disponível para exportação');
       }
 
       isLoading.value = true;
 
       try {
-        const formattedData = await processInChunks(props.data, (chunk) => {
-          return formatData(chunk);
-        });
+        const formattedData = await processInChunks(dataToExport, formatData);
+        console.log('Dados recebidos:', props.data);
+
+        console.log('Dados formatados:', formattedData);
 
         const headers = Object.keys(formattedData[0]);
         const rows = formattedData.map((item) => Object.values(item));
@@ -80,7 +88,8 @@ export default {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } catch (error) {
-        message.error('Erro na exportação:', error);
+        message.error('Erro na exportação:' + error.message);
+        console.log(error.message, error);
       } finally {
         isLoading.value = false;
       }
@@ -89,17 +98,32 @@ export default {
     const formatData = (data) => {
       return data.map((info) => {
         return {
-          'Número de Registro': info.registerNumber,
-          Funcionário: info.employee,
-          Empresa: info.company,
-          Função: info.role,
-          Horário: info.datetime,
-          Movimentação: info.direction,
+          'Número de Registro': info.employee?.registerNumber || '--',
+          Funcionário: info.employee?.nome || '--',
+          'Data de Entrada': info.date_time_in || '--',
+          'Data de Saída': info.date_time_out || '--',
+          'Horas Trabalhadas': info.worked_hours
+            ? `${Math.floor(info.worked_hours)}h${Math.round((info.worked_hours % 1) * 60)}min`
+            : '--',
         };
       });
     };
 
-    const exportAllToExcel = async () => {};
+    const exportAllToExcel = async () => {
+      isLoading.value = true;
+
+      try {
+        const { data } = await clockInOut.get({
+          export: true,
+        });
+
+        await exportToExcel(data);
+      } catch (error) {
+        message.error('Erro ao exportar todos: ' + error.message);
+      } finally {
+        isLoading.value = false;
+      }
+    };
 
     return {
       exportToExcel,
