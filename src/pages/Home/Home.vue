@@ -160,7 +160,7 @@ export default {
          title: 'Data de entrada',
          dataIndex: 'date_time_in',
          key: 'datetime_in',
-         customRender: ({ text }) => dayjs(text).format('DD/MM/YYYY HH:mm'),
+         customRender: ({ text }) => text ? dayjs(text).format('DD/MM/YYYY HH:mm') : '',
        },
        {
          title: 'Data de saída',

@@ -107,7 +107,7 @@ export default {
         <a-range-picker
           v-model:value="datetimeFilter"
           class="filter-input"
-          format="YYYY-MM-DD HH:mm"
+          format="DD-MM-YYYY HH:mm"
           show-time
           :placeholder="['Hora inicial', 'Hora final']"
           :time-picker-props="{ format: 'HH:mm' }"
