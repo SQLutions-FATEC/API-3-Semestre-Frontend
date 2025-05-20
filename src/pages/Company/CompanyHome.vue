@@ -180,11 +180,11 @@ export default {
     />
     <a-modal
       v-model:open="isConfirmationModalOpened"
-      title="Deletar funcionário"
+      title="Deletar empresa"
       @ok="deleteCompany"
     >
       <span>
-        Tem certeza que deseja deletar o funcionário
+        Tem certeza que deseja deletar a empresa
         <strong>{{ selectedCompany?.name }}</strong
         >?
       </span>
