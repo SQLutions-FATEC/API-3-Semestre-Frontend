@@ -8,7 +8,7 @@ export default {
 
   components: {
     'a-button': Button,
-    'comapny-modal': CompanyModal,
+    'company-modal': CompanyModal,
   },
 
   setup() {
@@ -32,7 +32,7 @@ export default {
     <a-button type="primary" @click="openCompanyModal">
       Adicionar empresa
     </a-button>
-    <comapny-modal
+    <company-modal
       v-if="isCompanyModalOpened"
       v-model:open="isCompanyModalOpened"
     />
