@@ -144,54 +144,70 @@ export default {
 </script>
 
 <template>
-  <div class="company">
-    <h1>{{ pageTitle }}</h1>
-    <div class="company__content">
-      <div class="content__input">
-        <at-input v-model:value="companyName" placeholder="Razão social" text />
+  <a-modal
+    :open="open"
+    :title="modalTitle"
+    :width="800"
+    @cancel="closeModal"
+    @ok="employeeAction"
+  >
+    <div class="company-modal">
+      <h1>{{ pageTitle }}</h1>
+      <div class="company__content">
+        <div class="content__input">
+          <at-input
+            v-model:value="companyName"
+            placeholder="Razão social"
+            text
+          />
+        </div>
+        <div class="content__input">
+          <at-number-input
+            v-model:value="cnpj"
+            mask="##.###.###/####-##"
+            placeholder="CNPJ"
+            :error-message="errorMessage"
+            @input="validateCnpjInput"
+          />
+        </div>
+        <div class="content__input">
+          <at-input
+            v-model:value="tradeName"
+            placeholder="Nome fantasia"
+            text
+          />
+        </div>
+        <div class="content__action">
+          <a-button
+            v-if="showDeleteButton"
+            class="delete-button"
+            style="width: 250px"
+            @click="openConfirmationModal"
+          >
+            Deletar empresa
+          </a-button>
+          <a-button
+            type="primary"
+            style="width: 250px"
+            @click="createEditCompany"
+          >
+            {{ buttonAction }}
+          </a-button>
+        </div>
       </div>
-      <div class="content__input">
-        <at-number-input
-          v-model:value="cnpj"
-          mask="##.###.###/####-##"
-          placeholder="CNPJ"
-          :error-message="errorMessage"
-          @input="validateCnpjInput"
-        />
-      </div>
-      <div class="content__input">
-        <at-input v-model:value="tradeName" placeholder="Nome fantasia" text />
-      </div>
-      <div class="content__action">
-        <a-button
-          v-if="showDeleteButton"
-          class="delete-button"
-          style="width: 250px"
-          @click="openConfirmationModal"
-        >
-          Deletar empresa
-        </a-button>
-        <a-button
-          type="primary"
-          style="width: 250px"
-          @click="createEditCompany"
-        >
-          {{ buttonAction }}
-        </a-button>
-      </div>
+      <a-modal
+        v-model:open="isConfirmationModalOpened"
+        title="Deletar empresa"
+        @ok="deleteCompany"
+      >
+        <span> Tem certeza que deseja deletar a empresa {{ tradeName }}? </span>
+      </a-modal>
     </div>
-    <a-modal
-      v-model:open="isConfirmationModalOpened"
-      title="Deletar empresa"
-      @ok="deleteCompany"
-    >
-      <span> Tem certeza que deseja deletar a empresa {{ tradeName }}? </span>
-    </a-modal>
-  </div>
+  </a-modal>
 </template>
 
 <style lang="scss" scoped>
-.company {
+.company-modal {
   padding: $spacingXxl 0px;
 
   h1 {

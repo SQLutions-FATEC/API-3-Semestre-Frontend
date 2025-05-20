@@ -2,10 +2,10 @@
 import { ref, onMounted, provide, h } from 'vue';
 import { Button, Modal, Table } from 'ant-design-vue';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
-import employee from '@/services/employee';
-import { formatDate } from '@/utils';
+import company from '@/services/company';
 import CompanyHeader from '@/components/Headers/CompanyHeader.vue';
 import CompanyModal from '@/components/Modals/CompanyModal.vue';
+import { cnpjMask } from '@/utils';
 
 export default {
   name: 'CompanyHome',
@@ -30,7 +30,7 @@ export default {
 
     const deleteCompany = async () => {
       try {
-        await employee.delete(selectedCompany.value.key);
+        await company.delete(selectedCompany.value.key);
         isConfirmationModalOpened.value = false;
         await fetchCompanies();
       } catch (error) {
@@ -42,14 +42,14 @@ export default {
       loading.value = true;
 
       try {
-        const { data } = await employee.getAll({
+        const { data } = await company.getAll({
           page: currentPage.value,
           size: pageSize.value,
         });
 
         dataSource.value = data.items.map((company) => ({
           key: company.id,
-          name: formatDate(company.name),
+          name: company.name,
           cnpj: company.cnpj,
           tradeName: company.trade_name,
         }));
@@ -96,6 +96,7 @@ export default {
         title: 'CNPJ',
         dataIndex: 'cnpj',
         key: 'cnpj',
+        customRender: ({ record }) => cnpjMask(record.cnpj),
       },
       {
         title: 'Nome fantasia',
