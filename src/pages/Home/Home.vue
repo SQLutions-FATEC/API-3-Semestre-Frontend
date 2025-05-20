@@ -1,6 +1,7 @@
 <script>
 import HomeHeader from '@/components/Headers/HomeHeader.vue';
 import EditClockInModal from '@/components/Modals/EditClockInModal.vue';
+import CompanyModal from '@/components/Modals/CompanyModal.vue';
 import EmployeeModal from '@/components/Modals/EmployeeModal.vue';
 import clockInOut from '@/services/clockInOut';
 import { eventBus } from '@/utils/eventBus';
@@ -9,9 +10,15 @@ import {
   ArrowUpOutlined,
   EditOutlined,
 } from '@ant-design/icons-vue';
-import { Button, Select, Table } from 'ant-design-vue';
-import { h, onBeforeUnmount, onMounted, ref, provide } from 'vue';
-import { RouterLink } from 'vue-router';
+import { Button, Select, Table, Tooltip } from 'ant-design-vue';
+import {
+  h,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  provide,
+  resolveComponent,
+} from 'vue';
 import { registerNumberMask } from '../../utils';
 
 export default {
@@ -20,9 +27,11 @@ export default {
   components: {
     'a-button': Button,
     'a-select': Select,
+    'a-tooltip': Tooltip,
     'a-table': Table,
     'arrow-up-outlined': ArrowUpOutlined,
     'arrow-down-outlined': ArrowDownOutlined,
+    'company-modal': CompanyModal,
     'edit-clock-in-modal': EditClockInModal,
     'edit-outlined': EditOutlined,
     'employee-modal': EmployeeModal,
@@ -37,7 +46,9 @@ export default {
     const pageSize = ref(10);
     const selectedClockIn = ref({});
     const totalInfos = ref(0);
+    const isCompanyModalOpened = ref(false);
     const isEmployeeModalOpened = ref(false);
+    const selectedCompany = ref({});
     const selectedEmployee = ref({});
 
     const closeEditModal = () => {
@@ -49,9 +60,19 @@ export default {
       isEmployeeModalOpened.value = true;
     };
 
+    const openCompanyModal = (company) => {
+      selectedCompany.value = company;
+      isCompanyModalOpened.value = true;
+    };
+
     const closeEmployeeModal = () => {
       isEmployeeModalOpened.value = false;
-      selectedEmployee.value = null;
+      selectedEmployee.value = {};
+    };
+
+    const closeCompanyModal = () => {
+      isCompanyModalOpened.value = false;
+      selectedCompany.value = {};
     };
 
     const getEmployeesClockInOut = async (filters) => {
@@ -141,7 +162,14 @@ export default {
         customRender: ({ text, record }) => {
           return h(
             'div',
-            { style: { display: 'flex', alignItems: 'center', gap: '4px' } },
+            {
+              style: {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '4px',
+              },
+            },
             [
               h('span', text),
               h(Button, {
@@ -171,12 +199,47 @@ export default {
         key: 'company',
         customRender: ({ text, record }) => {
           return h(
-            RouterLink,
+            'div',
             {
-              to: { path: `/company/${record.companyId}` },
-              style: { color: 'inherit', textDecoration: 'underline' },
+              style: {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '8px',
+                minWidth: '0',
+              },
             },
-            () => text
+            [
+              h(
+                resolveComponent('a-tooltip'),
+                { placement: 'top', title: text },
+                {
+                  default: () =>
+                    h(
+                      'span',
+                      {
+                        class: 'ellipsis-text',
+                        style: {
+                          maxWidth: '120px',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          display: 'inline-block',
+                          verticalAlign: 'middle',
+                        },
+                      },
+                      text
+                    ),
+                }
+              ),
+              h(Button, {
+                type: 'primary',
+                shape: 'circle',
+                size: 'small',
+                icon: h(EditOutlined),
+                onClick: () => openCompanyModal(record),
+              }),
+            ]
           );
         },
       },
@@ -221,19 +284,23 @@ export default {
 
     return {
       columns,
+      closeCompanyModal,
       closeEditModal,
+      closeEmployeeModal,
       currentPage,
       dataSource,
       getEmployeesClockInOut,
-      isEditClockInOpened,
       handleTableChange,
+      isEditClockInOpened,
+      isCompanyModalOpened,
+      isEmployeeModalOpened,
+      openCompanyModal,
+      openEmployeeModal,
       pageSize,
       selectedClockIn,
-      totalInfos,
-      isEmployeeModalOpened,
-      openEmployeeModal,
-      closeEmployeeModal,
+      selectedCompany,
       selectedEmployee,
+      totalInfos,
     };
   },
 };
@@ -263,6 +330,12 @@ export default {
       @close="closeEditModal"
       @reload="getEmployeesClockInOut"
     />
+    <company-modal
+      v-if="isCompanyModalOpened"
+      v-model:open="isCompanyModalOpened"
+      :employee-id="selectedCompany.companyId"
+      @close="closeCompanyModal"
+    />
     <employee-modal
       v-if="isEmployeeModalOpened"
       v-model:open="isEmployeeModalOpened"
@@ -287,6 +360,7 @@ export default {
 
 :deep(.ant-table-cell) {
   @include paragraph(medium);
+  padding: $spacingXs $spacingSm !important;
 }
 
 :deep(.ant-pagination-item-active) {

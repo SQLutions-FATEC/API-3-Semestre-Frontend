@@ -11,18 +11,26 @@ const companyRoutes = [
     {
       method: 'get',
       url: '/company',
-      result: ({ queryParams }) => {
+      result: () => {
         const response = companies;
-
-        if (queryParams.page && queryParams.size) {
-          return APIFailureWrapper({
-            content: { items: response, total: response.length },
-            errorMessage: 'Erro ao listar empresa',
-          });
-        }
 
         return APIFailureWrapper({
           content: response,
+          errorMessage: 'Erro ao listar empresa',
+        });
+      },
+    },
+    'on'
+  ),
+  mockFlag(
+    {
+      method: 'get',
+      url: '/company/search',
+      result: () => {
+        const response = companies;
+
+        return APIFailureWrapper({
+          content: { items: response, total: response.length },
           errorMessage: 'Erro ao listar empresa',
         });
       },
