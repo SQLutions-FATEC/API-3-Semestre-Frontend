@@ -135,10 +135,10 @@ export default {
   align-items: center;
   justify-content: space-between;
   gap: $spacingXl;
-  padding: 16px;
-  background: #fafafa;
-  border-radius: 8px;
-  margin-bottom: 16px;
+  padding: $spacingLg;
+  background: $colorBackground;
+  border-radius: $borderRadiusMd;
+  margin-bottom: $spacingLg;
 
   .filters {
     display: flex;
@@ -147,13 +147,11 @@ export default {
     .filter-group {
       display: flex;
       flex-direction: column;
-      margin-right: 8px;
+      margin-right: $spacingSm;
     }
     .filter-label {
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 4px;
-      color: rgba(0, 0, 0, 0.85);
+      @include label(small);
+      margin-bottom: $spacingXs;
     }
     .filter-input {
       width: 250px;
