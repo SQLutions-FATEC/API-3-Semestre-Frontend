@@ -72,10 +72,6 @@ export default {
       await fetchEmployees();
     };
 
-    const openConfirmationModal = () => {
-      isConfirmationModalOpened.value = true;
-    };
-
     const openEmployeeModal = (employee) => {
       selectedEmployee.value = employee;
       isEmployeeModalOpened.value = true;
@@ -156,7 +152,6 @@ export default {
       isConfirmationModalOpened,
       isEmployeeModalOpened,
       loading,
-      openConfirmationModal,
       openEmployeeModal,
       pageSize,
       selectedEmployee,

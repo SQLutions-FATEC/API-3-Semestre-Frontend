@@ -333,7 +333,7 @@ export default {
     <company-modal
       v-if="isCompanyModalOpened"
       v-model:open="isCompanyModalOpened"
-      :employee-id="selectedCompany.companyId"
+      :company-id="selectedCompany.companyId"
       @close="closeCompanyModal"
     />
     <employee-modal
