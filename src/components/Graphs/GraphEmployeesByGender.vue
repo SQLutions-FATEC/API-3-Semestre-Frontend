@@ -1,6 +1,7 @@
 <script>
 import { Pie } from 'vue-chartjs';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
+import { computed } from 'vue';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
@@ -42,9 +43,12 @@ export default {
       },
     };
 
+    const totalEmployees = computed(() => props.data.male + props.data.female);
+
     return {
       chartData,
       chartOptions,
+      totalEmployees,
     };
   },
 };
@@ -54,6 +58,7 @@ export default {
   <div class="graph-employees-by-gender">
     <h2>Quantidade de funcionários por gênero</h2>
     <div class="graph-container pie-chart">
+      <div class="total-employees">Total: {{ totalEmployees }}</div>
       <pie-chart :data="chartData" :options="chartOptions" />
     </div>
   </div>
@@ -69,14 +74,20 @@ export default {
     @include paragraph(medium);
     text-align: start;
   }
-
   .pie-chart {
     width: 100%;
-    height: 285px;
-    position: relative;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    gap: $spacingSm;
     align-items: center;
+
+    .total-employees {
+      @include label(medium);
+    }
+    :deep(canvas) {
+      max-height: 220px;
+      height: 100%;
+    }
   }
 }
 </style>

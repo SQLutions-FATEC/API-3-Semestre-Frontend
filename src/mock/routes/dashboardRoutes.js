@@ -12,6 +12,22 @@ const dashboardRoutes = [
   mockFlag(
     {
       method: 'get',
+      url: '/analytics-summary',
+      result: () => {
+        // TODO
+        const response = {};
+
+        return APIFailureWrapper({
+          content: response,
+          errorMessage: 'Erro ao listar os dados da view',
+        });
+      },
+    },
+    'on'
+  ),
+  mockFlag(
+    {
+      method: 'get',
       url: '/dashboard/company/:company_id/daily-registers',
       result: ({ params }) => {
         const response = {
