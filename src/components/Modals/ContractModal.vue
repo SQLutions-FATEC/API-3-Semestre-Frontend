@@ -1,9 +1,8 @@
 <script>
-import { Modal, message } from 'ant-design-vue';
+import { Cascader, DatePicker, message, Modal } from 'ant-design-vue';
 import { watch, ref } from 'vue';
 import dayjs from 'dayjs';
 import company from '@/services/company';
-import contracts from '@/services/contracts';
 import RoleModal from '@/components/Modals/RoleModal.vue';
 import role from '@/services/role';
 
@@ -22,7 +21,9 @@ export default {
   },
 
   components: {
+    'a-cascader': Cascader,
     'a-modal': Modal,
+    'a-range-picker': DatePicker.RangePicker,
     'role-modal': RoleModal,
   },
 

@@ -114,6 +114,8 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:color';
+
 .active-contract {
   display: flex;
   gap: $spacingMd;
@@ -136,12 +138,13 @@ export default {
 
     .contract__infos {
       display: flex;
-      gap: $spacingXxl;
+      gap: $spacingMd;
+      align-items: center;
 
       .info {
         display: flex;
         gap: $spacingMd;
-        align-items: baseline;
+        align-items: center;
 
         h3 {
           @include heading(xsmall);
@@ -149,21 +152,27 @@ export default {
           font-size: 14px;
         }
         p {
-          @include paragraph(large);
+          @include paragraph(medium);
         }
       }
     }
     .contract__actions {
       display: flex;
-      gap: $spacingXl;
+      gap: $spacingMd;
 
       .delete-button {
         background-color: $colorBackgroundError;
         border-color: $colorError;
 
         &:hover {
-          background-color: darken($colorBackgroundError, 15%) !important;
-          border-color: darken($colorBackgroundError, 15%) !important;
+          background-color: color.adjust(
+            $colorBackgroundError,
+            $lightness: -15%
+          ) !important;
+          border-color: color.adjust(
+            $colorBackgroundError,
+            $lightness: -15%
+          ) !important;
         }
       }
     }

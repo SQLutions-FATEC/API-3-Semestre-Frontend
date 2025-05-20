@@ -122,7 +122,7 @@ export default {
   gap: $spacingMd;
 
   h2 {
-    @include heading(medium);
+    @include label(medium);
     color: $colorTextDisabled;
   }
 }

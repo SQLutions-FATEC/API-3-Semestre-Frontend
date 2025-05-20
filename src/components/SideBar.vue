@@ -54,7 +54,13 @@ export default {
     @close="toggleSidebar"
   >
     <template #title>
-      <router-link to="/" class="main-page-link"> Home </router-link>
+      <router-link
+        to="/"
+        class="main-page-link"
+        @click.prevent="toggleSidebar()"
+      >
+        Home
+      </router-link>
     </template>
     <div class="side-bar">
       <a-button
@@ -108,7 +114,7 @@ export default {
   margin-top: $spacingLg;
 
   .bar__button {
-    @include label(medium);
+    @include paragraph(medium);
     height: 40px;
     border-radius: 0px;
     background-color: transparent;

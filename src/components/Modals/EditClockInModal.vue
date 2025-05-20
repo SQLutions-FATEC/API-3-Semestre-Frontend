@@ -100,7 +100,7 @@ export default {
         <at-number-input
           v-model:value="registerNumber"
           placeholder="Número de registro"
-          mask="###########"
+          mask="###.#####.##-#"
           disabled
         />
       </div>

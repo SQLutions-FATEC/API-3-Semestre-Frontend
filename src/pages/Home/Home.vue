@@ -2,6 +2,7 @@
 import HomeHeader from '@/components/Headers/HomeHeader.vue';
 import dayjs from 'dayjs';
 import EditClockInModal from '@/components/Modals/EditClockInModal.vue';
+import EmployeeModal from '@/components/Modals/EmployeeModal.vue';
 import clockInOut from '@/services/clockInOut';
 import { eventBus } from '@/utils/eventBus';
 import {
@@ -10,8 +11,9 @@ import {
   EditOutlined,
 } from '@ant-design/icons-vue';
 import { Button, Select, Table } from 'ant-design-vue';
-import { h, onBeforeUnmount, onMounted, ref } from 'vue';
+import { h, onBeforeUnmount, onMounted, ref, provide } from 'vue';
 import { RouterLink } from 'vue-router';
+import { registerNumberMask } from '../../utils';
 
 export default {
   name: 'Home',
@@ -24,6 +26,7 @@ export default {
     'arrow-down-outlined': ArrowDownOutlined,
     'edit-clock-in-modal': EditClockInModal,
     'edit-outlined': EditOutlined,
+    'employee-modal': EmployeeModal,
     'home-header': HomeHeader,
   },
 
@@ -35,9 +38,21 @@ export default {
     const pageSize = ref(10);
     const selectedClockIn = ref({});
     const totalInfos = ref(0);
+    const isEmployeeModalOpened = ref(false);
+    const selectedEmployee = ref({});
 
     const closeEditModal = () => {
       isEditClockInOpened.value = false;
+    };
+
+    const openEmployeeModal = (employee) => {
+      selectedEmployee.value = employee;
+      isEmployeeModalOpened.value = true;
+    };
+
+    const closeEmployeeModal = () => {
+      isEmployeeModalOpened.value = false;
+      selectedEmployee.value = null;
     };
 
     const getEmployeesClockInOut = async (filters) => {
@@ -87,6 +102,8 @@ export default {
       }
     };
 
+    provide('apiCall', getEmployeesClockInOut);
+
     const handleEdit = (clockIn) => {
       selectedClockIn.value = clockIn;
       isEditClockInOpened.value = true;
@@ -116,6 +133,7 @@ export default {
         title: 'Número de registro',
         dataIndex: 'registerNumber',
         key: 'registerNumber',
+        customRender: ({ text }) => registerNumberMask(text),
       },
       {
         title: 'Funcionário',
@@ -123,12 +141,18 @@ export default {
         key: 'employee',
         customRender: ({ text, record }) => {
           return h(
-            RouterLink,
-            {
-              to: { path: `/employee/${record.employeeId}` },
-              style: { color: 'inherit', textDecoration: 'underline' },
-            },
-            () => text
+            'div',
+            { style: { display: 'flex', alignItems: 'center', gap: '4px' } },
+            [
+              h('span', text),
+              h(Button, {
+                type: 'primary',
+                shape: 'circle',
+                size: 'small',
+                icon: h(EditOutlined),
+                onClick: () => openEmployeeModal(record),
+              }),
+            ]
           );
         },
       },
@@ -209,6 +233,10 @@ export default {
       pageSize,
       selectedClockIn,
       totalInfos,
+      isEmployeeModalOpened,
+      openEmployeeModal,
+      closeEmployeeModal,
+      selectedEmployee,
     };
   },
 };
@@ -228,7 +256,7 @@ export default {
           showSizeChanger: true,
           pageSizeOptions: ['10', '20', '50'],
         }"
-        :scroll="{ y: 'calc(100vh - 380px)' }"
+        :scroll="{ y: 'calc(100vh - 404px)' }"
         @change="handleTableChange"
       />
     </div>
@@ -238,12 +266,18 @@ export default {
       @close="closeEditModal"
       @reload="getEmployeesClockInOut"
     />
+    <employee-modal
+      v-if="isEmployeeModalOpened"
+      v-model:open="isEmployeeModalOpened"
+      :employee-id="selectedEmployee.employeeId"
+      @close="closeEmployeeModal"
+    />
   </div>
 </template>
 
 <style lang="scss" scoped>
 .home {
-  padding: $spacingLg 0 $spacingXxl 0;
+  padding: $spacingXxl 0px;
   display: flex;
   flex-direction: column;
   gap: $spacingXl;
@@ -251,13 +285,6 @@ export default {
 .table-container {
   :deep(.ant-table-container) {
     overflow: auto;
-  }
-
-  :deep(.ant-table-thead) {
-    position: sticky;
-    top: 180px;
-    z-index: 9;
-    background: white;
   }
 }
 
