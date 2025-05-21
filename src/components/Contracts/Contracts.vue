@@ -1,12 +1,12 @@
 <script>
-import { Modal, message } from 'ant-design-vue';
-import { PlusOutlined } from '@ant-design/icons-vue';
-import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
 import ActiveContract from '@/components/Contracts/ActiveContract.vue';
 import InactiveContracts from '@/components/Contracts/InactiveContracts.vue';
 import ContractModal from '@/components/Modals/ContractModal.vue';
 import contracts from '@/services/contracts';
+import { PlusOutlined } from '@ant-design/icons-vue';
+import { Modal, message } from 'ant-design-vue';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 export default {
   name: 'Contracts',
@@ -57,19 +57,31 @@ export default {
     };
 
     const createContracts = async (employeeId) => {
-      if (!Object.keys(activeContract.value).length) return;
+      const allContracts = [];
 
-      const params = {
-        contracts: [activeContract.value],
-        employee_id: employeeId,
-      };
-      if (inactiveContracts.value.length) {
-        params.contracts.push(...inactiveContracts.value);
+      if (Object.keys(activeContract.value).length) {
+        allContracts.push(activeContract.value);
       }
-      try {
-        await contracts.create(params);
-      } catch (error) {
-        console.error(error);
+
+      if (inactiveContracts.value.length) {
+        allContracts.push(...inactiveContracts.value);
+      }
+
+      for (const contract of allContracts) {
+        const payload = {
+          employeeId,
+          companyId: contract.company.id,
+          roleId: contract.role.id,
+          startDate: dayjs(contract.datetime_start).format('YYYY-MM-DD'),
+          endDate: dayjs(contract.datetime_end).format('YYYY-MM-DD'),
+        };
+
+        try {
+          await contracts.create(payload);
+          console.log('Contrato criado com sucesso');
+        } catch (error) {
+          console.error('Erro ao criar contrato:', error);
+        }
       }
     };
 
