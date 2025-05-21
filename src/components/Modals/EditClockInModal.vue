@@ -44,7 +44,8 @@ export default {
       loading.value = true;
       const params = {
         id: props.clockIn.key,
-        date_time_in: clockInTime.value?.toISOString(),
+        date_time_in: dayjs(clockInTime.value).format('YYYY-MM-DD HH:mm'),
+        date_time_out: dayjs(clockOutTime.value).format('YYYY-MM-DD HH:mm'),
         date_time_out: clockOutTime.value?.toISOString(),
         employee: props.clockIn.employeeId,
       };
