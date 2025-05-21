@@ -15,7 +15,6 @@ import {
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import { computed, onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 import Contracts from '@/components/Contracts/Contracts.vue';
 import { message } from 'ant-design-vue';
 import photo from '@/services/photo';
@@ -49,7 +48,6 @@ export default {
 
   setup(props, { emit }) {
     const apiCall = inject('apiCall');
-    const route = useRoute();
     const dateFormatList = ['DD/MM/YYYY'];
     const defaultProfileImage = '/assets/altave.jpg';
     let employeeContracts = [];

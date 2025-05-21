@@ -2,114 +2,106 @@
 import { ref, onMounted, provide, h } from 'vue';
 import { Button, Modal, Table } from 'ant-design-vue';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
-import employee from '@/services/employee';
-import { formatDate, registerNumberMask } from '@/utils';
-import EmployeeHeader from '@/components/Headers/EmployeeHeader.vue';
-import EmployeeModal from '@/components/Modals/EmployeeModal.vue';
+import company from '@/services/company';
+import CompanyHeader from '@/components/Headers/CompanyHeader.vue';
+import CompanyModal from '@/components/Modals/CompanyModal.vue';
+import { cnpjMask } from '@/utils';
 
 export default {
-  name: 'EmployeeHome',
+  name: 'CompanyHome',
 
   components: {
     'a-button': Button,
     'a-modal': Modal,
     'a-table': Table,
-    'employee-header': EmployeeHeader,
-    'employee-modal': EmployeeModal,
+    'company-header': CompanyHeader,
+    'company-modal': CompanyModal,
   },
 
   setup() {
     const currentPage = ref(1);
     const dataSource = ref([]);
     const isConfirmationModalOpened = ref(false);
-    const isEmployeeModalOpened = ref(false);
+    const isCompanyModalOpened = ref(false);
     const loading = ref(false);
     const pageSize = ref(10);
     const totalInfos = ref(0);
-    const selectedEmployee = ref({});
+    const selectedCompany = ref({});
 
-    const deleteEmployee = async () => {
+    const deleteCompany = async () => {
       try {
-        await employee.delete(selectedEmployee.value.key);
+        await company.delete(selectedCompany.value.key);
         isConfirmationModalOpened.value = false;
-        await fetchEmployees();
+        await fetchCompanies();
       } catch (error) {
         console.error(error);
       }
     };
 
-    const fetchEmployees = async () => {
+    const fetchCompanies = async () => {
       loading.value = true;
 
       try {
-        const { data } = await employee.getAll({
+        const { data } = await company.getAll({
           page: currentPage.value,
           size: pageSize.value,
         });
 
-        dataSource.value = data.items.map((employee) => ({
-          key: employee.id,
-          birthDate: formatDate(employee.birth_date),
-          registerNumber: employee.register_number,
-          name: employee.name,
-          gender: employee.gender,
-          bloodType: employee.blood_type,
+        dataSource.value = data.items.map((company) => ({
+          key: company.id,
+          name: company.name,
+          cnpj: company.cnpj,
+          tradeName: company.trade_name,
         }));
 
         totalInfos.value = data.total;
       } catch (error) {
-        console.error('Erro ao buscar funcionários:', error);
+        console.error('Erro ao buscar empresas:', error);
       } finally {
         loading.value = false;
       }
     };
 
-    provide('apiCall', fetchEmployees);
+    provide('apiCall', fetchCompanies);
 
     const handleTableChange = async (pagination) => {
       currentPage.value = pagination.current;
       pageSize.value = pagination.pageSize;
-      await fetchEmployees();
+      await fetchCompanies();
     };
 
-    const openEmployeeModal = (employee) => {
-      selectedEmployee.value = employee;
-      isEmployeeModalOpened.value = true;
-    };
-
-    const openDeleteModal = (employee) => {
-      selectedEmployee.value = employee;
+    const openConfirmationModal = () => {
       isConfirmationModalOpened.value = true;
     };
 
-    onMounted(fetchEmployees);
+    const openCompanyModal = (company) => {
+      selectedCompany.value = company;
+      isCompanyModalOpened.value = true;
+    };
+
+    const openDeleteModal = (company) => {
+      selectedCompany.value = company;
+      isConfirmationModalOpened.value = true;
+    };
+
+    onMounted(fetchCompanies);
 
     const columns = [
       {
-        title: 'Número de registro',
-        dataIndex: 'registerNumber',
-        key: 'registerNumber',
-        customRender: ({ text }) => registerNumberMask(text),
-      },
-      {
-        title: 'Nome do funcionário',
+        title: 'Razão social',
         dataIndex: 'name',
         key: 'name',
       },
       {
-        title: 'Gênero',
-        dataIndex: 'gender',
-        key: 'gender',
+        title: 'CNPJ',
+        dataIndex: 'cnpj',
+        key: 'cnpj',
+        customRender: ({ record }) => cnpjMask(record.cnpj),
       },
       {
-        title: 'Tipo sanguíneo',
-        dataIndex: 'bloodType',
-        key: 'bloodType',
-      },
-      {
-        title: 'Data de nascimento',
-        dataIndex: 'birthDate',
-        key: 'birthDate',
+        title: 'Nome fantasia',
+        dataIndex: 'tradeName',
+        key: 'tradeName',
       },
       {
         title: 'Ações',
@@ -123,7 +115,7 @@ export default {
                 shape: 'circle',
                 icon: h(EditOutlined),
                 style: { marginRight: '8px' },
-                onClick: () => openEmployeeModal(record),
+                onClick: () => openCompanyModal(record),
               },
               null
             ),
@@ -147,14 +139,15 @@ export default {
       columns,
       currentPage,
       dataSource,
-      deleteEmployee,
+      deleteCompany,
       handleTableChange,
       isConfirmationModalOpened,
-      isEmployeeModalOpened,
+      isCompanyModalOpened,
       loading,
-      openEmployeeModal,
+      openConfirmationModal,
+      openCompanyModal,
       pageSize,
-      selectedEmployee,
+      selectedCompany,
       totalInfos,
     };
   },
@@ -162,8 +155,8 @@ export default {
 </script>
 
 <template>
-  <div class="employee-home">
-    <employee-header />
+  <div class="company-home">
+    <company-header />
     <div class="table-container">
       <a-table
         :dataSource="dataSource"
@@ -176,23 +169,23 @@ export default {
           showSizeChanger: true,
           pageSizeOptions: ['10', '20', '50'],
         }"
-        :scroll="{ y: 'calc(100vh - 316px)' }"
+        :scroll="{ y: 'calc(100vh - 296px)' }"
         @change="handleTableChange"
       />
     </div>
-    <employee-modal
-      v-if="isEmployeeModalOpened"
-      v-model:open="isEmployeeModalOpened"
-      :employee-id="selectedEmployee.key"
+    <company-modal
+      v-if="isCompanyModalOpened"
+      v-model:open="isCompanyModalOpened"
+      :company-id="selectedCompany.key"
     />
     <a-modal
       v-model:open="isConfirmationModalOpened"
-      title="Deletar funcionário"
-      @ok="deleteEmployee"
+      title="Deletar empresa"
+      @ok="deleteCompany"
     >
       <span>
-        Tem certeza que deseja deletar o funcionário
-        <strong>{{ selectedEmployee?.name }}</strong
+        Tem certeza que deseja deletar a empresa
+        <strong>{{ selectedCompany?.name }}</strong
         >?
       </span>
     </a-modal>
@@ -202,7 +195,7 @@ export default {
 <style lang="scss" scoped>
 @use 'sass:color';
 
-.employee-home {
+.company-home {
   padding: $spacingXxl 0px;
   display: flex;
   flex-direction: column;
