@@ -46,10 +46,6 @@ export default {
 
     const exportToExcel = async (customData = null) => {
       const dataToExport = customData || props.data;
-      console.log(
-        'Dados brutos recebidos:',
-        JSON.parse(JSON.stringify(dataToExport))
-      );
 
       if (!dataToExport || dataToExport.length === 0) {
         return message.error('Nenhum dado disponível para exportação');
@@ -59,10 +55,6 @@ export default {
 
       try {
         const formattedData = await processInChunks(dataToExport, formatData);
-        console.log('Dados recebidos:', props.data);
-
-        console.log('Dados formatados:', formattedData);
-
         const headers = Object.keys(formattedData[0]);
         const rows = formattedData.map((item) => Object.values(item));
 
@@ -89,7 +81,6 @@ export default {
         URL.revokeObjectURL(url);
       } catch (error) {
         message.error('Erro na exportação:' + error.message);
-        console.log(error.message, error);
       } finally {
         isLoading.value = false;
       }
@@ -97,11 +88,13 @@ export default {
 
     const formatData = (data) => {
       return data.map((info) => {
+        console.log(info);
         return {
-          'Número de Registro': info.employee?.register_number || '--',
-          Funcionário: info.employee?.name || '--',
-          Empresa: info.company?.name || '--',
-          Função: info.role_name || '--',
+          'Número de Registro':
+            info.employee?.register_number || info.registerNumber,
+          Funcionário: info.employee?.name || info.employee,
+          Empresa: info.company?.name || info.company,
+          Função: info.role_name || info.role,
           'Data de Entrada': info.date_time_in || '--',
           'Data de Saída': info.date_time_out || '--',
           'Horas Trabalhadas': info.worked_hours
@@ -137,7 +130,7 @@ export default {
 </script>
 
 <template>
-  <a-button type="primary" :loading="isLoading" @click="exportToExcel">
+  <a-button type="primary" :loading="isLoading" @click="exportToExcel()">
     <template #icon>
       <download-outlined />
     </template>
