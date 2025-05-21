@@ -1,10 +1,10 @@
 <script>
-import { Cascader, DatePicker, message, Modal } from 'ant-design-vue';
-import { watch, ref } from 'vue';
-import dayjs from 'dayjs';
-import company from '@/services/company';
 import RoleModal from '@/components/Modals/RoleModal.vue';
+import company from '@/services/company';
 import role from '@/services/role';
+import { Cascader, DatePicker, message, Modal } from 'ant-design-vue';
+import dayjs from 'dayjs';
+import { ref, watch } from 'vue';
 
 export default {
   name: 'ContractModal',
@@ -28,7 +28,7 @@ export default {
   },
 
   setup(props, { emit }) {
-    const dateFormatList = 'DD/MM/YYYY HH:mm';
+    const dateFormatList = 'DD/MM/YYYY';
 
     const companyOptions = ref([]);
     const isEditing = ref(false);
@@ -61,14 +61,8 @@ export default {
       );
 
       const contract = {
-        company: {
-          id: selectedCompany.data.id,
-          name: selectedCompany.data.name,
-        },
-        role: {
-          id: selectedRole.data.id,
-          name: selectedRole.data.name,
-        },
+        company_id: selectedCompany.data.id,
+        role_id: selectedRole.data.id,
         datetime_start: selectedDatetime.value[0],
         datetime_end: selectedDatetime.value[1],
       };
@@ -238,7 +232,6 @@ export default {
         show-time
         :format="dateFormatList"
         :placeholder="['Data início', 'Data fim']"
-        :time-picker-props="{ format: 'HH:mm' }"
       />
     </div>
     <role-modal v-model:open="isRoleModalOpened" @fetch-roles="fetchRoles" />
