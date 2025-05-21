@@ -1,5 +1,12 @@
 import dayjs from 'dayjs';
 
+const cnpjMask = (number) => {
+  const masked = number
+    .toString()
+    .replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
+  return masked;
+};
+
 const formatDateTime = (dateString) => {
   return dayjs(dateString).format('DD/MM/YYYY HH:mm');
 };
@@ -24,4 +31,10 @@ const registerNumberMask = (text) => {
   return masked;
 };
 
-export { formatDate, formatDateTime, generateRandomColors, registerNumberMask };
+export {
+  cnpjMask,
+  formatDate,
+  formatDateTime,
+  generateRandomColors,
+  registerNumberMask,
+};
