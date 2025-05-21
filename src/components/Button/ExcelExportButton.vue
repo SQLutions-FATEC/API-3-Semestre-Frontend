@@ -98,8 +98,10 @@ export default {
     const formatData = (data) => {
       return data.map((info) => {
         return {
-          'Número de Registro': info.employee?.registerNumber || '--',
-          Funcionário: info.employee?.nome || '--',
+          'Número de Registro': info.employee?.register_number || '--',
+          Funcionário: info.employee?.name || '--',
+          Empresa: info.company?.name || '--',
+          Função: info.role_name || '--',
           'Data de Entrada': info.date_time_in || '--',
           'Data de Saída': info.date_time_out || '--',
           'Horas Trabalhadas': info.worked_hours
