@@ -69,11 +69,11 @@ export default {
       <div class="contract__infos">
         <div class="info">
           <h3>Empresa</h3>
-          <p>{{ contract.company.name }}</p>
+          <p>Empresa: {{ contract.company?.name || 'Não informado' }}</p>
         </div>
         <div class="info">
           <h3>Função</h3>
-          <p>{{ contract.role.name }}</p>
+          <p>Cargo: {{ contract.role?.name || 'Não informado' }}</p>
         </div>
         <div class="info">
           <h3>Data de contrato</h3>
