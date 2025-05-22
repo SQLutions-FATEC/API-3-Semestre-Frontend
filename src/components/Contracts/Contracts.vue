@@ -57,31 +57,25 @@ export default {
     };
 
     const createContracts = async (employeeId) => {
-      const allContracts = [];
+      if (!Object.keys(activeContract.value).length) return;
 
-      if (Object.keys(activeContract.value).length) {
-        allContracts.push(activeContract.value);
-      }
+      const mapToDTO = (contract) => ({
+        employee_id: employeeId,
+        companyId: contract.company?.id,
+        roleId: contract.role?.id,
+        startDate: contract.startDate,
+        endDate: contract.endDate,
+      });
 
-      if (inactiveContracts.value.length) {
-        allContracts.push(...inactiveContracts.value);
-      }
+      const contractsDTO = [
+        mapToDTO(activeContract.value),
+        ...inactiveContracts.value.map(mapToDTO),
+      ];
 
-      for (const contract of allContracts) {
-        const payload = {
-          employeeId,
-          companyId: contract.company.id,
-          roleId: contract.role.id,
-          startDate: dayjs(contract.datetime_start).format('YYYY-MM-DD'),
-          endDate: dayjs(contract.datetime_end).format('YYYY-MM-DD'),
-        };
-
-        try {
-          await contracts.create(payload);
-          console.log('Contrato criado com sucesso');
-        } catch (error) {
-          console.error('Erro ao criar contrato:', error);
-        }
+      try {
+        await contracts.create({ contracts: contractsDTO });
+      } catch (error) {
+        console.error(error);
       }
     };
 
@@ -119,8 +113,19 @@ export default {
 
       try {
         const { data } = await contracts.getByEmployeeId(employeeId, params);
-        activeContract.value = data.find((contract) => contract.active) || {};
-        inactiveContracts.value = data.filter((contract) => !contract.active);
+
+        const contractsWithFallback = data.map((contract) => ({
+          ...contract,
+          company: contract.company ?? { name: 'Não informado' },
+          role: contract.role ?? { name: 'Não informado' },
+        }));
+
+        activeContract.value =
+          contractsWithFallback.find((contract) => contract.active) || {};
+
+        inactiveContracts.value = contractsWithFallback.filter(
+          (contract) => !contract.active
+        );
       } catch (error) {
         console.error('Erro buscando contratos:', error);
       }
