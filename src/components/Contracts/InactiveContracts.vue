@@ -67,12 +67,9 @@ export default {
     const updateDataSource = (contracts) => {
       dataSource.value = contracts.map((contract) => ({
         key: contract.id,
-        company: contract.company?.name,
-        role: contract.role?.name,
-        date: formatContractDate(
-          contract.datetime_start,
-          contract.datetime_end
-        ),
+        company: contract.company,
+        role: contract.role,
+        date: formatContractDate(contract.date_start, contract.date_end),
       }));
     };
 

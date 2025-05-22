@@ -69,17 +69,17 @@ export default {
       <div class="contract__infos">
         <div class="info">
           <h3>Empresa</h3>
-          <p>Empresa: {{ contract.company?.name || 'Não informado' }}</p>
+          <p>{{ contract.company }}</p>
         </div>
         <div class="info">
           <h3>Função</h3>
-          <p>Cargo: {{ contract.role?.name || 'Não informado' }}</p>
+          <p>{{ contract.role }}</p>
         </div>
         <div class="info">
           <h3>Data de contrato</h3>
           <p>
-            {{ new Date(contract.datetime_start).toLocaleDateString('pt-BR') }}
-            - {{ new Date(contract.datetime_end).toLocaleDateString('pt-BR') }}
+            {{ new Date(contract.date_start).toLocaleDateString('pt-BR') }}
+            - {{ new Date(contract.date_end).toLocaleDateString('pt-BR') }}
           </p>
         </div>
       </div>

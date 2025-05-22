@@ -50,10 +50,10 @@ const employeeRoutes = [
           gender: employee.gender,
           contracts: employee.contracts.map((contract) => {
             const selectedCompany = companies.find(
-              (company) => company.id == contract.company.id
+              (company) => company.name == contract.company
             );
             const selectedRole = roles.find(
-              (role) => role.id == contract.role.id
+              (role) => role.name == contract.role
             );
 
             return {
