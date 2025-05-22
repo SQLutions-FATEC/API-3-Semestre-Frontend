@@ -22,7 +22,7 @@ ChartJS.register(
 );
 
 export default {
-  name: 'GraphHoursWorkedByRole',
+  name: 'GraphEmployeesByShift',
 
   components: {
     'bar-chart': Bar,
@@ -36,32 +36,31 @@ export default {
   },
 
   setup(props) {
-    const minValue = Math.min(...props.data.hours);
-    const maxValue = Math.max(...props.data.hours);
+    const maxValue = Math.max(...props.data.quantity);
 
     const chartOptions = {
       indexAxis: 'y',
       responsive: true,
       plugins: {
         legend: { display: false },
-        title: { display: false, text: 'Horas Trabalhadas por Cargo' },
+        title: { display: false, text: 'Quantidade de Funcionários por Turno' },
       },
       scales: {
         x: {
           title: {
             display: true,
-            text: 'Horas',
+            text: 'Funcionários',
             color: '#4c4c4c',
             font: { size: 14, weight: 'bold' },
           },
           ticks: { color: '#4c4c4c' },
-          min: minValue - 10,
-          max: maxValue + 10,
+          min: 0,
+          max: maxValue + 3,
         },
         y: {
           title: {
             display: true,
-            text: 'Cargos',
+            text: 'Turnos',
             color: '#4c4c4c',
             font: { size: 14, weight: 'bold' },
           },
@@ -92,7 +91,7 @@ export default {
       labels: props.data.labels,
       datasets: [
         {
-          data: props.data.hours,
+          data: props.data.quantity,
           backgroundColor: generateRandomColors(props.data.labels.length),
         },
       ],
@@ -107,8 +106,8 @@ export default {
 </script>
 
 <template>
-  <div class="graph-hours-worked-by-role">
-    <h2>Horas Trabalhadas por Cargo (Semanal)</h2>
+  <div class="graph-employees-by-shift">
+    <h2>Quantidade de Funcionários por Turno</h2>
     <div class="graph-container">
       <bar-chart :data="chartData" :options="chartOptions" />
     </div>
@@ -116,7 +115,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-.graph-hours-worked-by-role {
+.graph-employees-by-shift {
   display: flex;
   flex-direction: column;
   gap: $spacingSm;

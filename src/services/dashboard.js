@@ -7,6 +7,8 @@ const dashboard = {
     api.get(`/dashboard/company/${companyId}/daily-registers`),
   getEmployeesByGender: (companyId) =>
     api.get(`/dashboard/company/${companyId}/employee-gender`),
+  getEmployeesByShift: (companyId) =>
+    api.get(`/dashboard/company/${companyId}/employee-shift`),
   getHoursWorkedByRole: (companyId) =>
     api.get(`/dashboard/company/${companyId}/hours-worked-by-role`),
   getSingleRegisters: (companyId) =>

@@ -2,6 +2,7 @@ import { APIFailureWrapper, mockFlag } from '@/mock/utils.js';
 import {
   dailyRegisters,
   employeesByGender,
+  employeesByShift,
   weeklyHoursWorkedByRole,
 } from '@/mock/seeds/dashboardSeeds';
 import { getClockInOut } from '@/mock/seeds/clockInOutSeeds';
@@ -53,6 +54,21 @@ const dashboardRoutes = [
         return APIFailureWrapper({
           content: response,
           errorMessage: 'Erro ao listar os empregados por gênero',
+        });
+      },
+    },
+    'on'
+  ),
+  mockFlag(
+    {
+      method: 'get',
+      url: '/dashboard/company/:company_id/employee-shift',
+      result: ({ params }) => {
+        const response = employeesByShift[params.company_id];
+
+        return APIFailureWrapper({
+          content: response,
+          errorMessage: 'Erro ao listar os empregados por turno',
         });
       },
     },

@@ -6,6 +6,7 @@ import dashboard from '@/services/dashboard';
 import ContractsToExpire from '@/components/DashboardAlerts/ContractsToExpire.vue';
 import DailyRegisters from '@/components/DailyRegisters.vue';
 import GraphEmployeesByGender from '@/components/Graphs/GraphEmployeesByGender.vue';
+import GraphEmployeesByShift from '@/components/Graphs/GraphEmployeesByShift.vue';
 import GraphHoursWorkedByRole from '@/components/Graphs/GraphHoursWorkedByRole.vue';
 import WithoutMatchRegisters from '@/components/DashboardAlerts/WithoutMatchRegisters.vue';
 
@@ -18,6 +19,7 @@ export default {
     'daily-registers': DailyRegisters,
     'contracts-to-expire': ContractsToExpire,
     'graph-employees-by-gender': GraphEmployeesByGender,
+    'graph-employees-by-shift': GraphEmployeesByShift,
     'graph-hours-worked-by-role': GraphHoursWorkedByRole,
     'without-match-registers': WithoutMatchRegisters,
   },
@@ -29,6 +31,7 @@ export default {
     const companyOptions = ref([]);
     const contractsToExpire = ref([]);
     const employeesGenderObj = ref({});
+    const employeesShiftObj = ref({});
     const loadingGraphs = ref(true);
     const roleHoursObj = ref({});
     const selectedCompanyId = ref(null);
@@ -82,6 +85,17 @@ export default {
       }
     };
 
+    const fetchEmployeesByShift = async () => {
+      try {
+        const { data } = await dashboard.getEmployeesByShift(
+          selectedCompanyId.value
+        );
+        return data;
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     const fetchSingleRegisters = async () => {
       try {
         const { data } = await dashboard.getSingleRegisters(
@@ -100,12 +114,14 @@ export default {
         dailyRegisters,
         hoursWorkedByRole,
         employeesByGender,
+        employeesByShift,
         withoutMatchRegisters,
         contractsAboutToExpire,
       ] = await Promise.all([
         fetchDailyRegisters(),
         fetchHoursWorkedByRole(),
         fetchEmployeesByGender(),
+        fetchEmployeesByShift(),
         fetchSingleRegisters(),
         fetchContractsToExpire(),
       ]);
@@ -122,6 +138,15 @@ export default {
       );
 
       employeesGenderObj.value = employeesByGender;
+
+      employeesShiftObj.value = employeesByShift.reduce(
+        (acc, item) => {
+          acc['labels'].push(item.shift);
+          acc['quantity'].push(item.employees_quantity);
+          return acc;
+        },
+        { labels: [], quantity: [] }
+      );
 
       singleRegisters.value = withoutMatchRegisters;
 
@@ -161,6 +186,7 @@ export default {
       companyOptions,
       contractsToExpire,
       employeesGenderObj,
+      employeesShiftObj,
       handleCompanyChange,
       loadingGraphs,
       roleHoursObj,
@@ -206,6 +232,7 @@ export default {
           class="col-6 gender-graph"
           :data="employeesGenderObj"
         />
+        <graph-employees-by-shift class="col-6" :data="employeesShiftObj" />
       </div>
       <h1>Alertas</h1>
       <div class="content__graphs">
@@ -246,7 +273,7 @@ export default {
 
     .content__graphs {
       display: flex;
-      justify-content: space-around;
+      flex-wrap: wrap;
       gap: $spacingXxl;
     }
   }
