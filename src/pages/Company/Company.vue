@@ -148,10 +148,18 @@ export default {
     <h1>{{ pageTitle }}</h1>
     <div class="company__content">
       <div class="content__input">
-        <at-input v-model:value="companyName" placeholder="Razão social" text />
+        <label for="companyName">Razão social</label>
+        <at-input
+          id="companyName"
+          v-model:value="companyName"
+          placeholder="Razão social"
+          text
+        />
       </div>
       <div class="content__input">
+        <label for="cnpj">CNPJ</label>
         <at-number-input
+          id="cnpj"
           v-model:value="cnpj"
           mask="##.###.###/####-##"
           placeholder="CNPJ"
@@ -160,7 +168,13 @@ export default {
         />
       </div>
       <div class="content__input">
-        <at-input v-model:value="tradeName" placeholder="Nome fantasia" text />
+        <label for="tradeName">Nome fantasia</label>
+        <at-input
+          id="tradeName"
+          v-model:value="tradeName"
+          placeholder="Nome fantasia"
+          text
+        />
       </div>
       <div class="content__action">
         <a-button
@@ -185,11 +199,10 @@ export default {
       title="Deletar empresa"
       @ok="deleteCompany"
     >
-      <span> Tem certeza que deseja deletar a empresa {{ tradeName }}? </span>
+      <span>Tem certeza que deseja deletar a empresa {{ tradeName }}?</span>
     </a-modal>
   </div>
 </template>
-
 <style lang="scss" scoped>
 .company {
   padding: $spacingXxl 0px;
