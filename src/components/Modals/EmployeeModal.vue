@@ -65,7 +65,8 @@ export default {
     const uploading = ref(false);
 
     const beforeUpload = (file) => {
-      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+      const isJpgOrPng =
+        file.type === 'image/jpeg' || file.type === 'image/png';
       if (!isJpgOrPng) {
         message.error('Você só pode enviar arquivos JPG/PNG!');
       }
@@ -339,7 +340,6 @@ export default {
   >
     <div class="employee-modal">
       <div class="modal__content">
-        <label>Foto do Funcionário</label>
         <a-upload
           class="content__image"
           list-type="picture-card"
@@ -362,7 +362,6 @@ export default {
             :src="profileImage"
           />
         </a-upload>
-
         <div class="input-group">
           <label>Nome completo</label>
           <at-input
@@ -371,7 +370,6 @@ export default {
             text
           />
         </div>
-
         <div class="input-group">
           <label>Número de registro</label>
           <at-number-input
@@ -382,7 +380,6 @@ export default {
             @input="validateRNInput"
           />
         </div>
-
         <div class="input-group">
           <label>Data de nascimento</label>
           <a-date-picker
@@ -393,8 +390,7 @@ export default {
             @change="handleDateChange"
           />
         </div>
-
-        <div class="content__dates">
+        <div class="content__etc">
           <div class="input-group">
             <label>Tipo Sanguíneo</label>
             <a-cascader
@@ -442,23 +438,21 @@ export default {
     .input-group {
       display: flex;
       flex-direction: column;
-      gap: 4px;  // Espaçamento reduzido apenas entre label e input
+      gap: $spacingXs;
       margin-bottom: 0;
+      width: 100%;
     }
-
     .content__image {
       height: 220px;
       width: 220px;
-      margin: 0px auto; // Mantido o espaçamento original
+      margin: 0px auto;
     }
-
     .ant-upload .image {
       height: 220px;
       width: 220px;
       object-fit: cover;
     }
-
-    .content__dates {
+    .content__etc {
       display: flex;
       gap: $spacingSm;
     }

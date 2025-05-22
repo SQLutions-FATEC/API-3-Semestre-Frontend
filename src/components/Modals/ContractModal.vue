@@ -203,43 +203,52 @@ export default {
     @ok="addEditContract"
   >
     <div class="contract-modal">
-      <a-cascader
-        v-model:value="selectedCompanyId"
-        placeholder="Empresa"
-        style="width: 100%"
-        :options="companyOptions"
-        :showSearch="{
-          filter: (inputValue, path) =>
-            path.some((option) =>
-              option.label.toLowerCase().includes(inputValue.toLowerCase())
-            ),
-        }"
-        @change="handleCompanyChange"
-      />
-      <a-cascader
-        v-model:value="selectedRoleId"
-        placeholder="Função"
-        style="width: 100%"
-        :options="roleOptions"
-        :showSearch="{
-          filter: (inputValue, path) =>
-            path.some((option) => {
-              if (option.value === 'add-new') return false;
-              return option.label
-                .toLowerCase()
-                .includes(inputValue.toLowerCase());
-            }),
-        }"
-        @change="handleRoleChange"
-      />
-      <a-range-picker
-        v-model:value="selectedDatetime"
-        style="width: 100%"
-        show-time
-        :format="dateFormatList"
-        :placeholder="['Data início', 'Data fim']"
-        :time-picker-props="{ format: 'HH:mm' }"
-      />
+      <div class="input-group">
+        <label>Empresa</label>
+        <a-cascader
+          v-model:value="selectedCompanyId"
+          placeholder="Empresa"
+          style="width: 100%"
+          :options="companyOptions"
+          :showSearch="{
+            filter: (inputValue, path) =>
+              path.some((option) =>
+                option.label.toLowerCase().includes(inputValue.toLowerCase())
+              ),
+          }"
+          @change="handleCompanyChange"
+        />
+      </div>
+      <div class="input-group">
+        <label>Função</label>
+        <a-cascader
+          v-model:value="selectedRoleId"
+          placeholder="Função"
+          style="width: 100%"
+          :options="roleOptions"
+          :showSearch="{
+            filter: (inputValue, path) =>
+              path.some((option) => {
+                if (option.value === 'add-new') return false;
+                return option.label
+                  .toLowerCase()
+                  .includes(inputValue.toLowerCase());
+              }),
+          }"
+          @change="handleRoleChange"
+        />
+      </div>
+      <div class="input-group">
+        <label>Datas</label>
+        <a-range-picker
+          v-model:value="selectedDatetime"
+          style="width: 100%"
+          show-time
+          :format="dateFormatList"
+          :placeholder="['Data início', 'Data fim']"
+          :time-picker-props="{ format: 'HH:mm' }"
+        />
+      </div>
     </div>
     <role-modal v-model:open="isRoleModalOpened" @fetch-roles="fetchRoles" />
   </a-modal>
@@ -251,5 +260,13 @@ export default {
   display: flex;
   flex-direction: column;
   gap: $spacingXl;
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: $spacingXs;
+    margin-bottom: 0;
+    width: 100%;
+  }
 }
 </style>
