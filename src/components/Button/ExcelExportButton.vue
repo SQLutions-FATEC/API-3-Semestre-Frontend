@@ -166,16 +166,26 @@ export default {
 </script>
 
 <template>
-  <a-button type="primary" :loading="isLoading" @click="exportToExcel()">
-    <template #icon>
-      <download-outlined />
-    </template>
-    Exportar para Excel
-  </a-button>
-  <a-button type="primary" :loading="isLoading" @click="exportAllToExcel">
-    <template #icon>
-      <download-outlined />
-    </template>
-    Exportar todos os registros
-  </a-button>
+  <div class="exportButtons">
+    <a-button type="primary" :loading="isLoading" @click="exportToExcel()">
+      <template #icon>
+        <download-outlined />
+      </template>
+      Exportar para Excel
+    </a-button>
+    <a-button type="primary" :loading="isLoading" @click="exportAllToExcel">
+      <template #icon>
+        <download-outlined />
+      </template>
+      Exportar todos os registros
+    </a-button>
+  </div>
 </template>
+
+<style lang="scss" scoped>
+.exportButtons {
+  display: flex;
+  align-items: center;
+  gap: $spacingMd;
+}
+</style>
