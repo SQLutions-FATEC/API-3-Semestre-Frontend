@@ -63,8 +63,8 @@ export default {
       const contract = {
         company_id: selectedCompany.data.id,
         role_id: selectedRole.data.id,
-        datetime_start: selectedDatetime.value[0],
-        datetime_end: selectedDatetime.value[1],
+        datetime_start: dayjs(selectedDatetime.value[0]).format('YYYY-MM-DD'),
+        datetime_end: dayjs(selectedDatetime.value[1]).format('YYYY-MM-DD'),
       };
 
       if (isEditing.value) editContract(contract);
@@ -229,7 +229,6 @@ export default {
       <a-range-picker
         v-model:value="selectedDatetime"
         style="width: 100%"
-        show-time
         :format="dateFormatList"
         :placeholder="['Data início', 'Data fim']"
       />
