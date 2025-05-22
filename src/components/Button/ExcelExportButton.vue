@@ -86,21 +86,55 @@ export default {
       }
     };
 
+    const getNestedProperty = (obj, path) => {
+      return path.split('.').reduce((acc, part) => {
+        const cleanPart = part.replace('?', '');
+        return acc && acc[cleanPart];
+      }, obj);
+    };
+
+    const formatProperty = (info, propNames) => {
+      for (const prop of propNames) {
+        const value = prop.includes('.')
+          ? getNestedProperty(info, prop)
+          : info[prop];
+
+        if (value !== undefined && value !== null) {
+          return value;
+        }
+      }
+      return '--';
+    };
+
+    const fieldMap = {
+      'Número de Registro': ['employee.register_number', 'registerNumber'],
+      Funcionário: ['employee.name', 'employee'],
+      Empresa: ['company.name', 'company'],
+      Função: ['role_name', 'role'],
+      'Data de Entrada': ['date_time_in'],
+      'Data de Saída': ['date_time_out'],
+      'Horas Trabalhadas': ['worked_hours'],
+    };
+
     const formatData = (data) => {
       return data.map((info) => {
-        console.log(info);
-        return {
-          'Número de Registro':
-            info.employee?.register_number || info.registerNumber,
-          Funcionário: info.employee?.name || info.employee,
-          Empresa: info.company?.name || info.company,
-          Função: info.role_name || info.role,
-          'Data de Entrada': info.date_time_in || '--',
-          'Data de Saída': info.date_time_out || '--',
-          'Horas Trabalhadas': info.worked_hours
-            ? `${Math.floor(info.worked_hours)}h${Math.round((info.worked_hours % 1) * 60)}min`
-            : '--',
-        };
+        const formattedRow = {};
+
+        Object.entries(fieldMap).forEach(([excelHeader, sourceProps]) => {
+          if (excelHeader !== 'Horas Trabalhadas') {
+            formattedRow[excelHeader] = formatProperty(info, sourceProps);
+          }
+        });
+
+        if (info.worked_hours !== undefined && info.worked_hours !== null) {
+          const hours = Math.floor(info.worked_hours);
+          const minutes = Math.round((info.worked_hours % 1) * 60);
+          formattedRow['Horas Trabalhadas'] = `${hours}h${minutes}min`;
+        } else {
+          formattedRow['Horas Trabalhadas'] = '--';
+        }
+
+        return formattedRow;
       });
     };
 
