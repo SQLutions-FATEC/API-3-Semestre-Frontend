@@ -65,7 +65,13 @@ export default {
             color: '#4c4c4c',
             font: { size: 14, weight: 'bold' },
           },
-          ticks: { color: '#4c4c4c' },
+          ticks: {
+            color: '#4c4c4c',
+            callback: function (value, index, ticks) {
+              const label = this.getLabelForValue(value);
+              return label.length > 10 ? label.slice(0, 10) + '…' : label;
+            },
+          },
         },
       },
       animation: {
