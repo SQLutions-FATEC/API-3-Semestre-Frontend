@@ -160,7 +160,13 @@ export default {
       </div>
       <h1>Alertas</h1>
       <div class="content__graphs">
+        <div v-if="!incompleteRegisters.length" class="col-6 empty-state">
+          <p>Nenhum registro encontrado.</p>
+        </div>
         <!-- <without-match-registers class="col-6" :data="incompleteRegisters" /> -->
+        <div v-if="!contractsToExpire.length" class="col-6 empty-state">
+          <p>Nenhum contrato encontrado.</p>
+        </div>
         <!-- <contracts-to-expire class="col-6" :data="contractsToExpire" /> -->
       </div>
     </div>
@@ -199,6 +205,14 @@ export default {
       display: flex;
       flex-wrap: wrap;
       gap: $spacingXxl;
+
+      .empty-state {
+        margin: $spacingLg auto;
+
+        p {
+          @include paragraph(medium);
+        }
+      }
     }
   }
 }
