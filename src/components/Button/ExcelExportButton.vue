@@ -6,6 +6,8 @@ import { DownloadOutlined } from '@ant-design/icons-vue';
 import clockInOut from '@/services/clockInOut';
 
 export default {
+  name: 'ExcelExportButton',
+
   props: {
     data: {
       required: true,
@@ -23,7 +25,7 @@ export default {
   },
 
   components: {
-    DownloadOutlined,
+    'download-outlined': DownloadOutlined,
   },
 
   setup(props) {
@@ -80,7 +82,7 @@ export default {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } catch (error) {
-        message.error('Erro na exportação:' + error.message);
+        message.error('Erro na exportação:', error);
       } finally {
         isLoading.value = false;
       }

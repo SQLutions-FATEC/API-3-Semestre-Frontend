@@ -1,6 +1,6 @@
-import Company from '@/pages/Company/Company.vue';
+import CompanyHome from '@/pages/Company/CompanyHome.vue';
 import Dashboard from '@/pages/Dashboard/Dashboard.vue';
-import Employee from '@/pages/Employee/Employee.vue';
+import EmployeeHome from '@/pages/Employee/EmployeeHome.vue';
 import Home from '@/pages/Home/Home.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
@@ -11,14 +11,14 @@ const routes = [
     component: Home,
   },
   {
-    path: '/employee/:id?',
-    name: 'Employee',
-    component: Employee,
+    path: '/employee',
+    name: 'EmployeeHome',
+    component: EmployeeHome,
   },
   {
-    path: '/company/:id?',
-    name: 'Company',
-    component: Company,
+    path: '/company',
+    name: 'CompanyHome',
+    component: CompanyHome,
   },
   {
     path: '/dashboard',
