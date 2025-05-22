@@ -59,21 +59,15 @@ export default {
     const createContracts = async (employeeId) => {
       if (!Object.keys(activeContract.value).length) return;
 
-      const mapToDTO = (contract) => ({
+      const params = {
+        contracts: [activeContract.value],
         employee_id: employeeId,
-        companyId: contract.company?.id,
-        roleId: contract.role?.id,
-        startDate: contract.startDate,
-        endDate: contract.endDate,
-      });
+      };
 
-      const contractsDTO = [
-        mapToDTO(activeContract.value),
-        ...inactiveContracts.value.map(mapToDTO),
-      ];
+      params.contracts.push(...inactiveContracts.value);
 
       try {
-        await contracts.create({ contracts: contractsDTO });
+        await contracts.create(params);
       } catch (error) {
         console.error(error);
       }
