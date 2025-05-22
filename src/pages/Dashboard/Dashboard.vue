@@ -32,10 +32,10 @@ export default {
     const contractsToExpire = ref([]);
     const employeesGenderObj = ref({});
     const employeesShiftObj = ref({});
+    const incompleteRegisters = ref([]);
     const loadingGraphs = ref(true);
     const roleHoursObj = ref({});
     const selectedCompanyId = ref(null);
-    const singleRegisters = ref([]);
 
     const fetchCompanies = async () => {
       try {
@@ -52,118 +52,42 @@ export default {
       }
     };
 
-    const fetchContractsToExpire = async () => {
-      try {
-        const { data } = await dashboard.getContractsToExpire(
-          selectedCompanyId.value
-        );
-        return data;
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const fetchDailyRegisters = async () => {
-      try {
-        const { data } = await dashboard.getDailyRegisters(
-          selectedCompanyId.value
-        );
-        return data;
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const fetchEmployeesByGender = async () => {
-      try {
-        const { data } = await dashboard.getEmployeesByGender(
-          selectedCompanyId.value
-        );
-        return data;
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const fetchEmployeesByShift = async () => {
-      try {
-        const { data } = await dashboard.getEmployeesByShift(
-          selectedCompanyId.value
-        );
-        return data;
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const fetchSingleRegisters = async () => {
-      try {
-        const { data } = await dashboard.getSingleRegisters(
-          selectedCompanyId.value
-        );
-        return data;
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     const fetchAlertsAndGraphsInfos = async () => {
       loadingGraphs.value = true;
 
-      const [
-        dailyRegisters,
-        hoursWorkedByRole,
-        employeesByGender,
-        employeesByShift,
-        withoutMatchRegisters,
-        contractsAboutToExpire,
-      ] = await Promise.all([
-        fetchDailyRegisters(),
-        fetchHoursWorkedByRole(),
-        fetchEmployeesByGender(),
-        fetchEmployeesByShift(),
-        fetchSingleRegisters(),
-        fetchContractsToExpire(),
-      ]);
-      clockInQtt.value = dailyRegisters.clock_in;
-      clockOutQtt.value = dailyRegisters.clock_out;
+      const { data } = await dashboard.getByCompany(selectedCompanyId.value);
 
-      roleHoursObj.value = hoursWorkedByRole.reduce(
+      clockInQtt.value = data.daily_registers.clock_in_with_in_count;
+      clockOutQtt.value = data.daily_registers.clock_in_with_out_count;
+
+      roleHoursObj.value = data.hours_worked_by_role.reduce(
         (acc, item) => {
-          acc['labels'].push(item.role);
-          acc['hours'].push(item.hours_worked);
+          acc['labels'].push(item.role_name);
+          acc['hours'].push(item.total_hours.toFixed(2));
           return acc;
         },
         { labels: [], hours: [] }
       );
 
-      employeesGenderObj.value = employeesByGender;
+      employeesGenderObj.value = {
+        female: data.employee_count.female_workers,
+        male: data.employee_count.male_workers,
+      };
 
-      employeesShiftObj.value = employeesByShift.reduce(
-        (acc, item) => {
-          acc['labels'].push(item.shift);
-          acc['quantity'].push(item.employees_quantity);
-          return acc;
-        },
-        { labels: [], quantity: [] }
-      );
+      employeesShiftObj.value = {
+        labels: Object.keys(data.employees_by_period).map((item) => {
+          if (item === 'midnight_to_morning') return 'Noturno';
+          else if (item === 'morning_to_afternoon') return 'Diurno';
+          else if (item === 'afternoon_to_night') return 'Vespertino';
+        }),
+        quantity: Object.values(data.employees_by_period),
+      };
 
-      singleRegisters.value = withoutMatchRegisters;
+      incompleteRegisters.value = data.incomplete_clock_ins;
 
-      contractsToExpire.value = contractsAboutToExpire;
+      contractsToExpire.value = data.expiring_contracts;
 
       loadingGraphs.value = false;
-    };
-
-    const fetchHoursWorkedByRole = async () => {
-      try {
-        const { data } = await dashboard.getHoursWorkedByRole(
-          selectedCompanyId.value
-        );
-        return data;
-      } catch (error) {
-        console.error(error);
-      }
     };
 
     const handleCompanyChange = async (value, selectedOptions) => {
@@ -188,10 +112,10 @@ export default {
       employeesGenderObj,
       employeesShiftObj,
       handleCompanyChange,
+      incompleteRegisters,
       loadingGraphs,
       roleHoursObj,
       selectedCompanyId,
-      singleRegisters,
     };
   },
 };
@@ -236,8 +160,8 @@ export default {
       </div>
       <h1>Alertas</h1>
       <div class="content__graphs">
-        <without-match-registers class="col-6" :data="singleRegisters" />
-        <contracts-to-expire class="col-6" :data="contractsToExpire" />
+        <!-- <without-match-registers class="col-6" :data="incompleteRegisters" /> -->
+        <!-- <contracts-to-expire class="col-6" :data="contractsToExpire" /> -->
       </div>
     </div>
   </div>

@@ -46,11 +46,11 @@ export default {
     ];
 
     dataSource.value = props.data.map((info) => ({
-      key: info.id,
+      key: info.contract_id,
       registerNumber: info.employee.register_number,
-      employee: info.employee.name,
+      employee: info.employee_name,
       company: info.company.name,
-      datetime: formatDateTime(info.datetime_end),
+      datetime: formatDateTime(info.end_date),
     }));
 
     return {
