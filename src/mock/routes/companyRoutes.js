@@ -25,6 +25,21 @@ const companyRoutes = [
   mockFlag(
     {
       method: 'get',
+      url: '/company/search',
+      result: () => {
+        const response = companies;
+
+        return APIFailureWrapper({
+          content: { items: response, total: response.length },
+          errorMessage: 'Erro ao listar empresa',
+        });
+      },
+    },
+    'on'
+  ),
+  mockFlag(
+    {
+      method: 'get',
       url: '/company/:id',
       result: ({ params }) => {
         const response = companies.find((company) => company.id == params.id);
