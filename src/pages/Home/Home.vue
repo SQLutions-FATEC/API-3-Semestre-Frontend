@@ -80,7 +80,6 @@ export default {
         const params = {
           page: currentPage.value,
           size: pageSize.value,
-          export: exportExcel.value,
         };
 
         if (filters) {
