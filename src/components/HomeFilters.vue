@@ -78,37 +78,45 @@ export default {
       sheetName="Registros"
     />
     <div class="filters">
-      <at-input
-        v-if="selectedFilter === 'employee'"
-        v-model:value="employeeNameFilter"
-        style="width: 250px"
-        placeholder="Digite o nome do funcionário"
-      />
-      <at-input
-        v-else-if="selectedFilter === 'company'"
-        v-model:value="companyNameFilter"
-        style="width: 250px"
-        placeholder="Digite o nome da empresa"
-      />
-      <at-input
-        v-else-if="selectedFilter === 'role'"
-        v-model:value="roleFilter"
-        style="width: 250px"
-        placeholder="Digite a função"
-      />
-      <div v-else-if="selectedFilter === 'datetime'" class="filters__date">
+      <div v-if="selectedFilter === 'employee'" class="filter-group">
+        <label class="filter-label"> Nome do Funcionário</label>
+        <at-input
+          v-model:value="employeeNameFilter"
+          class="filter-input"
+          placeholder="Digite o nome do funcionário"
+        />
+      </div>
+      <div v-else-if="selectedFilter === 'company'" class="filter-group">
+        <label class="filter-label">Nome da Empresa</label>
+        <at-input
+          v-model:value="companyNameFilter"
+          class="filter-input"
+          placeholder="Digite o nome da empresa"
+        />
+      </div>
+      <div v-else-if="selectedFilter === 'role'" class="filter-group">
+        <label class="filter-label">Função</label>
+        <at-input
+          v-model:value="roleFilter"
+          class="filter-input"
+          placeholder="Digite a função"
+        />
+      </div>
+      <div v-else-if="selectedFilter === 'datetime'" class="filter-group">
+        <label class="filter-label">Período</label>
         <a-range-picker
           v-model:value="datetimeFilter"
-          style="width: 300px"
-          format="YYYY-MM-DD HH:mm"
+          class="filter-input"
+          format="DD/MM/YYYY HH:mm"
           show-time
+          style="width: 300px"
           :placeholder="['Hora inicial', 'Hora final']"
           :time-picker-props="{ format: 'HH:mm' }"
         />
       </div>
       <a-select
         v-model:value="selectedFilter"
-        style="width: 150px"
+        class="filter-select"
         placeholder="Selecione um filtro"
         @change="selectFilter"
       >
@@ -128,16 +136,35 @@ export default {
   align-items: center;
   justify-content: space-between;
   gap: $spacingXl;
+  padding: $spacingLg;
+  background: $colorBackground;
+  border-radius: $borderRadiusMd;
+  margin-bottom: $spacingLg;
 
   .filters {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     gap: $spacingMd;
-  }
-  .filters__date {
-    display: flex;
-    align-items: center;
-    gap: $spacingMd;
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      margin-right: $spacingSm;
+    }
+    .filter-label {
+      @include label(small);
+      margin-bottom: $spacingXs;
+    }
+    .filter-input {
+      width: 250px;
+    }
+    .filter-select {
+      width: 150px;
+    }
+    .filters__date {
+      display: flex;
+      align-items: center;
+      gap: $spacingMd;
+    }
   }
 }
 </style>

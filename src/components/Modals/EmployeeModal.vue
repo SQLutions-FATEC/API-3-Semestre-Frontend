@@ -65,8 +65,7 @@ export default {
     const uploading = ref(false);
 
     const beforeUpload = (file) => {
-      const isJpgOrPng =
-        file.type === 'image/jpeg' || file.type === 'image/png';
+      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
       if (!isJpgOrPng) {
         message.error('Você só pode enviar arquivos JPG/PNG!');
       }
@@ -364,48 +363,67 @@ export default {
             :src="profileImage"
           />
         </a-upload>
-        <at-input
-          v-model:value="employeeName"
-          placeholder="Nome completo"
-          text
-        />
-        <at-number-input
-          v-model:value="employeeRN"
-          placeholder="Número de registro"
-          mask="###.#####.##-#"
-          :error-message="errorMessage"
-          @input="validateRNInput"
-        />
-        <a-date-picker
-          v-model:value="employeeBirthDate"
-          placeholder="Data de nascimento"
-          valueFormat="YYYY-MM-DDTHH:mm:ss.SSSZ"
-          :format="dateFormatList"
-          @change="handleDateChange"
-        />
-        <div class="content__dates">
-          <a-cascader
-            v-model:value="employeeBloodType"
-            placeholder="Tipo Sanguíneo"
-            style="width: 100%"
-            :options="bloodTypeOptions"
-            @change="handleBloodTypeChange"
-          />
-          <a-cascader
-            v-model:value="employeeGender"
-            placeholder="Gênero"
-            style="width: 100%"
-            :options="genderOptions"
-            @change="handleGenderChange"
+
+        <div class="input-group">
+          <label>Nome completo</label>
+          <at-input
+            v-model:value="employeeName"
+            placeholder="Nome completo"
+            text
           />
         </div>
+        <div class="input-group">
+          <label>Número de registro</label>
+          <at-number-input
+            v-model:value="employeeRN"
+            placeholder="Número de registro"
+            mask="###.#####.##-#"
+            :error-message="errorMessage"
+            @input="validateRNInput"
+          />
+        </div>
+
+        <div class="input-group">
+          <label>Data de nascimento</label>
+          <a-date-picker
+            v-model:value="employeeBirthDate"
+            placeholder="Data de nascimento"
+            valueFormat="YYYY-MM-DDTHH:mm:ss.SSSZ"
+            :format="dateFormatList"
+            @change="handleDateChange"
+          />
+        </div>
+
+        <div class="content__dates">
+          <div class="input-group">
+            <label>Tipo Sanguíneo</label>
+            <a-cascader
+              v-model:value="employeeBloodType"
+              placeholder="Tipo Sanguíneo"
+              :options="bloodTypeOptions"
+              @change="handleBloodTypeChange"
+              style="width: 100%"
+            />
+          </div>
+          <div class="input-group">
+            <label>Gênero</label>
+            <a-cascader
+              v-model:value="employeeGender"
+              placeholder="Gênero"
+              style="width: 100%"
+              :options="genderOptions"
+              @change="handleGenderChange"
+            />
+          </div>
+        </div>
+
+        <a-divider />
+        <contracts
+          ref="contractsRef"
+          :employee-id="employeeId"
+          @add-contract="addContract"
+        />
       </div>
-      <a-divider />
-      <contracts
-        ref="contractsRef"
-        :employee-id="employeeId"
-        @add-contract="addContract"
-      />
     </div>
   </a-modal>
 </template>
@@ -421,22 +439,33 @@ export default {
     flex-direction: column;
     gap: $spacingXxl;
 
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 0;
+      width: 100%;
+    }
+
     .content__image {
       height: 220px;
       width: 220px;
       margin: 0px auto;
     }
+
     .ant-upload .image {
       height: 220px;
       width: 220px;
       object-fit: cover;
     }
+
     .content__dates {
       display: flex;
       gap: $spacingSm;
     }
   }
 }
+
 :deep(.ant-upload),
 .ant-upload-select {
   height: 100% !important;
