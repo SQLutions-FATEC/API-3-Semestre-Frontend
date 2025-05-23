@@ -44,13 +44,20 @@ export default {
       loading.value = true;
       const params = {
         id: props.clockIn.key,
-        date_time_in: clockInTime.value ? dayjs(clockInTime.value).format('YYYY-MM-DD HH:mm:ss') : null,
-        date_time_out: clockOutTime.value ? dayjs(clockOutTime.value).format('YYYY-MM-DD HH:mm:ss') : null,
+        date_time_in: clockInTime.value
+          ? dayjs(clockInTime.value).format('YYYY-MM-DD HH:mm:ss')
+          : null,
+        date_time_out: clockOutTime.value
+          ? dayjs(clockOutTime.value).format('YYYY-MM-DD HH:mm:ss')
+          : null,
         employee: props.clockIn.employeeId,
       };
 
-      // Validação básica das datas
-      if (clockOutTime.value && clockInTime.value && dayjs(clockOutTime.value).isBefore(dayjs(clockInTime.value))) {
+      if (
+        clockOutTime.value &&
+        clockInTime.value &&
+        dayjs(clockOutTime.value).isBefore(dayjs(clockInTime.value))
+      ) {
         message.error('A saída não pode ser antes da entrada');
         loading.value = false;
         return;
@@ -73,8 +80,12 @@ export default {
       employeeName.value = props.clockIn.employee;
       companyName.value = props.clockIn.company;
       employeeRole.value = props.clockIn.role;
-      clockInTime.value = props.clockIn.date_time_in ? dayjs(props.clockIn.date_time_in) : null;
-      clockOutTime.value = props.clockIn.date_time_out ? dayjs(props.clockIn.date_time_out) : null;
+      clockInTime.value = props.clockIn.date_time_in
+        ? dayjs(props.clockIn.date_time_in)
+        : null;
+      clockOutTime.value = props.clockIn.date_time_out
+        ? dayjs(props.clockIn.date_time_out)
+        : null;
     });
 
     return {
@@ -142,17 +153,15 @@ export default {
           />
         </div>
       </div>
-
       <div class="row">
         <div class="col-6">
-          <label>Data e hora de entrada*</label>
+          <label>Data e hora de entrada</label>
           <a-date-picker
             v-model:value="clockInTime"
             show-time
             format="DD/MM/YYYY HH:mm"
             placeholder="Selecione a entrada"
             style="width: 100%"
-            :disabled-date="disabledDate"
           />
         </div>
         <div class="col-6">
@@ -163,14 +172,8 @@ export default {
             format="DD/MM/YYYY HH:mm"
             placeholder="Selecione a saída"
             style="width: 100%"
-            :disabled-date="disabledDate"
-            :disabled-time="clockOutDisabledTime"
           />
         </div>
-      </div>
-
-      <div class="footer-note">
-        <small>* Campos obrigatórios</small>
       </div>
     </div>
   </a-modal>
@@ -188,22 +191,14 @@ export default {
     gap: 12px;
     width: 100%;
   }
-
   .col-6 {
     flex: 1 1 calc(50% - 6px);
   }
-
   label {
     display: block;
     margin-bottom: 4px;
     font-weight: 500;
     color: rgba(0, 0, 0, 0.85);
-  }
-
-  .footer-note {
-    margin-top: 8px;
-    color: rgba(0, 0, 0, 0.45);
-    font-size: 12px;
   }
 }
 </style>

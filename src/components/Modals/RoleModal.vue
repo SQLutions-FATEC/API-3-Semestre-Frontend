@@ -24,7 +24,7 @@ export default {
     const addRole = async () => {
       if (newRole.value.trim()) {
         const params = {
-          role: newRole.value,
+          name: newRole.value,
         };
         try {
           await role.create(params);

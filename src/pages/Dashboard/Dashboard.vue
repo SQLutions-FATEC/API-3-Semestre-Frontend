@@ -40,8 +40,8 @@ export default {
     const fetchCompanies = async () => {
       try {
         const { data } = await company.get();
-        companies.value = data;
-        companyOptions.value = data.map((item) => ({
+        companies.value = data.items;
+        companyOptions.value = data.items.map((item) => ({
           label: item.name,
           value: item.id,
           data: item,
