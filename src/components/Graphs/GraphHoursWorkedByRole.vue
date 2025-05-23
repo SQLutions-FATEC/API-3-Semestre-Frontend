@@ -125,6 +125,7 @@ export default {
 .graph-hours-worked-by-role {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: $spacingSm;
 
   h2 {

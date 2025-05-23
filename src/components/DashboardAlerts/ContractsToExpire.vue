@@ -63,7 +63,7 @@ export default {
 
 <template>
   <div class="contracts-to-expire">
-    <h2>Próximos contratos a vencer</h2>
+    <h2>Próximos 5 contratos a vencer</h2>
     <div class="graph-container">
       <a-table
         :dataSource="dataSource"
@@ -78,6 +78,7 @@ export default {
 .contracts-to-expire {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: $spacingSm;
 
   h2 {

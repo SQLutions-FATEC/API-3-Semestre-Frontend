@@ -35,6 +35,8 @@ export default {
 .daily-registers {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  width: fit-content;
   gap: $spacingSm;
 
   h2 {

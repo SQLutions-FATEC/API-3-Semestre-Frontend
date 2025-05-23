@@ -1,5 +1,5 @@
 <script>
-import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons-vue';
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Table } from 'ant-design-vue';
 import { h, ref } from 'vue';
 import { formatDateTime, registerNumberMask } from '@/utils';
@@ -9,8 +9,6 @@ export default {
 
   components: {
     'a-table': Table,
-    'arrow-up-outlined': ArrowUpOutlined,
-    'arrow-down-outlined': ArrowDownOutlined,
   },
 
   props: {
@@ -47,20 +45,25 @@ export default {
         key: 'role',
       },
       {
-        title: 'Horário',
-        dataIndex: 'datetime',
-        key: 'datetime',
+        title: 'Horário de entrada',
+        dataIndex: 'date_time_in',
+        key: 'date_time_in',
+        customRender: ({ text }) => {
+          if (!text) {
+            return h(ExclamationCircleOutlined, { style: { color: 'orange' } });
+          }
+          return text;
+        },
       },
       {
-        title: '',
-        dataIndex: 'direction',
-        key: 'direction',
+        title: 'Horário de saída',
+        dataIndex: 'date_time_out',
+        key: 'date_time_out',
         customRender: ({ text }) => {
-          if (text === 'Entrada') {
-            return h(ArrowUpOutlined, { style: { color: 'green' } });
-          } else {
-            return h(ArrowDownOutlined, { style: { color: 'red' } });
+          if (!text) {
+            return h(ExclamationCircleOutlined, { style: { color: 'orange' } });
           }
+          return text;
         },
       },
     ];
@@ -71,8 +74,12 @@ export default {
       employee: info.employee_name,
       company: info.company_name,
       role: info.role_name,
-      datetime: formatDateTime(info.date_time_in || info.date_time_out),
-      direction: info.date_time_in ? 'Entrada' : 'Saída',
+      date_time_in: info.date_time_in
+        ? formatDateTime(info.date_time_in)
+        : null,
+      date_time_out: info.date_time_out
+        ? formatDateTime(info.date_time_out)
+        : null,
     }));
 
     return {
@@ -85,19 +92,13 @@ export default {
 
 <template>
   <div class="without-match-registers">
-    <h2>Registros sem par</h2>
+    <h2>Movimentações incompletas</h2>
     <div class="graph-container table-container">
       <a-table
         :dataSource="dataSource"
         :columns="columns"
         :pagination="false"
       />
-      <div>
-        <arrow-up-outlined :style="{ color: 'green' }" />
-        <span> Entrada </span>
-        <arrow-down-outlined :style="{ color: 'red' }" />
-        <span> Saída </span>
-      </div>
     </div>
   </div>
 </template>
@@ -106,6 +107,7 @@ export default {
 .without-match-registers {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: $spacingSm;
 
   h2 {

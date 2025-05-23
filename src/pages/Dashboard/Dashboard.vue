@@ -151,12 +151,12 @@ export default {
         :clock-out-qtt="clockOutQtt"
       />
       <div class="content__graphs">
-        <graph-hours-worked-by-role class="col-6" :data="roleHoursObj" />
+        <graph-employees-by-shift class="col-6" :data="employeesShiftObj" />
         <graph-employees-by-gender
           class="col-6 gender-graph"
           :data="employeesGenderObj"
         />
-        <graph-employees-by-shift class="col-6" :data="employeesShiftObj" />
+        <graph-hours-worked-by-role class="col-6" :data="roleHoursObj" />
       </div>
       <h1>Alertas</h1>
       <div class="content__graphs">

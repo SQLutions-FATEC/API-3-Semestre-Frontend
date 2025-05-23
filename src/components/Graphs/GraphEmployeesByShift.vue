@@ -118,6 +118,7 @@ export default {
 .graph-employees-by-shift {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: $spacingSm;
 
   h2 {
