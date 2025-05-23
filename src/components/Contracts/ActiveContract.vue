@@ -4,6 +4,7 @@ import { DeleteOutlined, EditOutlined } from '@ant-design/icons-vue';
 import { ref, computed } from 'vue';
 import ContractModal from '@/components/Modals/ContractModal.vue';
 import InactivateContractModal from '@/components/Modals/InactivateContractModal.vue';
+import dayjs from 'dayjs';
 
 export default {
   name: 'ActiveContract',
@@ -46,14 +47,24 @@ export default {
       isInactivateContractModalOpened.value = true;
     };
 
+    const startDate = computed(() => {
+      return dayjs(contract.value.date_start).format('DD/MM/YYYY');
+    });
+
+    const endDate = computed(() => {
+      return dayjs(contract.value.date_end).format('DD/MM/YYYY');
+    });
+
     return {
       contract,
       editContract,
+      endDate,
       inactivateContract,
       isEditContractModalOpened,
       isInactivateContractModalOpened,
       openEditContractModal,
       openInactivateContractModal,
+      startDate,
     };
   },
 };
@@ -78,8 +89,8 @@ export default {
         <div class="info">
           <h3>Data de contrato</h3>
           <p>
-            {{ new Date(contract.date_start).toLocaleDateString('pt-BR') }}
-            - {{ new Date(contract.date_end).toLocaleDateString('pt-BR') }}
+            {{ startDate }}
+            - {{ endDate }}
           </p>
         </div>
       </div>
