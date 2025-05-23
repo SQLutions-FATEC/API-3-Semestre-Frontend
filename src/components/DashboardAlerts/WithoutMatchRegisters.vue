@@ -67,9 +67,9 @@ export default {
 
     dataSource.value = props.data.map((info) => ({
       key: info.id,
-      registerNumber: info.employee.register_number,
-      employee: info.employee.name,
-      company: info.company.name,
+      registerNumber: info.register_number,
+      employee: info.employee_name,
+      company: info.company_name,
       role: info.role_name,
       datetime: formatDateTime(info.date_time_in || info.date_time_out),
       direction: info.date_time_in ? 'Entrada' : 'Saída',
