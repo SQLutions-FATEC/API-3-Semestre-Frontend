@@ -44,10 +44,18 @@ export default {
       loading.value = true;
       const params = {
         id: props.clockIn.key,
-        date_time_in: dayjs(clockInTime.value).format('YYYY-MM-DD HH:mm:ss'),
-        date_time_out: dayjs(clockOutTime.value).format('YYYY-MM-DD HH:mm:ss'),
+        date_time_in: clockInTime.value ? dayjs(clockInTime.value).format('YYYY-MM-DD HH:mm:ss') : null,
+        date_time_out: clockOutTime.value ? dayjs(clockOutTime.value).format('YYYY-MM-DD HH:mm:ss') : null,
         employee: props.clockIn.employeeId,
       };
+
+      // Validação básica das datas
+      if (clockOutTime.value && clockInTime.value && dayjs(clockOutTime.value).isBefore(dayjs(clockInTime.value))) {
+        message.error('A saída não pode ser antes da entrada');
+        loading.value = false;
+        return;
+      }
+
       try {
         await clockInOut.edit(params);
         message.success('Movimentação editada com sucesso');
@@ -65,8 +73,8 @@ export default {
       employeeName.value = props.clockIn.employee;
       companyName.value = props.clockIn.company;
       employeeRole.value = props.clockIn.role;
-      clockInTime.value = dayjs(props.clockIn.date_time_in);
-      clockOutTime.value = dayjs(props.clockIn.date_time_out);
+      clockInTime.value = props.clockIn.date_time_in ? dayjs(props.clockIn.date_time_in) : null;
+      clockOutTime.value = props.clockIn.date_time_out ? dayjs(props.clockIn.date_time_out) : null;
     });
 
     return {
@@ -93,60 +101,76 @@ export default {
     okText="Salvar"
     @cancel="handleClose"
     @ok="editClockIn"
+    width="800px"
   >
     <div class="edit-clock-in-modal">
-      <div class="col-6">
-        <label>Número de registro</label>
-        <at-number-input
-          v-model:value="registerNumber"
-          placeholder="Número de registro"
-          mask="###.#####.##-#"
-          disabled
-        />
+      <div class="row">
+        <div class="col-6">
+          <label>Número de registro</label>
+          <at-number-input
+            v-model:value="registerNumber"
+            placeholder="Número de registro"
+            mask="###.#####.##-#"
+            disabled
+          />
+        </div>
+        <div class="col-6">
+          <label>Empresa</label>
+          <at-input
+            v-model:value="companyName"
+            placeholder="Nome da empresa"
+            disabled
+          />
+        </div>
       </div>
-      <div class="col-6">
-        <label>Nome do funcionário</label>
-        <at-input
-          v-model:value="employeeName"
-          placeholder="Nome do funcionário"
-          disabled
-        />
+
+      <div class="row">
+        <div class="col-6">
+          <label>Funcionário</label>
+          <at-input
+            v-model:value="employeeName"
+            placeholder="Nome do funcionário"
+            disabled
+          />
+        </div>
+        <div class="col-6">
+          <label>Função</label>
+          <at-input
+            v-model:value="employeeRole"
+            placeholder="Função do funcionário"
+            disabled
+          />
+        </div>
       </div>
-      <div class="col-6">
-        <label>Nome da empresa</label>
-        <at-input
-          v-model:value="companyName"
-          placeholder="Nome da empresa"
-          disabled
-        />
+
+      <div class="row">
+        <div class="col-6">
+          <label>Data e hora de entrada*</label>
+          <a-date-picker
+            v-model:value="clockInTime"
+            show-time
+            format="DD/MM/YYYY HH:mm"
+            placeholder="Selecione a entrada"
+            style="width: 100%"
+            :disabled-date="disabledDate"
+          />
+        </div>
+        <div class="col-6">
+          <label>Data e hora de saída</label>
+          <a-date-picker
+            v-model:value="clockOutTime"
+            show-time
+            format="DD/MM/YYYY HH:mm"
+            placeholder="Selecione a saída"
+            style="width: 100%"
+            :disabled-date="disabledDate"
+            :disabled-time="clockOutDisabledTime"
+          />
+        </div>
       </div>
-      <div class="col-6">
-        <label>Função do funcionário</label>
-        <at-input
-          v-model:value="employeeRole"
-          placeholder="Função do funcionário"
-          disabled
-        />
-      </div>
-      <div class="col-6">
-        <label>Horário de entrada</label>
-        <a-date-picker
-          v-model:value="clockInTime"
-          show-time
-          format="DD/MM/YYYY HH:mm"
-          placeholder="Horário de entrada"
-          style="width: 100%"
-        />
-      </div>
-      <div class="col-6">
-        <label>Horário de saída</label>
-        <a-date-picker
-          v-model:value="clockOutTime"
-          show-time
-          format="DD/MM/YYYY HH:mm"
-          placeholder="Horário de saída"
-          style="width: 100%"
-        />
+
+      <div class="footer-note">
+        <small>* Campos obrigatórios</small>
       </div>
     </div>
   </a-modal>
@@ -155,15 +179,18 @@ export default {
 <style lang="scss" scoped>
 .edit-clock-in-modal {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  flex-direction: column;
+  gap: 16px;
   width: 100%;
 
-  .col-6 {
-    flex: 1 1 calc(50% - 12px);
+  .row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
   }
-  .col-12 {
-    flex: 1 1 100%;
+
+  .col-6 {
+    flex: 1 1 calc(50% - 6px);
   }
 
   label {
@@ -171,6 +198,12 @@ export default {
     margin-bottom: 4px;
     font-weight: 500;
     color: rgba(0, 0, 0, 0.85);
+  }
+
+  .footer-note {
+    margin-top: 8px;
+    color: rgba(0, 0, 0, 0.45);
+    font-size: 12px;
   }
 }
 </style>
