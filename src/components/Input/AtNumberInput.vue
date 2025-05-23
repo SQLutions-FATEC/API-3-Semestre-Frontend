@@ -28,7 +28,7 @@ export default {
     },
   },
 
-  emits: ['update:value', 'input'],
+  emits: ['update:value'],
 
   directives: { mask },
 
@@ -46,14 +46,8 @@ export default {
       }
     );
 
-    const handleInput = (event) => {
-      inputValue.value = event.target.value;
-      emit('input', event);
-    };
-
     return {
       inputValue,
-      handleInput,
     };
   },
 };
@@ -66,7 +60,7 @@ export default {
       :disabled="disabled"
       :placeholder="placeholder"
       :value="inputValue"
-      @input="handleInput"
+      @input="(event) => (inputValue = event.target.value)"
     />
     <p v-if="errorMessage" class="input__error-message">{{ errorMessage }}</p>
   </div>
