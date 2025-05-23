@@ -15,6 +15,10 @@ const formatDate = (dateString) => {
   return dayjs(dateString).format('DD/MM/YYYY');
 };
 
+const genderMask = (text) => {
+  return text === 'M' ? 'Masculino' : text === 'F' ? 'Feminino' : '---';
+};
+
 const generateRandomColors = (count) => {
   const colors = [];
   for (let index = 0; index < count; index++) {
@@ -35,6 +39,7 @@ export {
   cnpjMask,
   formatDate,
   formatDateTime,
+  genderMask,
   generateRandomColors,
   registerNumberMask,
 };
