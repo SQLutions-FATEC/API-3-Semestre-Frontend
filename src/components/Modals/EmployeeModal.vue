@@ -341,7 +341,6 @@ export default {
   >
     <div class="employee-modal">
       <div class="modal__content">
-        <label>Foto do Funcionário</label>
         <a-upload
           class="content__image"
           list-type="picture-card"
@@ -373,7 +372,6 @@ export default {
             text
           />
         </div>
-
         <div class="input-group">
           <label>Número de registro</label>
           <at-number-input
@@ -444,14 +442,15 @@ export default {
     .input-group {
       display: flex;
       flex-direction: column;
-      gap: 4px;  // Espaçamento reduzido apenas entre label e input
+      gap: 4px;
       margin-bottom: 0;
+      width: 100%;
     }
 
     .content__image {
       height: 220px;
       width: 220px;
-      margin: 0px auto; // Mantido o espaçamento original
+      margin: 0px auto;
     }
 
     .ant-upload .image {
