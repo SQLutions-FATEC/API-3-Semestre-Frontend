@@ -335,6 +335,8 @@ export default {
     :open="open"
     :title="modalTitle"
     :width="800"
+    cancelText="Cancelar"
+    okText="Salvar"
     @cancel="closeModal"
     @ok="employeeAction"
   >

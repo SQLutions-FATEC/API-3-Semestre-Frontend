@@ -199,6 +199,8 @@ export default {
   <a-modal
     title="Novo Contrato"
     :open="open"
+    cancelText="Cancelar"
+    okText="Salvar"
     @cancel="closeModal"
     @ok="addEditContract"
   >

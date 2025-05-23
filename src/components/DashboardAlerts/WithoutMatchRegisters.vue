@@ -67,9 +67,9 @@ export default {
 
     dataSource.value = props.data.map((info) => ({
       key: info.id,
-      registerNumber: info.employee.register_number,
-      employee: info.employee.name,
-      company: info.company.name,
+      registerNumber: info.register_number,
+      employee: info.employee_name,
+      company: info.company_name,
       role: info.role_name,
       datetime: formatDateTime(info.date_time_in || info.date_time_out),
       direction: info.date_time_in ? 'Entrada' : 'Saída',
@@ -86,12 +86,18 @@ export default {
 <template>
   <div class="without-match-registers">
     <h2>Registros sem par</h2>
-    <div class="graph-container">
+    <div class="graph-container table-container">
       <a-table
         :dataSource="dataSource"
         :columns="columns"
         :pagination="false"
       />
+      <div>
+        <arrow-up-outlined :style="{ color: 'green' }" />
+        <span> Entrada </span>
+        <arrow-down-outlined :style="{ color: 'red' }" />
+        <span> Saída </span>
+      </div>
     </div>
   </div>
 </template>
@@ -105,6 +111,15 @@ export default {
   h2 {
     @include paragraph(medium);
     text-align: start;
+  }
+  .table-container {
+    display: flex;
+    flex-direction: column;
+    gap: $spacingSm;
+
+    span {
+      @include paragraph(small);
+    }
   }
 }
 :deep(.ant-table-cell) {

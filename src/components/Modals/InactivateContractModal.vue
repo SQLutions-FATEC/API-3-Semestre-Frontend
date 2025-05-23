@@ -41,6 +41,8 @@ export default {
   <a-modal
     title="Inativar Contrato"
     :open="open"
+    cancelText="Cancelar"
+    okText="Salvar"
     @cancel="closeModal"
     @ok="inactivateContract"
   >
