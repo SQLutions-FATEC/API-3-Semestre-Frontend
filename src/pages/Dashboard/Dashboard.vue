@@ -76,9 +76,11 @@ export default {
 
       employeesShiftObj.value = {
         labels: Object.keys(data.employees_by_period).map((item) => {
-          if (item === 'midnight_to_morning') return 'Noturno';
-          else if (item === 'morning_to_afternoon') return 'Diurno';
-          else if (item === 'afternoon_to_night') return 'Vespertino';
+          if (item === 'midnight_to_morning') return 'Noturno (23h - 6h59)';
+          else if (item === 'morning_to_afternoon')
+            return 'Diurno (7h - 13h59)';
+          else if (item === 'afternoon_to_night')
+            return 'Vespertino (14h - 22h59)';
         }),
         quantity: Object.values(data.employees_by_period),
       };
