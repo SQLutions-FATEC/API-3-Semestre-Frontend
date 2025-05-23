@@ -163,11 +163,15 @@ export default {
         <div v-if="!incompleteRegisters.length" class="col-6 empty-state">
           <p>Nenhum registro encontrado.</p>
         </div>
-        <!-- <without-match-registers class="col-6" :data="incompleteRegisters" /> -->
+        <without-match-registers
+          v-else
+          class="col-6"
+          :data="incompleteRegisters"
+        />
         <div v-if="!contractsToExpire.length" class="col-6 empty-state">
           <p>Nenhum contrato encontrado.</p>
         </div>
-        <!-- <contracts-to-expire class="col-6" :data="contractsToExpire" /> -->
+        <contracts-to-expire v-else class="col-6" :data="contractsToExpire" />
       </div>
     </div>
   </div>
