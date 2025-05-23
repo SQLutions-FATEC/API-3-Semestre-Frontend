@@ -105,4 +105,82 @@ const employeesByGender = {
   [companies[4].id]: { male: 7, female: 3 },
 };
 
-export { dailyRegisters, employeesByGender, weeklyHoursWorkedByRole };
+const employeesByShift = {
+  [companies[0].id]: [
+    {
+      shift: 'diurno',
+      employees_quantity: 1,
+    },
+    {
+      shift: 'vespertino',
+      employees_quantity: 2,
+    },
+    {
+      shift: 'noturno',
+      employees_quantity: 7,
+    },
+  ],
+  [companies[1].id]: [
+    {
+      shift: 'diurno',
+      employees_quantity: 2,
+    },
+    {
+      shift: 'vespertino',
+      employees_quantity: 4,
+    },
+    {
+      shift: 'noturno',
+      employees_quantity: 4,
+    },
+  ],
+  [companies[2].id]: [
+    {
+      shift: 'diurno',
+      employees_quantity: 3,
+    },
+    {
+      shift: 'vespertino',
+      employees_quantity: 5,
+    },
+    {
+      shift: 'noturno',
+      employees_quantity: 2,
+    },
+  ],
+  [companies[3].id]: [
+    {
+      shift: 'diurno',
+      employees_quantity: 4,
+    },
+    {
+      shift: 'vespertino',
+      employees_quantity: 3,
+    },
+    {
+      shift: 'noturno',
+      employees_quantity: 3,
+    },
+  ],
+  [companies[4].id]: [
+    {
+      shift: 'diurno',
+      employees_quantity: 5,
+    },
+    {
+      shift: 'vespertino',
+      employees_quantity: 4,
+    },
+    {
+      shift: 'noturno',
+      employees_quantity: 1,
+    },
+  ],
+};
+
+export {
+  dailyRegisters,
+  employeesByGender,
+  employeesByShift,
+  weeklyHoursWorkedByRole,
+};
