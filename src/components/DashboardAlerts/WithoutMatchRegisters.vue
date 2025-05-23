@@ -86,12 +86,18 @@ export default {
 <template>
   <div class="without-match-registers">
     <h2>Registros sem par</h2>
-    <div class="graph-container">
+    <div class="graph-container table-container">
       <a-table
         :dataSource="dataSource"
         :columns="columns"
         :pagination="false"
       />
+      <div>
+        <arrow-up-outlined :style="{ color: 'green' }" />
+        <span> Entrada </span>
+        <arrow-down-outlined :style="{ color: 'red' }" />
+        <span> Saída </span>
+      </div>
     </div>
   </div>
 </template>
@@ -105,6 +111,15 @@ export default {
   h2 {
     @include paragraph(medium);
     text-align: start;
+  }
+  .table-container {
+    display: flex;
+    flex-direction: column;
+    gap: $spacingSm;
+
+    span {
+      @include paragraph(small);
+    }
   }
 }
 :deep(.ant-table-cell) {
