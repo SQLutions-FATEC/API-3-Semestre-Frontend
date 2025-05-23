@@ -48,7 +48,14 @@ export default {
 </script>
 
 <template>
-  <a-modal title="Nova Função" :open="open" @cancel="closeModal" @ok="addRole">
+  <a-modal
+    title="Nova Função"
+    cancelText="Cancelar"
+    okText="Salvar"
+    :open="open"
+    @cancel="closeModal"
+    @ok="addRole"
+  >
     <a-input v-model:value="newRole" placeholder="Digite a nova função" />
   </a-modal>
 </template>
