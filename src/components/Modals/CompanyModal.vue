@@ -139,15 +139,24 @@ export default {
     @ok="companyAction"
   >
     <div class="company-modal">
-      <at-input v-model:value="companyName" placeholder="Razão social" text />
-      <at-number-input
-        v-model:value="cnpj"
-        mask="##.###.###/####-##"
-        placeholder="CNPJ"
-        :error-message="errorMessage"
-        @input="validateCnpjInput"
-      />
-      <at-input v-model:value="tradeName" placeholder="Nome fantasia" text />
+      <div class="form-field">
+        <label>Razão social</label>
+        <at-input v-model:value="companyName" placeholder="Digite a razão social" text />
+      </div>
+      <div class="form-field">
+        <label>CNPJ</label>
+        <at-number-input
+          v-model:value="cnpj"
+          mask="##.###.###/####-##"
+          placeholder="Digite o CNPJ"
+          :error-message="errorMessage"
+          @input="validateCnpjInput"
+        />
+      </div>
+      <div class="form-field">
+        <label>Nome fantasia</label>
+        <at-input v-model:value="tradeName" placeholder="Digite o nome fantasia" text />
+      </div>
     </div>
   </a-modal>
 </template>
@@ -158,5 +167,16 @@ export default {
   display: flex;
   flex-direction: column;
   gap: $spacingXxl;
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: $spacingSm;
+
+    label {
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.85);
+    }
+  }
 }
 </style>
