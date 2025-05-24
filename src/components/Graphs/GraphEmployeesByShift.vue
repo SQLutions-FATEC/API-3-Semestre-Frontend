@@ -122,10 +122,9 @@ export default {
 
   h2 {
     @include paragraph(medium);
-    text-align: start;
+    text-align: center;
   }
 }
-
 .graph-container {
   max-height: 400px;
   overflow-y: auto;

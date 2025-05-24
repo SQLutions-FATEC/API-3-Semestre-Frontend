@@ -68,6 +68,7 @@ export default {
 .graph-employees-by-gender {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: $spacingSm;
 
   h2 {

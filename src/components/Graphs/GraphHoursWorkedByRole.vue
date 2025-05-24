@@ -1,4 +1,5 @@
 <script>
+import { DatePicker } from 'ant-design-vue';
 import { Bar } from 'vue-chartjs';
 import {
   Chart as ChartJS,
@@ -9,7 +10,7 @@ import {
   CategoryScale,
   LinearScale,
 } from 'chart.js';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { generateRandomColors } from '@/utils';
 
 ChartJS.register(
@@ -25,6 +26,7 @@ export default {
   name: 'GraphHoursWorkedByRole',
 
   components: {
+    'a-range-picker': DatePicker.RangePicker,
     'bar-chart': Bar,
   },
 
@@ -33,11 +35,17 @@ export default {
       required: true,
       type: Object,
     },
+    dateRange: {
+      default: () => [],
+      type: Array,
+    },
   },
 
-  setup(props) {
+  setup(props, { emit }) {
     const minValue = Math.min(...props.data.hours);
     const maxValue = Math.max(...props.data.hours);
+
+    const selectedDatetime = ref([...props.dateRange]);
 
     const chartOptions = {
       indexAxis: 'y',
@@ -104,9 +112,16 @@ export default {
       ],
     });
 
+    watch(selectedDatetime, (val) => {
+      if (val && val.length === 2 && val[1]) {
+        emit('date-range-change', val);
+      }
+    });
+
     return {
       chartData,
       chartOptions,
+      selectedDatetime,
     };
   },
 };
@@ -114,7 +129,15 @@ export default {
 
 <template>
   <div class="graph-hours-worked-by-role">
-    <h2>Horas Trabalhadas por Cargo (Semanal)</h2>
+    <div class="header__wrapper">
+      <h2>Horas Trabalhadas por Cargo (Semanal)</h2>
+      <a-range-picker
+        v-model:value="selectedDatetime"
+        style="width: 100%"
+        format="DD/MM/YYYY"
+        :placeholder="['Data início', 'Data fim']"
+      />
+    </div>
     <div class="graph-container">
       <bar-chart :data="chartData" :options="chartOptions" />
     </div>
@@ -127,12 +150,16 @@ export default {
   flex-direction: column;
   gap: $spacingSm;
 
-  h2 {
-    @include paragraph(medium);
-    text-align: start;
+  .header__wrapper {
+    display: flex;
+    gap: $spacingXs;
+
+    h2 {
+      @include paragraph(medium);
+      text-align: center;
+    }
   }
 }
-
 .graph-container {
   max-height: 400px;
   overflow-y: auto;

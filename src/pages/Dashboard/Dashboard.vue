@@ -9,6 +9,10 @@ import GraphEmployeesByGender from '@/components/Graphs/GraphEmployeesByGender.v
 import GraphEmployeesByShift from '@/components/Graphs/GraphEmployeesByShift.vue';
 import GraphHoursWorkedByRole from '@/components/Graphs/GraphHoursWorkedByRole.vue';
 import WithoutMatchRegisters from '@/components/DashboardAlerts/WithoutMatchRegisters.vue';
+import dayjs from 'dayjs';
+import isoWeek from 'dayjs/plugin/isoWeek';
+
+dayjs.extend(isoWeek);
 
 export default {
   name: 'Dashboard',
@@ -25,6 +29,13 @@ export default {
   },
 
   setup() {
+    const startOfWeek = dayjs().startOf('isoWeek');
+    const endOfWeek = dayjs().endOf('isoWeek');
+    const selectedWeek = ref([
+      dayjs().startOf('isoWeek'),
+      dayjs().endOf('isoWeek'),
+    ]);
+
     const clockInQtt = ref(0);
     const clockOutQtt = ref(0);
     const companies = ref([]);
@@ -52,10 +63,18 @@ export default {
       }
     };
 
-    const fetchAlertsAndGraphsInfos = async () => {
+    const fetchAlertsAndGraphsInfos = async (dateRange = []) => {
       loadingGraphs.value = true;
+      if (dateRange.length) {
+        selectedWeek.value[0] = dateRange[0];
+        selectedWeek.value[1] = dateRange[1];
+      }
 
-      const { data } = await dashboard.getByCompany(selectedCompanyId.value);
+      const { data } = await dashboard.getByCompany(
+        selectedCompanyId.value,
+        selectedWeek.value[0].format('YYYY-MM-DD'),
+        selectedWeek.value[1].format('YYYY-MM-DD')
+      );
 
       clockInQtt.value = data.daily_registers.clock_in_with_in_count;
       clockOutQtt.value = data.daily_registers.clock_in_with_out_count;
@@ -76,9 +95,11 @@ export default {
 
       employeesShiftObj.value = {
         labels: Object.keys(data.employees_by_period).map((item) => {
-          if (item === 'midnight_to_morning') return 'Noturno';
-          else if (item === 'morning_to_afternoon') return 'Diurno';
-          else if (item === 'afternoon_to_night') return 'Vespertino';
+          if (item === 'midnight_to_morning') return 'Noturno (23h - 6h59)';
+          else if (item === 'morning_to_afternoon')
+            return 'Diurno (7h - 13h59)';
+          else if (item === 'afternoon_to_night')
+            return 'Vespertino (14h - 22h59)';
         }),
         quantity: Object.values(data.employees_by_period),
       };
@@ -111,10 +132,12 @@ export default {
       contractsToExpire,
       employeesGenderObj,
       employeesShiftObj,
+      fetchAlertsAndGraphsInfos,
       handleCompanyChange,
       incompleteRegisters,
       loadingGraphs,
       roleHoursObj,
+      selectedWeek,
       selectedCompanyId,
     };
   },
@@ -151,12 +174,17 @@ export default {
         :clock-out-qtt="clockOutQtt"
       />
       <div class="content__graphs">
-        <graph-hours-worked-by-role class="col-6" :data="roleHoursObj" />
+        <graph-employees-by-shift class="col-6" :data="employeesShiftObj" />
         <graph-employees-by-gender
           class="col-6 gender-graph"
           :data="employeesGenderObj"
         />
-        <graph-employees-by-shift class="col-6" :data="employeesShiftObj" />
+        <graph-hours-worked-by-role
+          class="col-6"
+          :data="roleHoursObj"
+          :date-range="selectedWeek"
+          @date-range-change="fetchAlertsAndGraphsInfos"
+        />
       </div>
       <h1>Alertas</h1>
       <div class="content__graphs">

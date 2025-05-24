@@ -38,14 +38,18 @@ export default {
       }
     };
 
-    const fetchCompanies = async () => {
+    const fetchCompanies = async (filter = null) => {
       loading.value = true;
+      const params = {
+        page: currentPage.value,
+        size: pageSize.value,
+      };
+      if (filter) {
+        params.name = filter;
+      }
 
       try {
-        const { data } = await company.getAll({
-          page: currentPage.value,
-          size: pageSize.value,
-        });
+        const { data } = await company.getAll(params);
 
         dataSource.value = data.items.map((company) => ({
           key: company.id,
@@ -140,6 +144,7 @@ export default {
       currentPage,
       dataSource,
       deleteCompany,
+      fetchCompanies,
       handleTableChange,
       isConfirmationModalOpened,
       isCompanyModalOpened,
@@ -156,7 +161,7 @@ export default {
 
 <template>
   <div class="company-home">
-    <company-header />
+    <company-header @filter-changed="fetchCompanies" />
     <div class="table-container">
       <a-table
         :dataSource="dataSource"
