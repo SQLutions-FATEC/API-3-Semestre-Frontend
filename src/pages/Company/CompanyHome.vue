@@ -181,6 +181,8 @@ export default {
     <a-modal
       v-model:open="isConfirmationModalOpened"
       title="Deletar empresa"
+      cancelText="Cancelar"
+      okText="Deletar"
       @ok="deleteCompany"
     >
       <span>

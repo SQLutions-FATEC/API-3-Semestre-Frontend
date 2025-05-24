@@ -145,14 +145,11 @@ export default {
     display: flex;
     align-items: flex-end;
     gap: $spacingMd;
+
     .filter-group {
       display: flex;
       flex-direction: column;
-      margin-right: $spacingSm;
-    }
-    .filter-label {
-      @include label(small);
-      margin-bottom: $spacingXs;
+      gap: $spacingXs;
     }
     .filter-input {
       width: 250px;

@@ -1,27 +1,36 @@
-<script setup>
-import ptBR from 'ant-design-vue/es/locale/pt_BR'
-const locale = ptBR
+<script>
 import { ref } from 'vue';
 import TopBar from '@/components/TopBar.vue';
 import SideBar from '@/components/SideBar.vue';
 
-const isSidebarOpen = ref(false);
+export default {
+  name: 'App',
 
-const toggleSidebar = () => {
-  isSidebarOpen.value = !isSidebarOpen.value;
+  components: {
+    'top-bar': TopBar,
+    'side-bar': SideBar,
+  },
+  setup() {
+    const isSidebarOpen = ref(false);
+    const toggleSidebar = () => {
+      isSidebarOpen.value = !isSidebarOpen.value;
+    };
+    return {
+      isSidebarOpen,
+      toggleSidebar,
+    };
+  },
 };
 </script>
 
 <template>
-  <a-config-provider :locale="locale">
-    <div>
-      <top-bar @toggle-sidebar="toggleSidebar" />
-      <side-bar :is-open="isSidebarOpen" @toggle-sidebar="toggleSidebar" />
-      <div class="app">
-        <router-view :key="$route.fullPath" />
-      </div>
+  <div>
+    <top-bar @toggle-sidebar="toggleSidebar" />
+    <side-bar :is-open="isSidebarOpen" @toggle-sidebar="toggleSidebar" />
+    <div class="app">
+      <router-view :key="$route.fullPath" />
     </div>
-  </a-config-provider>
+  </div>
 </template>
 
 <style lang="scss" scoped>

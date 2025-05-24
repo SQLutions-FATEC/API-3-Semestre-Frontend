@@ -104,8 +104,8 @@ export default {
 
     const fetchCompanies = async () => {
       try {
-        const response = await company.get();
-        companyOptions.value = response.data.map((item) => ({
+        const { data } = await company.get();
+        companyOptions.value = data.items.map((item) => ({
           label: item.name,
           value: item.id,
           data: item,
@@ -205,11 +205,11 @@ export default {
     @ok="addEditContract"
   >
     <div class="contract-modal">
-      <div class="form-item">
+      <div class="input-group">
         <label>Empresa</label>
         <a-cascader
           v-model:value="selectedCompanyId"
-          placeholder="Selecione a empresa"
+          placeholder="Empresa"
           style="width: 100%"
           :options="companyOptions"
           :showSearch="{
@@ -221,12 +221,11 @@ export default {
           @change="handleCompanyChange"
         />
       </div>
-
-      <div class="form-item">
+      <div class="input-group">
         <label>Função</label>
         <a-cascader
           v-model:value="selectedRoleId"
-          placeholder="Selecione a função"
+          placeholder="Função"
           style="width: 100%"
           :options="roleOptions"
           :showSearch="{
@@ -241,9 +240,8 @@ export default {
           @change="handleRoleChange"
         />
       </div>
-
-      <div class="form-item">
-        <label>Período</label>
+      <div class="input-group">
+        <label>Datas</label>
         <a-range-picker
           v-model:value="selectedDatetime"
           style="width: 100%"
@@ -265,15 +263,12 @@ export default {
   flex-direction: column;
   gap: $spacingXl;
 
-  .form-item {
+  .input-group {
     display: flex;
     flex-direction: column;
-    gap: $spacingSm;
-
-    label {
-      font-weight: 500;
-      color: rgba(0, 0, 0, 0.85);
-    }
+    gap: $spacingXs;
+    margin-bottom: 0;
+    width: 100%;
   }
 }
 </style>

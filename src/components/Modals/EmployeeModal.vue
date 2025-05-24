@@ -65,7 +65,8 @@ export default {
     const uploading = ref(false);
 
     const beforeUpload = (file) => {
-      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+      const isJpgOrPng =
+        file.type === 'image/jpeg' || file.type === 'image/png';
       if (!isJpgOrPng) {
         message.error('Você só pode enviar arquivos JPG/PNG!');
       }
@@ -363,7 +364,6 @@ export default {
             :src="profileImage"
           />
         </a-upload>
-
         <div class="input-group">
           <label>Nome completo</label>
           <at-input
@@ -382,7 +382,6 @@ export default {
             @input="validateRNInput"
           />
         </div>
-
         <div class="input-group">
           <label>Data de nascimento</label>
           <a-date-picker
@@ -393,8 +392,7 @@ export default {
             @change="handleDateChange"
           />
         </div>
-
-        <div class="content__dates">
+        <div class="content__cascaders">
           <div class="input-group">
             <label>Tipo Sanguíneo</label>
             <a-cascader
@@ -442,24 +440,21 @@ export default {
     .input-group {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: $spacingXs;
       margin-bottom: 0;
       width: 100%;
     }
-
     .content__image {
       height: 220px;
       width: 220px;
       margin: 0px auto;
     }
-
     .ant-upload .image {
       height: 220px;
       width: 220px;
       object-fit: cover;
     }
-
-    .content__dates {
+    .content__cascaders {
       display: flex;
       gap: $spacingSm;
     }
