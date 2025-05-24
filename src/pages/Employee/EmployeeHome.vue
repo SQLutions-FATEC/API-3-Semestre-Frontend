@@ -39,7 +39,6 @@ export default {
     };
 
     const fetchEmployees = async (filter = null) => {
-      console.log(filter);
       loading.value = true;
       const params = {
         page: currentPage.value,
