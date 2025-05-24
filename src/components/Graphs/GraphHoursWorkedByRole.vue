@@ -35,13 +35,17 @@ export default {
       required: true,
       type: Object,
     },
+    dateRange: {
+      default: () => [],
+      type: Array,
+    },
   },
 
   setup(props, { emit }) {
     const minValue = Math.min(...props.data.hours);
     const maxValue = Math.max(...props.data.hours);
 
-    const selectedDatetime = ref([]);
+    const selectedDatetime = ref([...props.dateRange]);
 
     const chartOptions = {
       indexAxis: 'y',

@@ -32,8 +32,8 @@ export default {
     const startOfWeek = dayjs().startOf('isoWeek');
     const endOfWeek = dayjs().endOf('isoWeek');
     const selectedWeek = ref([
-      startOfWeek.format('YYYY-MM-DD'),
-      endOfWeek.format('YYYY-MM-DD'),
+      dayjs().startOf('isoWeek'),
+      dayjs().endOf('isoWeek'),
     ]);
 
     const clockInQtt = ref(0);
@@ -66,14 +66,14 @@ export default {
     const fetchAlertsAndGraphsInfos = async (dateRange = []) => {
       loadingGraphs.value = true;
       if (dateRange.length) {
-        selectedWeek[0] = dateRange[0].format('YYYY-MM-DD');
-        selectedWeek[1] = dateRange[1].format('YYYY-MM-DD');
+        selectedWeek.value[0] = dateRange[0];
+        selectedWeek.value[1] = dateRange[1];
       }
 
       const { data } = await dashboard.getByCompany(
         selectedCompanyId.value,
-        selectedWeek[0],
-        selectedWeek[1]
+        selectedWeek.value[0].format('YYYY-MM-DD'),
+        selectedWeek.value[1].format('YYYY-MM-DD')
       );
 
       clockInQtt.value = data.daily_registers.clock_in_with_in_count;
