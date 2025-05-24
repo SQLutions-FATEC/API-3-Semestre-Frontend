@@ -50,7 +50,9 @@ export default {
         key: 'date_time_in',
         customRender: ({ text }) => {
           if (!text) {
-            return h(ExclamationCircleOutlined, { style: { color: 'orange' } });
+            return h(ExclamationCircleOutlined, {
+              style: { color: 'orange', fontSize: '16px' },
+            });
           }
           return text;
         },
@@ -61,7 +63,9 @@ export default {
         key: 'date_time_out',
         customRender: ({ text }) => {
           if (!text) {
-            return h(ExclamationCircleOutlined, { style: { color: 'orange' } });
+            return h(ExclamationCircleOutlined, {
+              style: { color: 'orange', fontSize: '16px' },
+            });
           }
           return text;
         },

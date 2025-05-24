@@ -9,6 +9,10 @@ import GraphEmployeesByGender from '@/components/Graphs/GraphEmployeesByGender.v
 import GraphEmployeesByShift from '@/components/Graphs/GraphEmployeesByShift.vue';
 import GraphHoursWorkedByRole from '@/components/Graphs/GraphHoursWorkedByRole.vue';
 import WithoutMatchRegisters from '@/components/DashboardAlerts/WithoutMatchRegisters.vue';
+import dayjs from 'dayjs';
+import isoWeek from 'dayjs/plugin/isoWeek';
+
+dayjs.extend(isoWeek);
 
 export default {
   name: 'Dashboard',
@@ -25,6 +29,13 @@ export default {
   },
 
   setup() {
+    const startOfWeek = dayjs().startOf('isoWeek');
+    const endOfWeek = dayjs().endOf('isoWeek');
+    const selectedWeek = ref([
+      startOfWeek.format('YYYY-MM-DD'),
+      endOfWeek.format('YYYY-MM-DD'),
+    ]);
+
     const clockInQtt = ref(0);
     const clockOutQtt = ref(0);
     const companies = ref([]);
@@ -52,10 +63,18 @@ export default {
       }
     };
 
-    const fetchAlertsAndGraphsInfos = async () => {
+    const fetchAlertsAndGraphsInfos = async (dateRange = []) => {
       loadingGraphs.value = true;
+      if (dateRange.length) {
+        selectedWeek[0] = dateRange[0].format('YYYY-MM-DD');
+        selectedWeek[1] = dateRange[1].format('YYYY-MM-DD');
+      }
 
-      const { data } = await dashboard.getByCompany(selectedCompanyId.value);
+      const { data } = await dashboard.getByCompany(
+        selectedCompanyId.value,
+        selectedWeek[0],
+        selectedWeek[1]
+      );
 
       clockInQtt.value = data.daily_registers.clock_in_with_in_count;
       clockOutQtt.value = data.daily_registers.clock_in_with_out_count;
@@ -113,10 +132,12 @@ export default {
       contractsToExpire,
       employeesGenderObj,
       employeesShiftObj,
+      fetchAlertsAndGraphsInfos,
       handleCompanyChange,
       incompleteRegisters,
       loadingGraphs,
       roleHoursObj,
+      selectedWeek,
       selectedCompanyId,
     };
   },
@@ -158,7 +179,12 @@ export default {
           class="col-6 gender-graph"
           :data="employeesGenderObj"
         />
-        <graph-hours-worked-by-role class="col-6" :data="roleHoursObj" />
+        <graph-hours-worked-by-role
+          class="col-6"
+          :data="roleHoursObj"
+          :date-range="selectedWeek"
+          @date-range-change="fetchAlertsAndGraphsInfos"
+        />
       </div>
       <h1>Alertas</h1>
       <div class="content__graphs">
