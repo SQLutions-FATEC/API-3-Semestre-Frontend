@@ -39,7 +39,17 @@ export default {
     const selectedRoleId = ref('');
 
     const addContract = (newContract) => {
-      emit('add-contract', newContract);
+      const contract = {
+        company: companyOptions.value.find(
+          (company) => company.value == newContract.company_id
+        ).label,
+        role: roleOptions.value.find(
+          (role) => role.value == newContract.role_id
+        ).label,
+        date_start: newContract.datetime_start,
+        date_end: newContract.datetime_end,
+      };
+      emit('add-contract', contract);
     };
 
     const addEditContract = async () => {
