@@ -14,6 +14,10 @@ export default {
       required: true,
       type: Object,
     },
+    isEditing: {
+      required: true,
+      type: Boolean,
+    },
   },
 
   components: {
@@ -55,12 +59,15 @@ export default {
       return dayjs(contract.value.date_end).format('DD/MM/YYYY');
     });
 
+    const isEditing = computed(() => props.isEditing);
+
     return {
       contract,
       editContract,
       endDate,
       inactivateContract,
       isEditContractModalOpened,
+      isEditing,
       isInactivateContractModalOpened,
       openEditContractModal,
       openInactivateContractModal,
@@ -95,7 +102,12 @@ export default {
         </div>
       </div>
       <div class="contract__actions">
-        <a-button type="primary" shape="circle" @click="openEditContractModal">
+        <a-button
+          :disabled="!isEditing"
+          type="primary"
+          shape="circle"
+          @click="openEditContractModal"
+        >
           <template #icon>
             <edit-outlined style="color: white" />
           </template>

@@ -39,17 +39,8 @@ export default {
     const selectedRoleId = ref('');
 
     const addContract = (newContract) => {
-      const contract = {
-        company: companyOptions.value.find(
-          (company) => company.value == newContract.company_id
-        ),
-        role: roleOptions.value.find(
-          (role) => role.value == newContract.role_id
-        ),
-        date_start: newContract.datetime_start,
-        date_end: newContract.datetime_end,
-      };
-      emit('add-contract', contract);
+      newContract.action = 'create';
+      emit('add-contract', newContract);
     };
 
     const addEditContract = async () => {
@@ -71,10 +62,13 @@ export default {
       );
 
       const contract = {
-        company_id: selectedCompany.data.id,
-        role_id: selectedRole.data.id,
-        datetime_start: dayjs(selectedDatetime.value[0]).format('YYYY-MM-DD'),
-        datetime_end: dayjs(selectedDatetime.value[1]).format('YYYY-MM-DD'),
+        company: {
+          id: selectedCompany.data.id,
+          label: selectedCompany.data.name,
+        },
+        role: { id: selectedRole.data.id, label: selectedRole.data.name },
+        date_start: dayjs(selectedDatetime.value[0]).format('YYYY-MM-DD'),
+        date_end: dayjs(selectedDatetime.value[1]).format('YYYY-MM-DD'),
       };
 
       if (isEditing.value) editContract(contract);
@@ -103,6 +97,7 @@ export default {
     };
 
     const editContract = (edittedContract) => {
+      edittedContract.action = 'update';
       emit('edit-contract', edittedContract);
     };
 
@@ -164,8 +159,8 @@ export default {
         selectedCompanyId.value = props.contract.company.id;
         selectedRoleId.value = props.contract.role.id;
         selectedDatetime.value = [
-          dayjs(props.contract.datetime_start),
-          dayjs(props.contract.datetime_end),
+          dayjs(props.contract.date_start),
+          dayjs(props.contract.date_end),
         ];
       }
     };

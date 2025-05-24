@@ -65,8 +65,8 @@ const employeeRoutes = [
                 id: selectedRole.id,
                 name: selectedRole.name,
               },
-              datetime_start: contract.datetime_start,
-              datetime_end: contract.datetime_end,
+              date_start: contract.date_start,
+              date_end: contract.date_end,
             };
           }),
         };

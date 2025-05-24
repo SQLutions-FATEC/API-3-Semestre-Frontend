@@ -5,6 +5,7 @@ import ContractModal from '@/components/Modals/ContractModal.vue';
 import contracts from '@/services/contracts';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import { Modal, message } from 'ant-design-vue';
+import { computed } from 'vue';
 import { onMounted, ref } from 'vue';
 
 export default {
@@ -14,6 +15,10 @@ export default {
     employeeId: {
       default: null,
       type: Number,
+    },
+    isEditing: {
+      default: false,
+      type: Boolean,
     },
   },
 
@@ -35,12 +40,6 @@ export default {
     const isContractModalOpened = ref(false);
 
     const addContract = (contract) => {
-      const newContract = {
-        company: contract.company,
-        role: contract.role,
-        date_start: contract.date_start,
-        date_end: contract.date_end,
-      };
       if (Object.keys(activeContract.value).length) {
         activeContract.value.active = false;
         inactiveContracts.value = [
@@ -48,10 +47,10 @@ export default {
           activeContract.value,
         ];
 
-        newContract.active = true;
-        activeContract.value = newContract;
+        contract.active = true;
+        activeContract.value = contract;
       } else {
-        activeContract.value = newContract;
+        activeContract.value = contract;
       }
     };
 
@@ -93,7 +92,6 @@ export default {
 
     const deleteContract = async () => {
       try {
-        console.log('ID a ser inativado:', inactivatedContractId);
         await contracts.inactivate(inactivatedContractId);
         message.success('O contrato foi inativado');
       } catch (error) {
@@ -104,8 +102,33 @@ export default {
       }
     };
 
-    const editContract = async () => {
+    const editContracts = async () => {
       if (!!Object.keys(activeContract.value).length) {
+        const formattedActiveContract = {
+          id: activeContract.value.id,
+          company_id: activeContract.value.company.value,
+          role_id: activeContract.value.role.value,
+          date_start: activeContract.value.date_start,
+          date_end: activeContract.value.date_end,
+          action: activeContract.value.action,
+        };
+        const formattedInactiveContracts = inactiveContracts.value.map(
+          (contract) => ({
+            company_id: contract.company.value,
+            role_id: contract.role.value,
+            date_start: contract.date_start,
+            date_end: contract.date_end,
+            action: contract.action,
+          })
+        );
+
+        const params = {
+          contracts: [formattedActiveContract],
+          employee_id: employeeId,
+        };
+
+        params.contracts.push(...formattedInactiveContracts);
+
         try {
           await contracts.edit(activeContract.value);
         } catch (error) {
@@ -131,6 +154,7 @@ export default {
           ...contract,
           company: { id: contract.company.id, label: contract.company.name },
           role: { id: contract.role.id, label: contract.role.name },
+          action: 'update',
         }));
 
         activeContract.value =
@@ -156,15 +180,19 @@ export default {
     };
 
     const modifyContract = async (edittedContract) => {
-      activeContract.value = {
-        id: activeContract.value.id,
-        ...edittedContract,
-      };
+      if (activeContract.value.id) {
+        activeContract.value = {
+          id: activeContract.value.id,
+          ...edittedContract,
+        };
+      }
     };
 
     const openContractModal = () => {
       isContractModalOpened.value = true;
     };
+
+    const isEditing = computed(() => props.isEditing);
 
     onMounted(() => {
       employeeId = props.employeeId;
@@ -177,12 +205,13 @@ export default {
     expose({
       clearFields,
       createContracts,
-      editContract,
+      editContracts,
     });
 
     return {
       activeContract,
       addContract,
+      isEditing,
       fetchContracts,
       inactivateContract,
       inactiveContracts,
@@ -208,6 +237,7 @@ export default {
     <active-contract
       v-if="Object.keys(activeContract).length"
       :contract="activeContract"
+      :is-editing="isEditing"
       @edit-contract="modifyContract"
       @inactivate-contract="inactivateContract"
     />
