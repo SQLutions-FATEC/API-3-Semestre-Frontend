@@ -6,8 +6,13 @@ import dashboard from '@/services/dashboard';
 import ContractsToExpire from '@/components/DashboardAlerts/ContractsToExpire.vue';
 import DailyRegisters from '@/components/DailyRegisters.vue';
 import GraphEmployeesByGender from '@/components/Graphs/GraphEmployeesByGender.vue';
+import GraphEmployeesByShift from '@/components/Graphs/GraphEmployeesByShift.vue';
 import GraphHoursWorkedByRole from '@/components/Graphs/GraphHoursWorkedByRole.vue';
 import WithoutMatchRegisters from '@/components/DashboardAlerts/WithoutMatchRegisters.vue';
+import dayjs from 'dayjs';
+import isoWeek from 'dayjs/plugin/isoWeek';
+
+dayjs.extend(isoWeek);
 
 export default {
   name: 'Dashboard',
@@ -18,27 +23,36 @@ export default {
     'daily-registers': DailyRegisters,
     'contracts-to-expire': ContractsToExpire,
     'graph-employees-by-gender': GraphEmployeesByGender,
+    'graph-employees-by-shift': GraphEmployeesByShift,
     'graph-hours-worked-by-role': GraphHoursWorkedByRole,
     'without-match-registers': WithoutMatchRegisters,
   },
 
   setup() {
+    const startOfWeek = dayjs().startOf('isoWeek');
+    const endOfWeek = dayjs().endOf('isoWeek');
+    const selectedWeek = ref([
+      dayjs().startOf('isoWeek'),
+      dayjs().endOf('isoWeek'),
+    ]);
+
     const clockInQtt = ref(0);
     const clockOutQtt = ref(0);
     const companies = ref([]);
     const companyOptions = ref([]);
     const contractsToExpire = ref([]);
     const employeesGenderObj = ref({});
+    const employeesShiftObj = ref({});
+    const incompleteRegisters = ref([]);
     const loadingGraphs = ref(true);
     const roleHoursObj = ref({});
     const selectedCompanyId = ref(null);
-    const singleRegisters = ref([]);
 
     const fetchCompanies = async () => {
       try {
         const { data } = await company.get();
-        companies.value = data;
-        companyOptions.value = data.map((item) => ({
+        companies.value = data.items;
+        companyOptions.value = data.items.map((item) => ({
           label: item.name,
           value: item.id,
           data: item,
@@ -49,96 +63,52 @@ export default {
       }
     };
 
-    const fetchContractsToExpire = async () => {
-      try {
-        const { data } = await dashboard.getContractsToExpire(
-          selectedCompanyId.value
-        );
-        return data;
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const fetchDailyRegisters = async () => {
-      try {
-        const { data } = await dashboard.getDailyRegisters(
-          selectedCompanyId.value
-        );
-        return data;
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const fetchEmployeesByGender = async () => {
-      try {
-        const { data } = await dashboard.getEmployeesByGender(
-          selectedCompanyId.value
-        );
-        return data;
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const fetchSingleRegisters = async () => {
-      try {
-        const { data } = await dashboard.getSingleRegisters(
-          selectedCompanyId.value
-        );
-        return data;
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const fetchAlertsAndGraphsInfos = async () => {
+    const fetchAlertsAndGraphsInfos = async (dateRange = []) => {
       loadingGraphs.value = true;
+      if (dateRange.length) {
+        selectedWeek.value[0] = dateRange[0];
+        selectedWeek.value[1] = dateRange[1];
+      }
 
-      const [
-        dailyRegisters,
-        hoursWorkedByRole,
-        employeesByGender,
-        withoutMatchRegisters,
-        contractsAboutToExpire,
-      ] = await Promise.all([
-        fetchDailyRegisters(),
-        fetchHoursWorkedByRole(),
-        fetchEmployeesByGender(),
-        fetchSingleRegisters(),
-        fetchContractsToExpire(),
-      ]);
-      clockInQtt.value = dailyRegisters.clock_in;
-      clockOutQtt.value = dailyRegisters.clock_out;
+      const { data } = await dashboard.getByCompany(
+        selectedCompanyId.value,
+        selectedWeek.value[0].format('YYYY-MM-DD'),
+        selectedWeek.value[1].format('YYYY-MM-DD')
+      );
 
-      roleHoursObj.value = hoursWorkedByRole.reduce(
+      clockInQtt.value = data.daily_registers.clock_in_with_in_count;
+      clockOutQtt.value = data.daily_registers.clock_in_with_out_count;
+
+      roleHoursObj.value = data.hours_worked_by_role.reduce(
         (acc, item) => {
-          acc['labels'].push(item.role);
-          acc['hours'].push(item.hours_worked);
+          acc['labels'].push(item.role_name);
+          acc['hours'].push(item.total_hours.toFixed(2));
           return acc;
         },
         { labels: [], hours: [] }
       );
 
-      employeesGenderObj.value = employeesByGender;
+      employeesGenderObj.value = {
+        female: data.employee_count.female_workers,
+        male: data.employee_count.male_workers,
+      };
 
-      singleRegisters.value = withoutMatchRegisters;
+      employeesShiftObj.value = {
+        labels: Object.keys(data.employees_by_period).map((item) => {
+          if (item === 'midnight_to_morning') return 'Noturno (23h - 6h59)';
+          else if (item === 'morning_to_afternoon')
+            return 'Diurno (7h - 13h59)';
+          else if (item === 'afternoon_to_night')
+            return 'Vespertino (14h - 22h59)';
+        }),
+        quantity: Object.values(data.employees_by_period),
+      };
 
-      contractsToExpire.value = contractsAboutToExpire;
+      incompleteRegisters.value = data.incomplete_clock_ins;
+
+      contractsToExpire.value = data.expiring_contracts;
 
       loadingGraphs.value = false;
-    };
-
-    const fetchHoursWorkedByRole = async () => {
-      try {
-        const { data } = await dashboard.getHoursWorkedByRole(
-          selectedCompanyId.value
-        );
-        return data;
-      } catch (error) {
-        console.error(error);
-      }
     };
 
     const handleCompanyChange = async (value, selectedOptions) => {
@@ -161,11 +131,14 @@ export default {
       companyOptions,
       contractsToExpire,
       employeesGenderObj,
+      employeesShiftObj,
+      fetchAlertsAndGraphsInfos,
       handleCompanyChange,
+      incompleteRegisters,
       loadingGraphs,
       roleHoursObj,
+      selectedWeek,
       selectedCompanyId,
-      singleRegisters,
     };
   },
 };
@@ -201,16 +174,32 @@ export default {
         :clock-out-qtt="clockOutQtt"
       />
       <div class="content__graphs">
-        <graph-hours-worked-by-role class="col-6" :data="roleHoursObj" />
+        <graph-employees-by-shift class="col-6" :data="employeesShiftObj" />
         <graph-employees-by-gender
           class="col-6 gender-graph"
           :data="employeesGenderObj"
         />
+        <graph-hours-worked-by-role
+          class="col-6"
+          :data="roleHoursObj"
+          :date-range="selectedWeek"
+          @date-range-change="fetchAlertsAndGraphsInfos"
+        />
       </div>
       <h1>Alertas</h1>
       <div class="content__graphs">
-        <without-match-registers class="col-6" :data="singleRegisters" />
-        <contracts-to-expire class="col-6" :data="contractsToExpire" />
+        <div v-if="!incompleteRegisters.length" class="col-6 empty-state">
+          <p>Nenhum registro encontrado.</p>
+        </div>
+        <without-match-registers
+          v-else
+          class="col-6"
+          :data="incompleteRegisters"
+        />
+        <div v-if="!contractsToExpire.length" class="col-6 empty-state">
+          <p>Nenhum contrato encontrado.</p>
+        </div>
+        <contracts-to-expire v-else class="col-6" :data="contractsToExpire" />
       </div>
     </div>
   </div>
@@ -246,8 +235,16 @@ export default {
 
     .content__graphs {
       display: flex;
-      justify-content: space-around;
+      flex-wrap: wrap;
       gap: $spacingXxl;
+
+      .empty-state {
+        margin: $spacingLg auto;
+
+        p {
+          @include paragraph(medium);
+        }
+      }
     }
   }
 }

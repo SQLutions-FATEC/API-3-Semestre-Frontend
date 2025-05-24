@@ -3,7 +3,7 @@ import { ref, onMounted, provide, h } from 'vue';
 import { Button, Modal, Table } from 'ant-design-vue';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import employee from '@/services/employee';
-import { formatDate, registerNumberMask } from '@/utils';
+import { formatDate, genderMask, registerNumberMask } from '@/utils';
 import EmployeeHeader from '@/components/Headers/EmployeeHeader.vue';
 import EmployeeModal from '@/components/Modals/EmployeeModal.vue';
 
@@ -38,14 +38,18 @@ export default {
       }
     };
 
-    const fetchEmployees = async () => {
+    const fetchEmployees = async (filter = null) => {
       loading.value = true;
+      const params = {
+        page: currentPage.value,
+        size: pageSize.value,
+      };
+      if (filter) {
+        params.name = filter;
+      }
 
       try {
-        const { data } = await employee.getAll({
-          page: currentPage.value,
-          size: pageSize.value,
-        });
+        const { data } = await employee.getAll(params);
 
         dataSource.value = data.items.map((employee) => ({
           key: employee.id,
@@ -100,6 +104,7 @@ export default {
         title: 'Gênero',
         dataIndex: 'gender',
         key: 'gender',
+        customRender: ({ text }) => genderMask(text),
       },
       {
         title: 'Tipo sanguíneo',
@@ -148,6 +153,7 @@ export default {
       currentPage,
       dataSource,
       deleteEmployee,
+      fetchEmployees,
       handleTableChange,
       isConfirmationModalOpened,
       isEmployeeModalOpened,
@@ -163,7 +169,7 @@ export default {
 
 <template>
   <div class="employee-home">
-    <employee-header />
+    <employee-header @filter-changed="fetchEmployees" />
     <div class="table-container">
       <a-table
         :dataSource="dataSource"
@@ -188,6 +194,8 @@ export default {
     <a-modal
       v-model:open="isConfirmationModalOpened"
       title="Deletar funcionário"
+      cancelText="Cancelar"
+      okText="Deletar"
       @ok="deleteEmployee"
     >
       <span>

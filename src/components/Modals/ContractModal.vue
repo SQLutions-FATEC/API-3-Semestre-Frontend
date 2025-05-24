@@ -108,8 +108,8 @@ export default {
 
     const fetchCompanies = async () => {
       try {
-        const response = await company.get();
-        companyOptions.value = response.data.map((item) => ({
+        const { data } = await company.get();
+        companyOptions.value = data.items.map((item) => ({
           label: item.name,
           value: item.id,
           data: item,
@@ -203,6 +203,8 @@ export default {
   <a-modal
     title="Novo Contrato"
     :open="open"
+    cancelText="Cancelar"
+    okText="Salvar"
     @cancel="closeModal"
     @ok="addEditContract"
   >
@@ -253,5 +255,13 @@ export default {
   display: flex;
   flex-direction: column;
   gap: $spacingXl;
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: $spacingXs;
+    margin-bottom: 0;
+    width: 100%;
+  }
 }
 </style>

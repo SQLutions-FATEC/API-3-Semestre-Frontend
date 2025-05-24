@@ -1,7 +1,7 @@
 <script>
 import { Table } from 'ant-design-vue';
 import { ref } from 'vue';
-import { formatDateTime, registerNumberMask } from '@/utils';
+import { formatDate, registerNumberMask } from '@/utils';
 
 export default {
   name: 'ContractsToExpire',
@@ -46,11 +46,11 @@ export default {
     ];
 
     dataSource.value = props.data.map((info) => ({
-      key: info.id,
-      registerNumber: info.employee.register_number,
-      employee: info.employee.name,
-      company: info.company.name,
-      datetime: formatDateTime(info.datetime_end),
+      key: info.contract_id,
+      registerNumber: info.register_number,
+      employee: info.employee_name,
+      company: info.company_name,
+      datetime: formatDate(info.end_date),
     }));
 
     return {
@@ -63,7 +63,7 @@ export default {
 
 <template>
   <div class="contracts-to-expire">
-    <h2>Próximos contratos a vencer</h2>
+    <h2>Próximos 5 contratos a vencer</h2>
     <div class="graph-container">
       <a-table
         :dataSource="dataSource"
@@ -78,6 +78,7 @@ export default {
 .contracts-to-expire {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: $spacingSm;
 
   h2 {

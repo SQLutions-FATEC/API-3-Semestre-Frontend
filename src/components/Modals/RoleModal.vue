@@ -24,7 +24,7 @@ export default {
     const addRole = async () => {
       if (newRole.value.trim()) {
         const params = {
-          role: newRole.value,
+          name: newRole.value,
         };
         try {
           await role.create(params);
@@ -48,7 +48,30 @@ export default {
 </script>
 
 <template>
-  <a-modal title="Nova Função" :open="open" @cancel="closeModal" @ok="addRole">
-    <a-input v-model:value="newRole" placeholder="Digite a nova função" />
+  <a-modal
+    class="role-modal"
+    title="Nova Função"
+    :open="open"
+    cancelText="Cancelar"
+    okText="Salvar"
+    @cancel="closeModal"
+    @ok="addRole"
+  >
+    <div class="input-group">
+      <label>Nome da função</label>
+      <a-input v-model:value="newRole" placeholder="Digite a nova função" />
+    </div>
   </a-modal>
 </template>
+
+<style lang="scss" scoped>
+.role-modal {
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: $spacingXs;
+    margin-bottom: 0;
+    width: 100%;
+  }
+}
+</style>

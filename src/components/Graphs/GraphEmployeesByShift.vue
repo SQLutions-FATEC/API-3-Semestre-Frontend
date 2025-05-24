@@ -1,5 +1,4 @@
 <script>
-import { DatePicker } from 'ant-design-vue';
 import { Bar } from 'vue-chartjs';
 import {
   Chart as ChartJS,
@@ -10,7 +9,7 @@ import {
   CategoryScale,
   LinearScale,
 } from 'chart.js';
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { generateRandomColors } from '@/utils';
 
 ChartJS.register(
@@ -23,10 +22,9 @@ ChartJS.register(
 );
 
 export default {
-  name: 'GraphHoursWorkedByRole',
+  name: 'GraphEmployeesByShift',
 
   components: {
-    'a-range-picker': DatePicker.RangePicker,
     'bar-chart': Bar,
   },
 
@@ -35,51 +33,38 @@ export default {
       required: true,
       type: Object,
     },
-    dateRange: {
-      default: () => [],
-      type: Array,
-    },
   },
 
-  setup(props, { emit }) {
-    const minValue = Math.min(...props.data.hours);
-    const maxValue = Math.max(...props.data.hours);
-
-    const selectedDatetime = ref([...props.dateRange]);
+  setup(props) {
+    const maxValue = Math.max(...props.data.quantity);
 
     const chartOptions = {
       indexAxis: 'y',
       responsive: true,
       plugins: {
         legend: { display: false },
-        title: { display: false, text: 'Horas Trabalhadas por Cargo' },
+        title: { display: false, text: 'Quantidade de Funcionários por Turno' },
       },
       scales: {
         x: {
           title: {
             display: true,
-            text: 'Horas',
+            text: 'Funcionários',
             color: '#4c4c4c',
             font: { size: 14, weight: 'bold' },
           },
           ticks: { color: '#4c4c4c' },
-          min: minValue - 10,
-          max: maxValue + 10,
+          min: 0,
+          max: maxValue + 3,
         },
         y: {
           title: {
             display: true,
-            text: 'Cargos',
+            text: 'Turnos',
             color: '#4c4c4c',
             font: { size: 14, weight: 'bold' },
           },
-          ticks: {
-            color: '#4c4c4c',
-            callback: function (value, index, ticks) {
-              const label = this.getLabelForValue(value);
-              return label.length > 10 ? label.slice(0, 10) + '…' : label;
-            },
-          },
+          ticks: { color: '#4c4c4c' },
         },
       },
       animation: {
@@ -106,38 +91,23 @@ export default {
       labels: props.data.labels,
       datasets: [
         {
-          data: props.data.hours,
+          data: props.data.quantity,
           backgroundColor: generateRandomColors(props.data.labels.length),
         },
       ],
     });
 
-    watch(selectedDatetime, (val) => {
-      if (val && val.length === 2 && val[1]) {
-        emit('date-range-change', val);
-      }
-    });
-
     return {
       chartData,
       chartOptions,
-      selectedDatetime,
     };
   },
 };
 </script>
 
 <template>
-  <div class="graph-hours-worked-by-role">
-    <div class="header__wrapper">
-      <h2>Horas Trabalhadas por Cargo (Semanal)</h2>
-      <a-range-picker
-        v-model:value="selectedDatetime"
-        style="width: 100%"
-        format="DD/MM/YYYY"
-        :placeholder="['Data início', 'Data fim']"
-      />
-    </div>
+  <div class="graph-employees-by-shift">
+    <h2>Quantidade de Funcionários por Turno</h2>
     <div class="graph-container">
       <bar-chart :data="chartData" :options="chartOptions" />
     </div>
@@ -145,19 +115,14 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-.graph-hours-worked-by-role {
+.graph-employees-by-shift {
   display: flex;
   flex-direction: column;
   gap: $spacingSm;
 
-  .header__wrapper {
-    display: flex;
-    gap: $spacingXs;
-
-    h2 {
-      @include paragraph(medium);
-      text-align: center;
-    }
+  h2 {
+    @include paragraph(medium);
+    text-align: center;
   }
 }
 .graph-container {

@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import xlsx from 'node-xlsx';
 import { message } from 'ant-design-vue';
 import { DownloadOutlined } from '@ant-design/icons-vue';
+import clockInOut from '@/services/clockInOut';
 
 export default {
   name: 'ExcelExportButton',
@@ -45,18 +46,17 @@ export default {
       return results;
     };
 
-    const exportToExcel = async () => {
-      if (!props.data || props.data.length === 0) {
+    const exportToExcel = async (customData = null) => {
+      const dataToExport = customData || props.data;
+
+      if (!dataToExport || dataToExport.length === 0) {
         return message.error('Nenhum dado disponível para exportação');
       }
 
       isLoading.value = true;
 
       try {
-        const formattedData = await processInChunks(props.data, (chunk) => {
-          return formatData(chunk);
-        });
-
+        const formattedData = await processInChunks(dataToExport, formatData);
         const headers = Object.keys(formattedData[0]);
         const rows = formattedData.map((item) => Object.values(item));
 
@@ -88,21 +88,77 @@ export default {
       }
     };
 
+    const getNestedProperty = (obj, path) => {
+      return path.split('.').reduce((acc, part) => {
+        const cleanPart = part.replace('?', '');
+        return acc && acc[cleanPart];
+      }, obj);
+    };
+
+    const formatProperty = (info, propNames) => {
+      for (const prop of propNames) {
+        const value = prop.includes('.')
+          ? getNestedProperty(info, prop)
+          : info[prop];
+
+        if (value !== undefined && value !== null) {
+          return value;
+        }
+      }
+      return '--';
+    };
+
+    const fieldMap = {
+      'Número de Registro': ['employee.register_number', 'registerNumber'],
+      Funcionário: ['employee.name', 'employee'],
+      Empresa: ['company.name', 'company'],
+      Função: ['role_name', 'role'],
+      'Data de Entrada': ['date_time_in'],
+      'Data de Saída': ['date_time_out'],
+      'Horas Trabalhadas': ['worked_hours'],
+    };
+
     const formatData = (data) => {
       return data.map((info) => {
-        return {
-          'Número de Registro': info.registerNumber,
-          Funcionário: info.employee,
-          Empresa: info.company,
-          Função: info.role,
-          Horário: info.datetime,
-          Movimentação: info.direction,
-        };
+        const formattedRow = {};
+
+        Object.entries(fieldMap).forEach(([excelHeader, sourceProps]) => {
+          if (excelHeader !== 'Horas Trabalhadas') {
+            formattedRow[excelHeader] = formatProperty(info, sourceProps);
+          }
+        });
+
+        if (info.worked_hours !== undefined && info.worked_hours !== null) {
+          const hours = Math.floor(info.worked_hours);
+          const minutes = Math.round((info.worked_hours % 1) * 60);
+          formattedRow['Horas Trabalhadas'] = `${hours}h${minutes}min`;
+        } else {
+          formattedRow['Horas Trabalhadas'] = '--';
+        }
+
+        return formattedRow;
       });
+    };
+
+    const exportAllToExcel = async () => {
+      isLoading.value = true;
+
+      try {
+        const { data } = await clockInOut.get({
+          export: true,
+        });
+
+        await exportToExcel(data);
+      } catch (error) {
+        message.error('Erro ao exportar todos: ' + error.message);
+      } finally {
+        isLoading.value = false;
+      }
     };
 
     return {
       exportToExcel,
+      exportAllToExcel,
       isLoading,
     };
   },
@@ -110,10 +166,26 @@ export default {
 </script>
 
 <template>
-  <a-button type="primary" :loading="isLoading" @click="exportToExcel">
-    <template #icon>
-      <download-outlined />
-    </template>
-    Exportar para Excel
-  </a-button>
+  <div class="exportButtons">
+    <a-button type="primary" :loading="isLoading" @click="exportToExcel()">
+      <template #icon>
+        <download-outlined />
+      </template>
+      Exportar para Excel
+    </a-button>
+    <a-button type="primary" :loading="isLoading" @click="exportAllToExcel">
+      <template #icon>
+        <download-outlined />
+      </template>
+      Exportar todos os registros
+    </a-button>
+  </div>
 </template>
+
+<style lang="scss" scoped>
+.exportButtons {
+  display: flex;
+  align-items: center;
+  gap: $spacingMd;
+}
+</style>

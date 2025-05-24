@@ -10,14 +10,11 @@ export default {
     'top-bar': TopBar,
     'side-bar': SideBar,
   },
-
   setup() {
     const isSidebarOpen = ref(false);
-
     const toggleSidebar = () => {
       isSidebarOpen.value = !isSidebarOpen.value;
     };
-
     return {
       isSidebarOpen,
       toggleSidebar,

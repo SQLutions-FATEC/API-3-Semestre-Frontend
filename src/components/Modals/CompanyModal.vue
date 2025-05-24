@@ -133,19 +133,30 @@ export default {
     :open="open"
     :title="modalTitle"
     :width="600"
+    cancelText="Cancelar"
+    okText="Salvar"
     @cancel="closeModal"
     @ok="companyAction"
   >
     <div class="company-modal">
-      <at-input v-model:value="companyName" placeholder="Razão social" text />
-      <at-number-input
-        v-model:value="cnpj"
-        mask="##.###.###/####-##"
-        placeholder="CNPJ"
-        :error-message="errorMessage"
-        @input="validateCnpjInput"
-      />
-      <at-input v-model:value="tradeName" placeholder="Nome fantasia" text />
+      <div class="input-group">
+        <label>Razão social</label>
+        <at-input v-model:value="companyName" placeholder="Razão social" text />
+      </div>
+      <div class="input-group">
+        <label>CNPJ</label>
+        <at-number-input
+          v-model:value="cnpj"
+          mask="##.###.###/####-##"
+          placeholder="CNPJ"
+          :error-message="errorMessage"
+          @input="validateCnpjInput"
+        />
+      </div>
+      <div class="input-group">
+        <label>Nome fantasia</label>
+        <at-input v-model:value="tradeName" placeholder="Nome fantasia" text />
+      </div>
     </div>
   </a-modal>
 </template>
@@ -156,5 +167,12 @@ export default {
   display: flex;
   flex-direction: column;
   gap: $spacingXxl;
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: $spacingXs;
+    width: 100%;
+  }
 }
 </style>
