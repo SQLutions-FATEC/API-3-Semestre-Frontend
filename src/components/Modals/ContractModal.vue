@@ -42,10 +42,10 @@ export default {
       const contract = {
         company: companyOptions.value.find(
           (company) => company.value == newContract.company_id
-        ).label,
+        ),
         role: roleOptions.value.find(
           (role) => role.value == newContract.role_id
-        ).label,
+        ),
         date_start: newContract.datetime_start,
         date_end: newContract.datetime_end,
       };
@@ -209,41 +209,50 @@ export default {
     @ok="addEditContract"
   >
     <div class="contract-modal">
-      <a-cascader
-        v-model:value="selectedCompanyId"
-        placeholder="Empresa"
-        style="width: 100%"
-        :options="companyOptions"
-        :showSearch="{
-          filter: (inputValue, path) =>
-            path.some((option) =>
-              option.label.toLowerCase().includes(inputValue.toLowerCase())
-            ),
-        }"
-        @change="handleCompanyChange"
-      />
-      <a-cascader
-        v-model:value="selectedRoleId"
-        placeholder="Função"
-        style="width: 100%"
-        :options="roleOptions"
-        :showSearch="{
-          filter: (inputValue, path) =>
-            path.some((option) => {
-              if (option.value === 'add-new') return false;
-              return option.label
-                .toLowerCase()
-                .includes(inputValue.toLowerCase());
-            }),
-        }"
-        @change="handleRoleChange"
-      />
-      <a-range-picker
-        v-model:value="selectedDatetime"
-        style="width: 100%"
-        :format="dateFormatList"
-        :placeholder="['Data início', 'Data fim']"
-      />
+      <div class="input-group">
+        <label>Empresa</label>
+        <a-cascader
+          v-model:value="selectedCompanyId"
+          placeholder="Empresa"
+          style="width: 100%"
+          :options="companyOptions"
+          :showSearch="{
+            filter: (inputValue, path) =>
+              path.some((option) =>
+                option.label.toLowerCase().includes(inputValue.toLowerCase())
+              ),
+          }"
+          @change="handleCompanyChange"
+        />
+      </div>
+      <div class="input-group">
+        <label>Função</label>
+        <a-cascader
+          v-model:value="selectedRoleId"
+          placeholder="Função"
+          style="width: 100%"
+          :options="roleOptions"
+          :showSearch="{
+            filter: (inputValue, path) =>
+              path.some((option) => {
+                if (option.value === 'add-new') return false;
+                return option.label
+                  .toLowerCase()
+                  .includes(inputValue.toLowerCase());
+              }),
+          }"
+          @change="handleRoleChange"
+        />
+      </div>
+      <div class="input-group">
+        <label>Datas</label>
+        <a-range-picker
+          v-model:value="selectedDatetime"
+          style="width: 100%"
+          :format="dateFormatList"
+          :placeholder="['Data início', 'Data fim']"
+        />
+      </div>
     </div>
     <role-modal v-model:open="isRoleModalOpened" @fetch-roles="fetchRoles" />
   </a-modal>

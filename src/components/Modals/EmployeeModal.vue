@@ -247,8 +247,8 @@ export default {
     ];
 
     const genderOptions = [
-      { value: 'Masculino', label: 'Masculino' },
-      { value: 'Feminino', label: 'Feminino' },
+      { value: 'M', label: 'Masculino' },
+      { value: 'F', label: 'Feminino' },
     ];
 
     onMounted(async () => {

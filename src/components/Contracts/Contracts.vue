@@ -6,7 +6,6 @@ import contracts from '@/services/contracts';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import { Modal, message } from 'ant-design-vue';
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
 
 export default {
   name: 'Contracts',
@@ -27,7 +26,6 @@ export default {
   },
 
   setup(props, { expose }) {
-    const route = useRoute();
     let employeeId = null;
     let inactivatedContractId = null;
 
@@ -37,6 +35,12 @@ export default {
     const isContractModalOpened = ref(false);
 
     const addContract = (contract) => {
+      const newContract = {
+        company: contract.company,
+        role: contract.role,
+        date_start: contract.date_start,
+        date_end: contract.date_end,
+      };
       if (Object.keys(activeContract.value).length) {
         activeContract.value.active = false;
         inactiveContracts.value = [
@@ -44,10 +48,10 @@ export default {
           activeContract.value,
         ];
 
-        contract.active = true;
-        activeContract.value = contract;
+        newContract.active = true;
+        activeContract.value = newContract;
       } else {
-        activeContract.value = contract;
+        activeContract.value = newContract;
       }
     };
 
@@ -58,13 +62,27 @@ export default {
 
     const createContracts = async (employeeId) => {
       if (!Object.keys(activeContract.value).length) return;
+      const formattedActiveContract = {
+        company_id: activeContract.value.company.value,
+        role_id: activeContract.value.role.value,
+        date_start: activeContract.value.date_start,
+        date_end: activeContract.value.date_end,
+      };
+      const formattedInactiveContracts = inactiveContracts.value.map(
+        (contract) => ({
+          company_id: contract.company.value,
+          role_id: contract.role.value,
+          date_start: contract.date_start,
+          date_end: contract.date_end,
+        })
+      );
 
       const params = {
-        contracts: [activeContract.value],
+        contracts: [formattedActiveContract],
         employee_id: employeeId,
       };
 
-      params.contracts.push(...inactiveContracts.value);
+      params.contracts.push(...formattedInactiveContracts);
 
       try {
         await contracts.create(params);
