@@ -52,11 +52,13 @@ export default {
     class="role-modal"
     title="Nova Função"
     :open="open"
+    cancelText="Cancelar"
+    okText="Salvar"
     @cancel="closeModal"
     @ok="addRole"
   >
     <div class="input-group">
-      <label>Nova função</label>
+      <label>Nome da função</label>
       <a-input v-model:value="newRole" placeholder="Digite a nova função" />
     </div>
   </a-modal>

@@ -392,7 +392,7 @@ export default {
             @change="handleDateChange"
           />
         </div>
-        <div class="content__etc">
+        <div class="content__cascaders">
           <div class="input-group">
             <label>Tipo Sanguíneo</label>
             <a-cascader
@@ -454,7 +454,7 @@ export default {
       width: 220px;
       object-fit: cover;
     }
-    .content__etc {
+    .content__cascaders {
       display: flex;
       gap: $spacingSm;
     }
