@@ -127,16 +127,16 @@ export default {
       try {
         const { data } = await contracts.getByEmployeeId(employeeId, params);
 
-        const contractsWithFallback = data.map((contract) => ({
+        const formattedContracts = data.map((contract) => ({
           ...contract,
-          company: contract.company ?? { name: 'Não informado' },
-          role: contract.role ?? { name: 'Não informado' },
+          company: { id: contract.company.id, label: contract.company.name },
+          role: { id: contract.role.id, label: contract.role.name },
         }));
 
         activeContract.value =
-          contractsWithFallback.find((contract) => contract.active) || {};
+          formattedContracts.find((contract) => contract.active) || {};
 
-        inactiveContracts.value = contractsWithFallback.filter(
+        inactiveContracts.value = formattedContracts.filter(
           (contract) => !contract.active
         );
       } catch (error) {
