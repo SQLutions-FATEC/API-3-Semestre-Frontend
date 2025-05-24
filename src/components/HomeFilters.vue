@@ -79,7 +79,7 @@ export default {
     />
     <div class="filters">
       <div v-if="selectedFilter === 'employee'" class="filter-group">
-        <label class="filter-label"> Nome do Funcionário</label>
+        <label class="filter-label">Nome do Funcionário</label>
         <at-input
           v-model:value="employeeNameFilter"
           class="filter-input"
@@ -139,7 +139,6 @@ export default {
   padding: $spacingLg;
   background: $colorBackground;
   border-radius: $borderRadiusMd;
-  margin-bottom: $spacingLg;
 
   .filters {
     display: flex;

@@ -38,14 +38,19 @@ export default {
       }
     };
 
-    const fetchEmployees = async () => {
+    const fetchEmployees = async (filter = null) => {
+      console.log(filter);
       loading.value = true;
+      const params = {
+        page: currentPage.value,
+        size: pageSize.value,
+      };
+      if (filter) {
+        params.name = filter;
+      }
 
       try {
-        const { data } = await employee.getAll({
-          page: currentPage.value,
-          size: pageSize.value,
-        });
+        const { data } = await employee.getAll(params);
 
         dataSource.value = data.items.map((employee) => ({
           key: employee.id,
@@ -149,6 +154,7 @@ export default {
       currentPage,
       dataSource,
       deleteEmployee,
+      fetchEmployees,
       handleTableChange,
       isConfirmationModalOpened,
       isEmployeeModalOpened,
@@ -164,7 +170,7 @@ export default {
 
 <template>
   <div class="employee-home">
-    <employee-header />
+    <employee-header @filter-changed="fetchEmployees" />
     <div class="table-container">
       <a-table
         :dataSource="dataSource"
