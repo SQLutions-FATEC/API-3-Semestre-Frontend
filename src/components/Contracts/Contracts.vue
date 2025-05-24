@@ -75,6 +75,7 @@ export default {
 
     const deleteContract = async () => {
       try {
+        console.log('ID a ser inativado:', inactivatedContractId);
         await contracts.inactivate(inactivatedContractId);
         message.success('O contrato foi inativado');
       } catch (error) {
@@ -125,15 +126,15 @@ export default {
       }
     };
 
-    const inactivateContract = (inactivatedContractId) => {
+    const inactivateContract = (contractId) => {
+      inactivatedContractId = contractId;
+
       activeContract.value.active = false;
       inactiveContracts.value = [
         ...inactiveContracts.value,
         activeContract.value,
       ];
       activeContract.value = {};
-
-      inactivatedContractId = inactivatedContractId;
     };
 
     const modifyContract = async (edittedContract) => {
