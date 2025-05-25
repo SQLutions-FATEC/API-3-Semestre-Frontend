@@ -106,16 +106,17 @@ export default {
       if (!!Object.keys(activeContract.value).length) {
         const formattedActiveContract = {
           id: activeContract.value.id,
-          company_id: activeContract.value.company.value,
-          role_id: activeContract.value.role.value,
+          company_id: activeContract.value.company.id,
+          role_id: activeContract.value.role.id,
           date_start: activeContract.value.date_start,
           date_end: activeContract.value.date_end,
           action: activeContract.value.action,
         };
         const formattedInactiveContracts = inactiveContracts.value.map(
           (contract) => ({
-            company_id: contract.company.value,
-            role_id: contract.role.value,
+            id: contract.id,
+            company_id: contract.company.id,
+            role_id: contract.role.id,
             date_start: contract.date_start,
             date_end: contract.date_end,
             action: contract.action,
@@ -130,7 +131,7 @@ export default {
         params.contracts.push(...formattedInactiveContracts);
 
         try {
-          await contracts.edit(activeContract.value);
+          await contracts.edit(params);
         } catch (error) {
           console.error(error);
         }
