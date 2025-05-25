@@ -63,8 +63,8 @@ export default {
             font: { size: 14, weight: 'bold' },
           },
           ticks: { color: '#4c4c4c' },
-          min: minValue - 10,
-          max: maxValue + 10,
+          min: 0,
+          max: maxValue + 5,
         },
         y: {
           title: {
