@@ -61,6 +61,7 @@ export default {
 
     const createContracts = async (employeeId) => {
       if (!Object.keys(activeContract.value).length) return;
+
       const formattedActiveContract = {
         company_id: activeContract.value.company.value,
         role_id: activeContract.value.role.value,
@@ -90,53 +91,39 @@ export default {
       }
     };
 
-    const deleteContract = async () => {
-      try {
-        await contracts.inactivate(inactivatedContractId);
-        message.success('O contrato foi inativado');
-      } catch (error) {
-        message.error(
-          'Houve um problema ao desativar o contrato. Tente novamente'
-        );
-        console.error('Erro ao desabilitar contrato:', error);
-      }
-    };
-
     const editContracts = async () => {
-      if (!!Object.keys(activeContract.value).length) {
-        const formattedActiveContract = {
-          id: activeContract.value.id,
-          company_id: activeContract.value.company.id,
-          role_id: activeContract.value.role.id,
-          date_start: activeContract.value.date_start,
-          date_end: activeContract.value.date_end,
-          action: activeContract.value.action,
-        };
-        const formattedInactiveContracts = inactiveContracts.value.map(
-          (contract) => ({
-            id: contract.id,
-            company_id: contract.company.id,
-            role_id: contract.role.id,
-            date_start: contract.date_start,
-            date_end: contract.date_end,
-            action: contract.action,
-          })
-        );
+      if (!Object.keys(activeContract.value).length) return;
 
-        const params = {
-          contracts: [formattedActiveContract],
-          employee_id: employeeId,
-        };
+      const formattedActiveContract = {
+        id: activeContract.value.id,
+        company_id: activeContract.value.company.id,
+        role_id: activeContract.value.role.id,
+        date_start: activeContract.value.date_start,
+        date_end: activeContract.value.date_end,
+        action: activeContract.value.action,
+      };
+      const formattedInactiveContracts = inactiveContracts.value.map(
+        (contract) => ({
+          id: contract.id,
+          company_id: contract.company.id,
+          role_id: contract.role.id,
+          date_start: contract.date_start,
+          date_end: contract.date_end,
+          action: contract.action,
+        })
+      );
 
-        params.contracts.push(...formattedInactiveContracts);
+      const params = {
+        contracts: [formattedActiveContract],
+        employee_id: employeeId,
+      };
 
-        try {
-          await contracts.edit(params);
-        } catch (error) {
-          console.error(error);
-        }
-      } else {
-        deleteContract();
+      params.contracts.push(...formattedInactiveContracts);
+
+      try {
+        await contracts.edit(params);
+      } catch (error) {
+        console.error(error);
       }
     };
 

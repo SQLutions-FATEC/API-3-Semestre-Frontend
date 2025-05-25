@@ -71,11 +71,14 @@ export default {
 
     const isEditing = computed(() => props.isEditing);
 
+    const isCreated = computed(() => props.contract.action !== 'create');
+
     return {
       contract,
       editContract,
       endDate,
       inactivateContract,
+      isCreated,
       isEditContractModalOpened,
       isEditing,
       isInactivateContractModalOpened,
@@ -125,6 +128,7 @@ export default {
         <a-button
           class="delete-button"
           shape="circle"
+          :disabled="!isCreated"
           @click="openInactivateContractModal"
         >
           <template #icon>
@@ -197,6 +201,10 @@ export default {
         background-color: $colorBackgroundError;
         border-color: $colorError;
 
+        &:disabled {
+          background-color: $colorBackgroundDisabled;
+          cursor: not-allowed;
+        }
         &:hover {
           background-color: color.adjust(
             $colorBackgroundError,
