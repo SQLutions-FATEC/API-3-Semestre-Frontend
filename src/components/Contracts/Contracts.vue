@@ -3,6 +3,9 @@ import ActiveContract from '@/components/Contracts/ActiveContract.vue';
 import InactiveContracts from '@/components/Contracts/InactiveContracts.vue';
 import ContractModal from '@/components/Modals/ContractModal.vue';
 import contracts from '@/services/contracts';
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
+dayjs.extend(isBetween);
 import { PlusOutlined } from '@ant-design/icons-vue';
 import { Modal, message } from 'ant-design-vue';
 import { computed } from 'vue';
@@ -40,17 +43,47 @@ export default {
     const isContractModalOpened = ref(false);
 
     const addContract = (contract) => {
-      if (Object.keys(activeContract.value).length) {
-        activeContract.value.active = false;
-        inactiveContracts.value = [
-          ...inactiveContracts.value,
-          activeContract.value,
-        ];
+      const start = dayjs(contract.date_start);
+      const end = dayjs(contract.date_end);
+      const today = dayjs();
 
+      const hasConflict = (existingContract) => {
+        const existingStart = dayjs(existingContract.date_start);
+        const existingEnd = dayjs(existingContract.date_end);
+        return (
+          start.isBetween(existingStart, existingEnd, null, '[]') ||
+          end.isBetween(existingStart, existingEnd, null, '[]') ||
+          existingStart.isBetween(start, end, null, '[]') ||
+          existingEnd.isBetween(start, end, null, '[]')
+        );
+      };
+
+      const allContracts = [
+        ...inactiveContracts.value,
+        ...(Object.keys(activeContract.value).length
+          ? [activeContract.value]
+          : []),
+      ];
+      const conflict = allContracts.some(hasConflict);
+
+      if (conflict) {
+        message.error('Já existe um contrato com datas conflitantes.');
+        return;
+      }
+
+      if (today.isBetween(start, end, 'day', '[]')) {
+        if (Object.keys(activeContract.value).length) {
+          activeContract.value.active = false;
+          inactiveContracts.value = [
+            ...inactiveContracts.value,
+            activeContract.value,
+          ];
+        }
         contract.active = true;
         activeContract.value = contract;
       } else {
-        activeContract.value = contract;
+        contract.active = false;
+        inactiveContracts.value = [...inactiveContracts.value, contract];
       }
     };
 
