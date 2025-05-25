@@ -96,8 +96,8 @@ export default {
       if (!Object.keys(activeContract.value).length) return;
 
       const formattedActiveContract = {
-        company_id: activeContract.value.company.value,
-        role_id: activeContract.value.role.value,
+        company_id: activeContract.value.company.id,
+        role_id: activeContract.value.role.id,
         date_start: activeContract.value.date_start,
         date_end: activeContract.value.date_end,
       };
