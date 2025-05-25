@@ -41,8 +41,10 @@ export default {
     };
 
     const inactivateContract = async (inactivatedContractId) => {
+      let inactivatedContract = {};
       try {
-        await contracts.inactivate(inactivatedContractId);
+        const { data } = await contracts.inactivate(inactivatedContractId);
+        inactivatedContract = data;
         message.success('O contrato foi inativado');
       } catch (error) {
         message.error(
@@ -50,7 +52,7 @@ export default {
         );
         console.error('Erro ao inativar contrato:', error);
       }
-      emit('inactivate-contract', inactivatedContractId);
+      emit('inactivate-contract', inactivatedContract);
     };
 
     const openEditContractModal = () => {

@@ -35,7 +35,6 @@ export default {
 
   setup(props, { expose }) {
     let employeeId = null;
-    let inactivatedContractId = null;
 
     const activeContract = ref({});
     const currentPagination = ref({ page: 1, size: 5 });
@@ -189,10 +188,10 @@ export default {
       }
     };
 
-    const inactivateContract = (contractId) => {
-      inactivatedContractId = contractId;
-
+    const inactivateContract = (inactivatedContract) => {
+      activeContract.value.date_end = inactivatedContract.date_end;
       activeContract.value.active = false;
+
       inactiveContracts.value = [
         ...inactiveContracts.value,
         activeContract.value,
