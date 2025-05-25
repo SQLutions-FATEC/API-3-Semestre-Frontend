@@ -143,7 +143,7 @@ export default {
         if (isEditing.value) {
           params.id = props.employeeId;
           await editEmployee(params);
-          editContract(props.employeeId);
+          editContracts(props.employeeId);
           await uploadEmployeePhoto(props.employeeId);
         } else {
           params.contracts = employeeContracts;
@@ -194,8 +194,8 @@ export default {
       }
     };
 
-    const editContract = (employeeId) => {
-      contractsRef.value.editContract(employeeId);
+    const editContracts = (employeeId) => {
+      contractsRef.value.editContracts(employeeId);
     };
 
     const getEmployee = async (employeeId) => {
@@ -247,8 +247,8 @@ export default {
     ];
 
     const genderOptions = [
-      { value: 'Masculino', label: 'Masculino' },
-      { value: 'Feminino', label: 'Feminino' },
+      { value: 'M', label: 'Masculino' },
+      { value: 'F', label: 'Feminino' },
     ];
 
     onMounted(async () => {
@@ -321,6 +321,7 @@ export default {
       handleDateChange,
       handleGenderChange,
       handleImageChange,
+      isEditing,
       modalTitle,
       profileImage,
       uploading,
@@ -419,6 +420,7 @@ export default {
         <contracts
           ref="contractsRef"
           :employee-id="employeeId"
+          :is-editing="isEditing"
           @add-contract="addContract"
         />
       </div>

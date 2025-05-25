@@ -1,6 +1,7 @@
 <script>
 import { Table } from 'ant-design-vue';
 import { ref, watch } from 'vue';
+import dayjs from 'dayjs';
 
 export default {
   name: 'InactiveContracts',
@@ -40,8 +41,8 @@ export default {
     const totalInfos = ref(0);
 
     const formatContractDate = (start, end) => {
-      const startDate = new Date(start).toLocaleDateString('pt-BR');
-      const endDate = new Date(end).toLocaleDateString('pt-BR');
+      const startDate = dayjs(start).format('DD/MM/YYYY');
+      const endDate = dayjs(end).format('DD/MM/YYYY');
       return `${startDate} até ${endDate}`;
     };
 
@@ -67,12 +68,9 @@ export default {
     const updateDataSource = (contracts) => {
       dataSource.value = contracts.map((contract) => ({
         key: contract.id,
-        company: contract.company?.name,
-        role: contract.role?.name,
-        date: formatContractDate(
-          contract.datetime_start,
-          contract.datetime_end
-        ),
+        company: contract.company.label,
+        role: contract.role.label,
+        date: formatContractDate(contract.date_start, contract.date_end),
       }));
     };
 
