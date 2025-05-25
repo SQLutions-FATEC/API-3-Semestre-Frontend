@@ -1,6 +1,9 @@
 <script>
 import HomeHeader from '@/components/Headers/HomeHeader.vue';
+import dayjs from 'dayjs';
 import EditClockInModal from '@/components/Modals/EditClockInModal.vue';
+import CompanyModal from '@/components/Modals/CompanyModal.vue';
+import EmployeeModal from '@/components/Modals/EmployeeModal.vue';
 import clockInOut from '@/services/clockInOut';
 import { eventBus } from '@/utils/eventBus';
 import {
@@ -8,9 +11,16 @@ import {
   ArrowUpOutlined,
   EditOutlined,
 } from '@ant-design/icons-vue';
-import { Button, Select, Table } from 'ant-design-vue';
-import { h, onBeforeUnmount, onMounted, ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { Button, Select, Table, Tooltip } from 'ant-design-vue';
+import {
+  h,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  provide,
+  resolveComponent,
+} from 'vue';
+import { registerNumberMask } from '../../utils';
 
 export default {
   name: 'Home',
@@ -18,11 +28,14 @@ export default {
   components: {
     'a-button': Button,
     'a-select': Select,
+    'a-tooltip': Tooltip,
     'a-table': Table,
     'arrow-up-outlined': ArrowUpOutlined,
     'arrow-down-outlined': ArrowDownOutlined,
+    'company-modal': CompanyModal,
     'edit-clock-in-modal': EditClockInModal,
     'edit-outlined': EditOutlined,
+    'employee-modal': EmployeeModal,
     'home-header': HomeHeader,
   },
 
@@ -34,9 +47,33 @@ export default {
     const pageSize = ref(10);
     const selectedClockIn = ref({});
     const totalInfos = ref(0);
+    const isCompanyModalOpened = ref(false);
+    const isEmployeeModalOpened = ref(false);
+    const selectedCompany = ref({});
+    const selectedEmployee = ref({});
 
     const closeEditModal = () => {
       isEditClockInOpened.value = false;
+    };
+
+    const openEmployeeModal = (employee) => {
+      selectedEmployee.value = employee;
+      isEmployeeModalOpened.value = true;
+    };
+
+    const openCompanyModal = (company) => {
+      selectedCompany.value = company;
+      isCompanyModalOpened.value = true;
+    };
+
+    const closeEmployeeModal = () => {
+      isEmployeeModalOpened.value = false;
+      selectedEmployee.value = {};
+    };
+
+    const closeCompanyModal = () => {
+      isCompanyModalOpened.value = false;
+      selectedCompany.value = {};
     };
 
     const getEmployeesClockInOut = async (filters) => {
@@ -58,16 +95,14 @@ export default {
           params.employee = currentFilters.value.employee;
         if (currentFilters.value.role) params.role = currentFilters.value.role;
         if (currentFilters.value.dateRange?.length === 2) {
-          params.start_date = currentFilters.value.dateRange[0].format(
-            'YYYY-MM-DD HH:mm'
-          );
-          params.end_date = currentFilters.value.dateRange[1].format(
-            'YYYY-MM-DD HH:mm'
-          );
+          params.start_date =
+            currentFilters.value.dateRange[0].format('YYYY-MM-DD HH:mm');
+          params.end_date =
+            currentFilters.value.dateRange[1].format('YYYY-MM-DD HH:mm');
         }
 
         const { data } = await clockInOut.get(params);
-        
+
         dataSource.value = data.items.map((info) => ({
           key: info.id,
           registerNumber: info.employee.register_number,
@@ -76,8 +111,9 @@ export default {
           company: info.company.name,
           companyId: info.company.id,
           role: info.role_name,
-          datetime: info.date_time,
-          direction: info.direction,
+          date_time_in: info.date_time_in,
+          date_time_out: info.date_time_out,
+          worked_hours: info.worked_hours,
         }));
         totalInfos.value = data.total;
 
@@ -86,6 +122,8 @@ export default {
         console.error(error);
       }
     };
+
+    provide('apiCall', getEmployeesClockInOut);
 
     const handleEdit = (clockIn) => {
       selectedClockIn.value = clockIn;
@@ -116,6 +154,7 @@ export default {
         title: 'Número de registro',
         dataIndex: 'registerNumber',
         key: 'registerNumber',
+        customRender: ({ text }) => registerNumberMask(text),
       },
       {
         title: 'Funcionário',
@@ -123,14 +162,41 @@ export default {
         key: 'employee',
         customRender: ({ text, record }) => {
           return h(
-            RouterLink,
+            'div',
             {
-              to: { path: `/employee/${record.employeeId}` },
-              style: { color: 'inherit', textDecoration: 'underline' },
+              style: {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '4px',
+              },
             },
-            () => text
+            [
+              h('span', text),
+              h(Button, {
+                type: 'primary',
+                shape: 'circle',
+                size: 'small',
+                icon: h(EditOutlined),
+                onClick: () => openEmployeeModal(record),
+              }),
+            ]
           );
         },
+      },
+      {
+        title: 'Data de entrada',
+        dataIndex: 'date_time_in',
+        key: 'datetime_in',
+        customRender: ({ text }) =>
+          text ? dayjs(text).format('DD/MM/YYYY HH:mm') : '',
+      },
+      {
+        title: 'Data de saída',
+        dataIndex: 'date_time_out',
+        key: 'datetime_out',
+        customRender: ({ text }) =>
+          text ? dayjs(text).format('DD/MM/YYYY HH:mm') : '',
       },
       {
         title: 'Empresa',
@@ -138,12 +204,47 @@ export default {
         key: 'company',
         customRender: ({ text, record }) => {
           return h(
-            RouterLink,
+            'div',
             {
-              to: { path: `/company/${record.companyId}` },
-              style: { color: 'inherit', textDecoration: 'underline' },
+              style: {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '8px',
+                minWidth: '0',
+              },
             },
-            () => text
+            [
+              h(
+                resolveComponent('a-tooltip'),
+                { placement: 'top', title: text },
+                {
+                  default: () =>
+                    h(
+                      'span',
+                      {
+                        class: 'ellipsis-text',
+                        style: {
+                          maxWidth: '120px',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          display: 'inline-block',
+                          verticalAlign: 'middle',
+                        },
+                      },
+                      text
+                    ),
+                }
+              ),
+              h(Button, {
+                type: 'primary',
+                shape: 'circle',
+                size: 'small',
+                icon: h(EditOutlined),
+                onClick: () => openCompanyModal(record),
+              }),
+            ]
           );
         },
       },
@@ -153,20 +254,20 @@ export default {
         key: 'role',
       },
       {
-        title: 'Horário',
-        dataIndex: 'datetime',
-        key: 'datetime',
-      },
-      {
-        title: '',
-        dataIndex: 'direction',
-        key: 'direction',
+        title: 'Horas trabalhadas',
+        dataIndex: 'worked_hours',
+        key: 'double',
         customRender: ({ text }) => {
-          if (text === 'Entrada') {
-            return h(ArrowUpOutlined, { style: { color: 'green' } });
-          } else {
-            return h(ArrowDownOutlined, { style: { color: 'red' } });
-          }
+          const convertToHoursMinutes = (decimalHours) => {
+            if (isNaN(decimalHours)) return '00:00';
+
+            const hours = Math.floor(decimalHours);
+            const minutes = Math.round((decimalHours - hours) * 60);
+
+            return `${hours}h${minutes.toString().padStart(2, '0')}min`;
+          };
+
+          return convertToHoursMinutes(text);
         },
       },
       {
@@ -188,14 +289,22 @@ export default {
 
     return {
       columns,
+      closeCompanyModal,
       closeEditModal,
+      closeEmployeeModal,
       currentPage,
       dataSource,
       getEmployeesClockInOut,
-      isEditClockInOpened,
       handleTableChange,
+      isEditClockInOpened,
+      isCompanyModalOpened,
+      isEmployeeModalOpened,
+      openCompanyModal,
+      openEmployeeModal,
       pageSize,
       selectedClockIn,
+      selectedCompany,
+      selectedEmployee,
       totalInfos,
     };
   },
@@ -205,32 +314,65 @@ export default {
 <template>
   <div class="home">
     <home-header />
-    <a-table
-      :dataSource="dataSource"
-      :columns="columns"
-      :pagination="{
-        current: currentPage,
-        pageSize: pageSize,
-        total: totalInfos,
-        showSizeChanger: true,
-        pageSizeOptions: ['10', '20', '50'],
-      }"
-      @change="handleTableChange"
-    />
+    <div class="table-container">
+      <a-table
+        :dataSource="dataSource"
+        :columns="columns"
+        :pagination="{
+          current: currentPage,
+          pageSize: pageSize,
+          total: totalInfos,
+          showSizeChanger: true,
+          pageSizeOptions: ['10', '20', '50'],
+        }"
+        :scroll="{ y: 'calc(100vh - 392px)' }"
+        @change="handleTableChange"
+      />
+    </div>
     <edit-clock-in-modal
       v-if="isEditClockInOpened"
       :clock-in="selectedClockIn"
       @close="closeEditModal"
       @reload="getEmployeesClockInOut"
     />
+    <company-modal
+      v-if="isCompanyModalOpened"
+      v-model:open="isCompanyModalOpened"
+      :company-id="selectedCompany.companyId"
+      @close="closeCompanyModal"
+    />
+    <employee-modal
+      v-if="isEmployeeModalOpened"
+      v-model:open="isEmployeeModalOpened"
+      :employee-id="selectedEmployee.employeeId"
+      @close="closeEmployeeModal"
+    />
   </div>
 </template>
 
 <style lang="scss" scoped>
 .home {
-  padding: $spacingLg 0px $spacingXxl 0px;
+  padding: $spacingXxl 0px;
   display: flex;
   flex-direction: column;
   gap: $spacingXl;
+}
+.table-container {
+  :deep(.ant-table-container) {
+    overflow: auto;
+  }
+}
+
+:deep(.ant-table-cell) {
+  @include paragraph(medium);
+  padding: $spacingXs $spacingSm !important;
+}
+
+:deep(.ant-pagination-item-active) {
+  border-color: $colorBorderSecondary;
+
+  a {
+    color: $colorTextOrange;
+  }
 }
 </style>

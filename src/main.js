@@ -5,6 +5,11 @@ import { createApp } from 'vue';
 import { makeServer } from '../mirage.config';
 import { createPinia } from 'pinia';
 import 'ant-design-vue/dist/reset.css';
+import '@/styles/antd-overrides.scss';
+
+import dayjs from 'dayjs';
+import 'dayjs/locale/pt-br';
+dayjs.locale('pt-br');
 
 const app = createApp(App);
 

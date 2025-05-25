@@ -7,7 +7,7 @@ export default {
   
   components: {
     'a-button': Button,
-    MenuOutlined,
+    'menu-outlined': MenuOutlined,
   },
 
   setup(props, { emit }) {
@@ -38,7 +38,7 @@ export default {
 <style lang="scss" scoped>
 .top-bar {
   height: 50px;
-  background-color: blue;
+  background-color: $colorBackgroundPrimary;
   display: flex;
   align-items: center;
   justify-content: center;

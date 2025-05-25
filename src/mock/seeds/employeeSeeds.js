@@ -1,5 +1,4 @@
-import { companies } from './companySeeds';
-import { roles } from './roleSeeds';
+import contracts from './contractSeeds';
 
 const employees = [
   {
@@ -8,15 +7,9 @@ const employees = [
     blood_type: 'A+',
     register_number: '54376523455',
     birth_date: '1993-02-02T02:00:00.000+00:00',
+    gender: 'Masculino',
     profile_image: '/assets/homer.jpg',
-    contracts: [
-      {
-        company: { id: companies[0].id, name: companies[0].name },
-        role: { id: roles[0].id, name: roles[0].name },
-        datetime_start: '2025-04-16T19:48:05.652+00:00',
-        datetime_end: '2025-04-26T19:48:05.652+00:00',
-      },
-    ],
+    contracts: [contracts[0]],
   },
   {
     id: 2,
@@ -24,37 +17,19 @@ const employees = [
     blood_type: 'O+',
     register_number: '98632165432',
     birth_date: '1974-08-26T02:00:00.000+00:00',
+    gender: 'Masculino',
     profile_image: '/assets/dumbledore.jpg',
-    contracts: [
-      {
-        company: { id: companies[0].id, name: companies[0].name },
-        role: { id: roles[1].id, name: roles[1].name },
-        datetime_start: '2025-04-16T19:48:05.652+00:00',
-        datetime_end: '2025-04-26T19:48:05.652+00:00',
-      },
-      {
-        company: { id: companies[1].id, name: companies[1].name },
-        role: { id: roles[1].id, name: roles[1].name },
-        datetime_start: '2025-04-16T19:48:05.652+00:00',
-        datetime_end: '2025-04-26T19:48:05.652+00:00',
-      },
-    ],
+    contracts: [contracts[1], contracts[2]],
   },
   {
     id: 3,
-    name: 'Welington',
+    name: 'Welington Torres',
     blood_type: 'B-',
     register_number: '76542397833',
     birth_date: '1998-11-12T02:00:00.000+00:00',
+    gender: 'Masculino',
     profile_image: '/assets/homer.jpg',
-    contracts: [
-      {
-        company: { id: companies[2].id, name: companies[2].name },
-        role: { id: roles[2].id, name: roles[2].name },
-        datetime_start: '2025-04-16T19:48:05.652+00:00',
-        datetime_end: '2025-04-26T19:48:05.652+00:00',
-      },
-    ],
+    contracts: [contracts[3]],
   },
   {
     id: 4,
@@ -62,15 +37,9 @@ const employees = [
     blood_type: 'AB+',
     register_number: '98632165282',
     birth_date: '1975-09-22T02:00:00.000+00:00',
+    gender: 'Masculino',
     profile_image: '/assets/homer.jpg',
-    contracts: [
-      {
-        company: { id: companies[0].id, name: companies[0].name },
-        role: { id: roles[0].id, name: roles[0].name },
-        datetime_start: '2025-04-16T19:48:05.652+00:00',
-        datetime_end: '2025-04-26T19:48:05.652+00:00',
-      },
-    ],
+    contracts: [contracts[4]],
   },
   {
     id: 5,
@@ -78,15 +47,9 @@ const employees = [
     blood_type: 'A+',
     register_number: '98643165432',
     birth_date: '1972-04-12T02:00:00.000+00:00',
+    gender: 'Masculino',
     profile_image: '/assets/homer.jpg',
-    contracts: [
-      {
-        company: { id: companies[0].id, name: companies[0].name },
-        role: { id: roles[0].id, name: roles[0].name },
-        datetime_start: '2025-04-16T19:48:05.652+00:00',
-        datetime_end: '2025-04-26T19:48:05.652+00:00',
-      },
-    ],
+    contracts: [contracts[5]],
   },
   {
     id: 6,
@@ -94,15 +57,9 @@ const employees = [
     blood_type: 'B+',
     register_number: '98246165432',
     birth_date: '1970-05-15T02:00:00.000+00:00',
+    gender: 'Masculino',
     profile_image: '/assets/homer.jpg',
-    contracts: [
-      {
-        company: { id: companies[0].id, name: companies[0].name },
-        role: { id: roles[0].id, name: roles[0].name },
-        datetime_start: '2025-04-16T19:48:05.652+00:00',
-        datetime_end: '2025-04-26T19:48:05.652+00:00',
-      },
-    ],
+    contracts: [contracts[6]],
   },
   {
     id: 7,
@@ -110,15 +67,9 @@ const employees = [
     blood_type: 'O-',
     register_number: '28632165432',
     birth_date: '1980-10-22T02:00:00.000+00:00',
+    gender: 'Masculino',
     profile_image: '/assets/homer.jpg',
-    contracts: [
-      {
-        company: { id: companies[0].id, name: companies[0].name },
-        role: { id: roles[0].id, name: roles[0].name },
-        datetime_start: '2025-04-16T19:48:05.652+00:00',
-        datetime_end: '2025-04-26T19:48:05.652+00:00',
-      },
-    ],
+    contracts: [contracts[7]],
   },
   {
     id: 8,
@@ -126,15 +77,9 @@ const employees = [
     blood_type: 'AB-',
     register_number: '99332165432',
     birth_date: '1982-12-21T02:00:00.000+00:00',
+    gender: 'Masculino',
     profile_image: '/assets/homer.jpg',
-    contracts: [
-      {
-        company: { id: companies[0].id, name: companies[0].name },
-        role: { id: roles[0].id, name: roles[0].name },
-        datetime_start: '2025-04-16T19:48:05.652+00:00',
-        datetime_end: '2025-04-26T19:48:05.652+00:00',
-      },
-    ],
+    contracts: [contracts[8]],
   },
   {
     id: 9,
@@ -142,15 +87,9 @@ const employees = [
     blood_type: 'A+',
     register_number: '98722165432',
     birth_date: '1984-02-04T02:00:00.000+00:00',
+    gender: 'Masculino',
     profile_image: '/assets/homer.jpg',
-    contracts: [
-      {
-        company: { id: companies[0].id, name: companies[0].name },
-        role: { id: roles[0].id, name: roles[0].name },
-        datetime_start: '2025-04-16T19:48:05.652+00:00',
-        datetime_end: '2025-04-26T19:48:05.652+00:00',
-      },
-    ],
+    contracts: [contracts[9]],
   },
   {
     id: 10,
@@ -158,15 +97,9 @@ const employees = [
     blood_type: 'O-',
     register_number: '98631234432',
     birth_date: '1990-06-22T02:00:00.000+00:00',
+    gender: 'Feminino',
     profile_image: '/assets/pam.jpg',
-    contracts: [
-      {
-        company: { id: companies[0].id, name: companies[0].name },
-        role: { id: roles[0].id, name: roles[0].name },
-        datetime_start: '2025-04-16T19:48:05.652+00:00',
-        datetime_end: '2025-04-26T19:48:05.652+00:00',
-      },
-    ],
+    contracts: [contracts[10]],
   },
 ];
 

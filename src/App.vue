@@ -7,17 +7,14 @@ export default {
   name: 'App',
 
   components: {
-    TopBar,
-    SideBar,
+    'top-bar': TopBar,
+    'side-bar': SideBar,
   },
-
   setup() {
     const isSidebarOpen = ref(false);
-
     const toggleSidebar = () => {
       isSidebarOpen.value = !isSidebarOpen.value;
     };
-
     return {
       isSidebarOpen,
       toggleSidebar,
@@ -40,6 +37,7 @@ export default {
 .app {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0px 16px;
+  padding: 0px $spacingLg;
+  background-color: $colorBackground;
 }
 </style>

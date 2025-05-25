@@ -1,24 +1,43 @@
 <script>
+import { inject } from 'vue';
 import AtInput from '@/components/Input/AtInput.vue';
 import AtNumberInput from '@/components/Input/AtNumberInput.vue';
 import employee from '@/services/employee';
 import { CameraOutlined } from '@ant-design/icons-vue';
 import { validateRN } from '@/utils/validations/registerNumber';
-import { Button, Cascader, DatePicker, Upload, Modal } from 'ant-design-vue';
+import {
+  Button,
+  Cascader,
+  DatePicker,
+  Divider,
+  Upload,
+  Modal,
+} from 'ant-design-vue';
 import dayjs from 'dayjs';
 import { computed, onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import Contracts from '@/components/Contracts.vue';
+import Contracts from '@/components/Contracts/Contracts.vue';
 import { message } from 'ant-design-vue';
 import photo from '@/services/photo';
 
 export default {
-  name: 'Employee',
+  name: 'EmployeeModal',
+
+  props: {
+    employeeId: {
+      default: null,
+      type: Number,
+    },
+    open: {
+      required: true,
+      type: Boolean,
+    },
+  },
 
   components: {
     'a-button': Button,
     'a-cascader': Cascader,
     'a-date-picker': DatePicker,
+    'a-divider': Divider,
     'a-modal': Modal,
     'at-input': AtInput,
     'at-number-input': AtNumberInput,
@@ -27,23 +46,19 @@ export default {
     contracts: Contracts,
   },
 
-  setup() {
-    const route = useRoute();
-    const router = useRouter();
+  setup(props, { emit }) {
+    const apiCall = inject('apiCall');
     const dateFormatList = ['DD/MM/YYYY'];
     const defaultProfileImage = '/assets/altave.jpg';
     let employeeContracts = [];
-    let gender = 'F';
 
-    const buttonAction = ref('Cadastrar');
     const contractsRef = ref(null);
     const employeeName = ref('');
     const employeeRN = ref('');
     const employeeBirthDate = ref('');
     const employeeBloodType = ref('');
+    const employeeGender = ref('');
     const errorMessage = ref('');
-    const isConfirmationModalOpened = ref(false);
-    const pageTitle = ref('Cadastro de funcionário');
     const isEditing = ref(false);
     const profileImage = ref(defaultProfileImage);
     const selectedFile = ref(null);
@@ -60,6 +75,10 @@ export default {
         message.error('A imagem deve ser menor que 2MB!');
       }
       return isJpgOrPng && isLt2M;
+    };
+
+    const closeModal = () => {
+      emit('update:open', false);
     };
 
     const handleImageChange = (info) => {
@@ -95,18 +114,11 @@ export default {
 
     const employeeAction = async () => {
       if (
-        // temporario, para fazer funcionar sem contratos, que será na próxima sprint
-        
-        // !employeeName.value ||
-        // !employeeBirthDate.value ||
-        // !employeeBloodType.value ||
-        // !employeeRN.value ||
-        // profileImage.value === defaultProfileImage ||
-        // !employeeContracts.length
         !employeeName.value ||
         !employeeBirthDate.value ||
         !employeeBloodType.value ||
         !employeeRN.value ||
+        !employeeGender.value ||
         profileImage.value === defaultProfileImage
       ) {
         message.error('Todos os campos são obrigatórios');
@@ -120,29 +132,32 @@ export default {
       }
 
       const params = {
-        id: route.params.id,
         name: employeeName.value,
         blood_type: employeeBloodType.value,
         birth_date: employeeBirthDate.value,
         register_number: employeeRN.value,
-        gender: gender
-        // temporario, para fazer funcionar sem contratos, que será na próxima sprint
-        // contracts: employeeContracts,
+        gender: employeeGender.value,
       };
 
-      let employeeId;
       try {
         if (isEditing.value) {
-          employeeId = await editEmployee(params);
-          await uploadEmployeePhoto(employeeId);
+          params.id = props.employeeId;
+          await editEmployee(params);
+          editContracts(props.employeeId);
+          await uploadEmployeePhoto(props.employeeId);
         } else {
-          employeeId = await createEmployee(params);
+          params.contracts = employeeContracts;
+          const employeeId = await createEmployee(params);
+          createContracts(employeeId);
           await uploadEmployeePhoto(employeeId);
           clearFields();
         }
       } catch (error) {
         console.error(error);
       }
+
+      closeModal();
+      await apiCall();
     };
 
     const createEmployee = async (params) => {
@@ -160,6 +175,10 @@ export default {
       }
     };
 
+    const createContracts = (employeeId) => {
+      contractsRef.value.createContracts(employeeId);
+    };
+
     const editEmployee = async (params) => {
       try {
         const { data } = await employee.edit(params);
@@ -175,18 +194,8 @@ export default {
       }
     };
 
-    const fillContracts = (contracts) => {
-      const formattedContracts = [];
-      contracts.forEach((contract) => {
-        formattedContracts.push({
-          company: contract.company,
-          role: contract.role,
-          datetime_start: contract.datetime_start,
-          datetime_end: contract.datetime_end,
-        });
-      });
-      employeeContracts = formattedContracts;
-      contractsRef.value.fillContracts(formattedContracts);
+    const editContracts = (employeeId) => {
+      contractsRef.value.editContracts(employeeId);
     };
 
     const getEmployee = async (employeeId) => {
@@ -196,10 +205,7 @@ export default {
         employeeBirthDate.value = dayjs(data.birth_date);
         employeeBloodType.value = data.blood_type;
         employeeRN.value = String(data.register_number);
-        gender = data.gender
-        fillContracts(data.contracts);
-
-        pageTitle.value = `Editar ${employeeName.value}`;
+        employeeGender.value = data.gender;
       } catch (error) {
         console.error(error);
       }
@@ -240,33 +246,29 @@ export default {
       { value: 'O-', label: 'O-' },
     ];
 
+    const genderOptions = [
+      { value: 'M', label: 'Masculino' },
+      { value: 'F', label: 'Feminino' },
+    ];
+
     onMounted(async () => {
-      const employeeId = route.params.id;
+      const employeeId = props.employeeId;
+
       if (!!employeeId) {
-        buttonAction.value = 'Editar';
         isEditing.value = true;
         await Promise.all([getEmployee(employeeId), getPhoto(employeeId)]);
       }
     });
 
-    const deleteEmployee = async () => {
-      try {
-        const employeeId = route.params.id;
-        await employee.delete(employeeId);
-        isConfirmationModalOpened.value = false;
-        router.push({ name: 'Home' });
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const openConfirmationModal = () => {
-      isConfirmationModalOpened.value = true;
-    };
-
     const handleBloodTypeChange = (value) => {
       if (value != null) {
         employeeBloodType.value = value[0];
+      }
+    };
+
+    const handleGenderChange = (value) => {
+      if (value != null) {
+        employeeGender.value = value[0];
       }
     };
 
@@ -279,9 +281,10 @@ export default {
       employeeBirthDate.value = '';
       employeeRN.value = '';
       employeeBloodType.value = '';
+      employeeGender.value = '';
       employeeRN.value = '';
-      contractsRef.value.resetContracts();
       profileImage.value = defaultProfileImage;
+      contractsRef.value.clearFields();
     };
 
     const validateRNInput = (event) => {
@@ -293,59 +296,95 @@ export default {
       return dayjs().diff(birthDate, 'year');
     };
 
-    const showDeleteButton = computed(() => {
-      return isEditing.value;
+    const modalTitle = computed(() => {
+      return isEditing.value ? 'Editar Funcionário' : 'Cadastrar Funcionário';
     });
 
     return {
+      closeModal,
       addContract,
       beforeUpload,
       bloodTypeOptions,
-      buttonAction,
+      genderOptions,
       contractsRef,
       customRequest,
       dateFormatList,
       defaultProfileImage,
-      deleteEmployee,
       employeeBirthDate,
       employeeBloodType,
       employeeName,
       employeeRN,
+      employeeGender,
       employeeAction,
       errorMessage,
       handleBloodTypeChange,
       handleDateChange,
+      handleGenderChange,
       handleImageChange,
-      isConfirmationModalOpened,
-      openConfirmationModal,
-      pageTitle,
+      isEditing,
+      modalTitle,
       profileImage,
-      showDeleteButton,
       uploading,
       validateRNInput,
     };
   },
 };
 </script>
-<template>
-  <div class="employee">
-    <h1>{{ pageTitle }}</h1>
 
-    <div class="employee__content">
-      <div class="content__inputs">
-        <div class="left-column">
+<template>
+  <a-modal
+    :open="open"
+    :title="modalTitle"
+    :width="800"
+    cancelText="Cancelar"
+    okText="Salvar"
+    @cancel="closeModal"
+    @ok="employeeAction"
+  >
+    <div class="employee-modal">
+      <div class="modal__content">
+        <a-upload
+          class="content__image"
+          list-type="picture-card"
+          name="avatar"
+          :show-upload-list="false"
+          :before-upload="beforeUpload"
+          :custom-request="customRequest"
+          @change="handleImageChange"
+        >
+          <template v-if="profileImage === defaultProfileImage">
+            <div>
+              <camera-outlined />
+              <div>Adicionar Foto</div>
+            </div>
+          </template>
+          <img
+            v-else
+            alt="Foto do Funcionário"
+            class="image"
+            :src="profileImage"
+          />
+        </a-upload>
+        <div class="input-group">
+          <label>Nome completo</label>
           <at-input
             v-model:value="employeeName"
             placeholder="Nome completo"
             text
           />
+        </div>
+        <div class="input-group">
+          <label>Número de registro</label>
           <at-number-input
             v-model:value="employeeRN"
             placeholder="Número de registro"
-            mask="###########"
+            mask="###.#####.##-#"
             :error-message="errorMessage"
             @input="validateRNInput"
           />
+        </div>
+        <div class="input-group">
+          <label>Data de nascimento</label>
           <a-date-picker
             v-model:value="employeeBirthDate"
             placeholder="Data de nascimento"
@@ -353,125 +392,77 @@ export default {
             :format="dateFormatList"
             @change="handleDateChange"
           />
-          <a-cascader
-            v-model:value="employeeBloodType"
-            placeholder="Tipo Sanguíneo"
-            style="width: 100%"
-            :options="bloodTypeOptions"
-            @change="handleBloodTypeChange"
-          />
+        </div>
+        <div class="content__cascaders">
+          <div class="input-group">
+            <label>Tipo Sanguíneo</label>
+            <a-cascader
+              v-model:value="employeeBloodType"
+              placeholder="Tipo Sanguíneo"
+              :options="bloodTypeOptions"
+              @change="handleBloodTypeChange"
+              style="width: 100%"
+            />
+          </div>
+          <div class="input-group">
+            <label>Gênero</label>
+            <a-cascader
+              v-model:value="employeeGender"
+              placeholder="Gênero"
+              style="width: 100%"
+              :options="genderOptions"
+              @change="handleGenderChange"
+            />
+          </div>
         </div>
 
-        <div class="right-column">
-          <a-upload
-            class="employee-image__wrapper"
-            list-type="picture-card"
-            name="avatar"
-            :show-upload-list="false"
-            :before-upload="beforeUpload"
-            :custom-request="customRequest"
-            @change="handleImageChange"
-          >
-            <template v-if="profileImage === defaultProfileImage">
-              <div>
-                <camera-outlined />
-                <div>Adicionar Foto</div>
-              </div>
-            </template>
-            <img
-              v-else
-              alt="Foto do Funcionário"
-              class="employee-image"
-              :src="profileImage"
-            />
-          </a-upload>
-        </div>
-      </div>
-      <contracts ref="contractsRef" @add-contract="addContract" />
-      <div class="content__action">
-        <a-button
-          v-if="showDeleteButton"
-          danger
-          style="width: 250px"
-          @click="openConfirmationModal"
-        >
-          Deletar funcionario
-        </a-button>
-        <a-button
-          type="primary"
-          style="width: 250px"
-          :loading="uploading"
-          @click="employeeAction"
-        >
-          {{ buttonAction }}
-        </a-button>
+        <a-divider />
+        <contracts
+          ref="contractsRef"
+          :employee-id="employeeId"
+          :is-editing="isEditing"
+          @add-contract="addContract"
+        />
       </div>
     </div>
-
-    <a-modal
-      v-model:open="isConfirmationModalOpened"
-      title="Deletar funcionário"
-      @ok="deleteEmployee"
-    >
-      <span>
-        Tem certeza que deseja deletar o funcionário {{ employeeName }}?
-      </span>
-    </a-modal>
-  </div>
+  </a-modal>
 </template>
 
 <style lang="scss" scoped>
-.employee {
-  padding: $spacingXxl 0px;
+.employee-modal {
+  display: flex;
+  flex-direction: column;
+  gap: $spacingLg;
 
-  .employee__content {
-    padding: $spacingXxl 0px;
+  .modal__content {
     display: flex;
-    flex-wrap: wrap;
-    overflow: auto;
+    flex-direction: column;
     gap: $spacingXxl;
 
-    .content__inputs {
+    .input-group {
       display: flex;
-      gap: $spacingXxl;
-      flex: 1 1 calc(100% - $spacingXxl);
-
-      .left-column {
-        display: flex;
-        flex-direction: column;
-        gap: $spacingXxl;
-        flex: 1 1 calc(50% - $spacingXxl/2);
-      }
-      .right-column {
-        flex: 1 1 calc(50% - $spacingXxl/2);
-        text-align: center;
-
-        .employee-image__wrapper {
-          max-height: 100%;
-          max-width: 100%;
-          height: 100%;
-          width: 100%;
-
-          .employee-image {
-            height: 100%;
-            width: 100%;
-          }
-        }
-      }
+      flex-direction: column;
+      gap: $spacingXs;
+      margin-bottom: 0;
+      width: 100%;
     }
-    .content__contracts {
-      display: flex;
-      flex: 1 1 auto;
-      gap: $spacingXxl;
+    .content__image {
+      height: 220px;
+      width: 220px;
+      margin: 0px auto;
     }
-    .content__action {
-      flex: 0 0 100%;
+    .ant-upload .image {
+      height: 220px;
+      width: 220px;
+      object-fit: cover;
+    }
+    .content__cascaders {
       display: flex;
-      justify-content: center;
-      gap: $spacingMd;
+      gap: $spacingSm;
     }
   }
 }
+
 :deep(.ant-upload),
 .ant-upload-select {
   height: 100% !important;

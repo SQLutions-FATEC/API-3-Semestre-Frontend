@@ -1,32 +1,50 @@
-// background
-$colorBackgroundPrimary: '#fffefd';
-$colorBackgroundDisabled: '#e7e6e6';
-$colorBackgroundWhite: '#ffffff';
-
-// primary
-$colorPrimaryMain: '#f88d2a';
-$colorPrimaryVariant: '#ff5f00';
-$colorPrimaryHighlight: '#d05207';
-
-// border
-$colorBorderPrimary: '#f88d2a';
-$colorBorder: '#4c4c4c';
-
-// icon
-$colorIconPrimary: '#4c4c4c';
-$colorIconDisabled: '#c0c0c0';
-
-// text
-$colorTextPrimary: '#4d4d4d';
-$colorTextDisabled: '#c0c0c0';
-$colorTextError: '#ED6060';
+@use 'sass:map';
 
 // colors
-$colorGrayBase: '#4d4d4d';
-$colorGray75: '#979797';
-$colorBlack: '#000000';
-$colorWhite: '#ffffff';
+$colorGrayBase: #4d4d4d;
+$colorGray75: #7a7a7a;
+$colorGray50: #a6a6a6;
+$colorGray25: #d3d3d3;
+$colorError: #ed6060;
+$colorBlack: #000000;
+$colorWhite: #ffffff;
+
+// primary
+$colorPrimary: #74bfe5;
+$colorPrimaryHighlight: #0089d0;
+
+// secondary
+$colorSecondary: #ff5f00;
+$colorSecondaryHighlight: #d05207;
+
+// background
+$colorBackground: #fffefd;
+$colorBackgroundPrimary: #ddf0fa;
+$colorBackgroundSecondary: $colorSecondary;
+$colorBackgroundSecondaryHighlight: $colorSecondaryHighlight;
+$colorBackgroundNeutral: $colorGray25;
+$colorBackgroundSuccess: #1eff00;
+$colorBackgroundError: #ed6060;
+$colorBackgroundDisabled: #e7e6e6;
+$colorBackgroundWhite: #ffffff;
+
+// border
+$colorBorder: #4c4c4c;
+$colorBorderPrimary: $colorPrimary;
+$colorBorderSecondary: $colorSecondary;
+$colorBorderSecondaryHighlight: $colorSecondary;
+
+// icon
+$colorIconPrimary: #4c4c4c;
+$colorIconDisabled: #7d7c7d;
+
+// text
+$colorTextPrimary: #3a383a;
+$colorTextDisabled: #7d7c7d;
+$colorTextError: #ed6060;
+$colorTextOrange: $colorSecondary;
+$colorTextWhite: $colorWhite;
 
 // brand
-$colorBrandPrange: '#f88d2a';
-$colorBrandOrangeBrighter: '#ff5f00';
+$colorBrand: $colorPrimary;
+$colorBrandBrighter: $colorPrimaryHighlight;

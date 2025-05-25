@@ -19,8 +19,13 @@ export default {
 
 <style lang="scss" scoped>
 .home-header {
+  background-color: $colorBackgroundWhite;
   display: flex;
   flex-direction: column;
   gap: $spacingLg;
+
+  h1 {
+    @include heading(large);
+  }
 }
 </style>

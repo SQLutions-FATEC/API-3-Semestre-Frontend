@@ -1,0 +1,95 @@
+import { companies } from './companySeeds';
+import { roles } from './roleSeeds';
+
+const contracts = [
+  {
+    id: 1,
+    company: companies[0].name,
+    role: roles[0].name,
+    date_start: '2025-01-01',
+    date_end: '2025-10-01',
+    active: true,
+  },
+  {
+    id: 2,
+    company: companies[0].name,
+    role: roles[1].name,
+    date_start: '2025-02-15',
+    date_end: '2026-01-15',
+    active: true,
+  },
+  {
+    id: 3,
+    company: companies[1].name,
+    role: roles[1].name,
+    date_start: '2025-03-10',
+    date_end: '2025-12-10',
+    active: false,
+  },
+  {
+    id: 4,
+    company: companies[2].name,
+    role: roles[2].name,
+    date_start: '2025-04-01',
+    date_end: '2026-06-01',
+    active: true,
+  },
+  {
+    id: 5,
+    company: companies[0].name,
+    role: roles[0].name,
+    date_start: '2025-05-20',
+    date_end: '2026-03-20',
+    active: false,
+  },
+  {
+    id: 6,
+    company: companies[0].name,
+    role: roles[0].name,
+    date_start: '2025-06-15',
+    date_end: '2026-04-15',
+    active: true,
+  },
+  {
+    id: 7,
+    company: companies[0].name,
+    role: roles[0].name,
+    date_start: '2025-07-10',
+    date_end: '2026-02-10',
+    active: false,
+  },
+  {
+    id: 8,
+    company: companies[0].name,
+    role: roles[0].name,
+    date_start: '2025-08-05',
+    date_end: '2026-05-05',
+    active: true,
+  },
+  {
+    id: 9,
+    company: companies[0].name,
+    role: roles[0].name,
+    date_start: '2025-09-01',
+    date_end: '2026-03-01',
+    active: false,
+  },
+  {
+    id: 10,
+    company: companies[0].name,
+    role: roles[0].name,
+    date_start: '2025-10-20',
+    date_end: '2026-06-20',
+    active: true,
+  },
+  {
+    id: 11,
+    company: companies[0].name,
+    role: roles[0].name,
+    date_start: '2025-11-15',
+    date_end: '2026-05-15',
+    active: false,
+  },
+];
+
+export default contracts;

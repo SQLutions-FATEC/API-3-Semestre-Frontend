@@ -14,10 +14,19 @@ const employeeRoutes = [
       method: 'get',
       url: '/employee',
       result: () => {
-        const response = employees;
+        const response = employees.map((employee) => {
+          return {
+            id: employee.id,
+            name: employee.name,
+            blood_type: employee.blood_type,
+            register_number: employee.register_number,
+            birth_date: employee.birth_date,
+            gender: employee.gender,
+          };
+        });
 
         return APIFailureWrapper({
-          content: response,
+          content: { items: response, total: response.length },
           errorMessage: 'Erro ao listar os funcionários',
         });
       },
@@ -38,12 +47,13 @@ const employeeRoutes = [
           birth_date: employee.birth_date,
           blood_type: employee.blood_type,
           register_number: employee.register_number,
+          gender: employee.gender,
           contracts: employee.contracts.map((contract) => {
             const selectedCompany = companies.find(
-              (company) => company.id == contract.company.id
+              (company) => company.name == contract.company
             );
             const selectedRole = roles.find(
-              (role) => role.id == contract.role.id
+              (role) => role.name == contract.role
             );
 
             return {
@@ -55,8 +65,8 @@ const employeeRoutes = [
                 id: selectedRole.id,
                 name: selectedRole.name,
               },
-              datetime_start: contract.datetime_start,
-              datetime_end: contract.datetime_end,
+              date_start: contract.date_start,
+              date_end: contract.date_end,
             };
           }),
         };
@@ -82,8 +92,8 @@ const employeeRoutes = [
           blood_type: body.blood_type,
           register_number: body.register_number,
           birth_date: body.birth_date,
-          // temporario, para fazer funcionar sem contratos, que será na próxima sprint
-          // contracts: body.contracts,
+          gender: body.gender,
+          contracts: body.contracts,
         };
         employees.push(newEmployee);
 
@@ -110,7 +120,7 @@ const employeeRoutes = [
             employee.blood_type = body.blood_type;
             employee.register_number = body.register_number;
             employee.birth_date = body.birth_date;
-            employee.contracts = body.contracts;
+            employee.gender = body.gender;
             updateEmployeeInClockInOut(params.id, body.name);
           }
         });
