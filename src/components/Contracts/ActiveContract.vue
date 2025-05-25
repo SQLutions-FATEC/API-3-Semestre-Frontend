@@ -1,9 +1,11 @@
 <script>
-import { Button, Tooltip } from 'ant-design-vue';
+import { Button, Tooltip, message } from 'ant-design-vue';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons-vue';
 import { ref, computed } from 'vue';
 import ContractModal from '@/components/Modals/ContractModal.vue';
 import InactivateContractModal from '@/components/Modals/InactivateContractModal.vue';
+import contracts from '@/services/contracts';
+import dayjs from 'dayjs';
 
 export default {
   name: 'ActiveContract',
@@ -12,6 +14,10 @@ export default {
     contract: {
       required: true,
       type: Object,
+    },
+    isEditing: {
+      required: true,
+      type: Boolean,
     },
   },
 
@@ -34,8 +40,19 @@ export default {
       emit('edit-contract', edittedContract);
     };
 
-    const inactivateContract = (inactivatedContractId) => {
-      emit('inactivate-contract', inactivatedContractId);
+    const inactivateContract = async (inactivatedContractId) => {
+      let inactivatedContract = {};
+      try {
+        const { data } = await contracts.inactivate(inactivatedContractId);
+        inactivatedContract = data;
+        message.success('O contrato foi inativado');
+      } catch (error) {
+        message.error(
+          'Houve um problema ao inativar o contrato. Tente novamente'
+        );
+        console.error('Erro ao inativar contrato:', error);
+      }
+      emit('inactivate-contract', inactivatedContract);
     };
 
     const openEditContractModal = () => {
@@ -46,14 +63,30 @@ export default {
       isInactivateContractModalOpened.value = true;
     };
 
+    const startDate = computed(() => {
+      return dayjs(contract.value.date_start).format('DD/MM/YYYY');
+    });
+
+    const endDate = computed(() => {
+      return dayjs(contract.value.date_end).format('DD/MM/YYYY');
+    });
+
+    const isEditing = computed(() => props.isEditing);
+
+    const isCreated = computed(() => props.contract.action !== 'create');
+
     return {
       contract,
       editContract,
+      endDate,
       inactivateContract,
+      isCreated,
       isEditContractModalOpened,
+      isEditing,
       isInactivateContractModalOpened,
       openEditContractModal,
       openInactivateContractModal,
+      startDate,
     };
   },
 };
@@ -69,22 +102,27 @@ export default {
       <div class="contract__infos">
         <div class="info">
           <h3>Empresa</h3>
-          <p>{{ contract.company.name }}</p>
+          <p>{{ contract.company.label }}</p>
         </div>
         <div class="info">
           <h3>Função</h3>
-          <p>{{ contract.role.name }}</p>
+          <p>{{ contract.role.label }}</p>
         </div>
         <div class="info">
           <h3>Data de contrato</h3>
           <p>
-            {{ new Date(contract.datetime_start).toLocaleDateString('pt-BR') }}
-            - {{ new Date(contract.datetime_end).toLocaleDateString('pt-BR') }}
+            {{ startDate }}
+            - {{ endDate }}
           </p>
         </div>
       </div>
       <div class="contract__actions">
-        <a-button type="primary" shape="circle" @click="openEditContractModal">
+        <a-button
+          :disabled="!isEditing"
+          type="primary"
+          shape="circle"
+          @click="openEditContractModal"
+        >
           <template #icon>
             <edit-outlined style="color: white" />
           </template>
@@ -92,6 +130,7 @@ export default {
         <a-button
           class="delete-button"
           shape="circle"
+          :disabled="!isCreated"
           @click="openInactivateContractModal"
         >
           <template #icon>
@@ -164,6 +203,10 @@ export default {
         background-color: $colorBackgroundError;
         border-color: $colorError;
 
+        &:disabled {
+          background-color: $colorBackgroundDisabled;
+          cursor: not-allowed;
+        }
         &:hover {
           background-color: color.adjust(
             $colorBackgroundError,

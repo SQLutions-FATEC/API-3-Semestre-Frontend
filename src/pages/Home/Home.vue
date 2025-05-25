@@ -185,17 +185,19 @@ export default {
         },
       },
       {
-         title: 'Data de entrada',
-         dataIndex: 'date_time_in',
-         key: 'datetime_in',
-         customRender: ({ text }) => text ? dayjs(text).format('DD/MM/YYYY HH:mm') : '',
-       },
-       {
-         title: 'Data de saída',
-         dataIndex: 'date_time_out',
-         key: 'datetime_out',
-         customRender: ({ text }) => text ? dayjs(text).format('DD/MM/YYYY HH:mm') : '',
-       },
+        title: 'Data de entrada',
+        dataIndex: 'date_time_in',
+        key: 'datetime_in',
+        customRender: ({ text }) =>
+          text ? dayjs(text).format('DD/MM/YYYY HH:mm') : '',
+      },
+      {
+        title: 'Data de saída',
+        dataIndex: 'date_time_out',
+        key: 'datetime_out',
+        customRender: ({ text }) =>
+          text ? dayjs(text).format('DD/MM/YYYY HH:mm') : '',
+      },
       {
         title: 'Empresa',
         dataIndex: 'company',
@@ -323,7 +325,7 @@ export default {
           showSizeChanger: true,
           pageSizeOptions: ['10', '20', '50'],
         }"
-        :scroll="{ y: 'calc(100vh - 404px)' }"
+        :scroll="{ y: 'calc(100vh - 392px)' }"
         @change="handleTableChange"
       />
     </div>

@@ -40,8 +40,8 @@ const contractRoutes = [
           id: contracts.length + 1,
           company: body.company,
           role: body.role,
-          datetime_start: body.datetime_start,
-          datetime_end: body.datetime_end,
+          date_start: body.date_start,
+          date_end: body.date_end,
           active: true,
         };
         contracts.push(newContract);

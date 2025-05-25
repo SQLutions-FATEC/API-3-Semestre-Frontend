@@ -1,12 +1,15 @@
 <script>
-import { Modal, message } from 'ant-design-vue';
-import { PlusOutlined } from '@ant-design/icons-vue';
-import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
 import ActiveContract from '@/components/Contracts/ActiveContract.vue';
 import InactiveContracts from '@/components/Contracts/InactiveContracts.vue';
 import ContractModal from '@/components/Modals/ContractModal.vue';
 import contracts from '@/services/contracts';
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
+dayjs.extend(isBetween);
+import { PlusOutlined } from '@ant-design/icons-vue';
+import { Modal, message } from 'ant-design-vue';
+import { computed } from 'vue';
+import { onMounted, ref } from 'vue';
 
 export default {
   name: 'Contracts',
@@ -15,6 +18,10 @@ export default {
     employeeId: {
       default: null,
       type: Number,
+    },
+    isEditing: {
+      default: false,
+      type: Boolean,
     },
   },
 
@@ -27,9 +34,7 @@ export default {
   },
 
   setup(props, { expose }) {
-    const route = useRoute();
     let employeeId = null;
-    let inactivatedContractId = null;
 
     const activeContract = ref({});
     const currentPagination = ref({ page: 1, size: 5 });
@@ -37,17 +42,47 @@ export default {
     const isContractModalOpened = ref(false);
 
     const addContract = (contract) => {
-      if (Object.keys(activeContract.value).length) {
-        activeContract.value.active = false;
-        inactiveContracts.value = [
-          ...inactiveContracts.value,
-          activeContract.value,
-        ];
+      const start = dayjs(contract.date_start);
+      const end = dayjs(contract.date_end);
+      const today = dayjs();
 
+      const hasConflict = (existingContract) => {
+        const existingStart = dayjs(existingContract.date_start);
+        const existingEnd = dayjs(existingContract.date_end);
+        return (
+          start.isBetween(existingStart, existingEnd, null, '[]') ||
+          end.isBetween(existingStart, existingEnd, null, '[]') ||
+          existingStart.isBetween(start, end, null, '[]') ||
+          existingEnd.isBetween(start, end, null, '[]')
+        );
+      };
+
+      const allContracts = [
+        ...inactiveContracts.value,
+        ...(Object.keys(activeContract.value).length
+          ? [activeContract.value]
+          : []),
+      ];
+      const conflict = allContracts.some(hasConflict);
+
+      if (conflict) {
+        message.error('Já existe um contrato com datas conflitantes.');
+        return;
+      }
+
+      if (today.isBetween(start, end, 'day', '[]')) {
+        if (Object.keys(activeContract.value).length) {
+          activeContract.value.active = false;
+          inactiveContracts.value = [
+            ...inactiveContracts.value,
+            activeContract.value,
+          ];
+        }
         contract.active = true;
         activeContract.value = contract;
       } else {
-        activeContract.value = contract;
+        contract.active = false;
+        inactiveContracts.value = [...inactiveContracts.value, contract];
       }
     };
 
@@ -59,13 +94,28 @@ export default {
     const createContracts = async (employeeId) => {
       if (!Object.keys(activeContract.value).length) return;
 
+      const formattedActiveContract = {
+        company_id: activeContract.value.company.id,
+        role_id: activeContract.value.role.id,
+        date_start: activeContract.value.date_start,
+        date_end: activeContract.value.date_end,
+      };
+      const formattedInactiveContracts = inactiveContracts.value.map(
+        (contract) => ({
+          company_id: contract.company.value,
+          role_id: contract.role.value,
+          date_start: contract.date_start,
+          date_end: contract.date_end,
+        })
+      );
+
       const params = {
-        contracts: [activeContract.value],
+        contracts: [formattedActiveContract],
         employee_id: employeeId,
       };
-      if (inactiveContracts.value.length) {
-        params.contracts.push(...inactiveContracts.value);
-      }
+
+      params.contracts.push(...formattedInactiveContracts);
+
       try {
         await contracts.create(params);
       } catch (error) {
@@ -73,27 +123,39 @@ export default {
       }
     };
 
-    const deleteContract = async () => {
-      try {
-        await contracts.inactivate(inactivatedContractId);
-        message.success('O contrato foi inativado');
-      } catch (error) {
-        message.error(
-          'Houve um problema ao desativar o contrato. Tente novamente'
-        );
-        console.error('Erro ao desabilitar contrato:', error);
-      }
-    };
+    const editContracts = async () => {
+      if (!Object.keys(activeContract.value).length) return;
 
-    const editContract = async () => {
-      if (!!Object.keys(activeContract.value).length) {
-        try {
-          await contracts.edit(activeContract.value);
-        } catch (error) {
-          console.error(error);
-        }
-      } else {
-        deleteContract();
+      const formattedActiveContract = {
+        id: activeContract.value.id,
+        company_id: activeContract.value.company.id,
+        role_id: activeContract.value.role.id,
+        date_start: activeContract.value.date_start,
+        date_end: activeContract.value.date_end,
+        action: activeContract.value.action,
+      };
+      const formattedInactiveContracts = inactiveContracts.value.map(
+        (contract) => ({
+          id: contract.id,
+          company_id: contract.company.id,
+          role_id: contract.role.id,
+          date_start: contract.date_start,
+          date_end: contract.date_end,
+          action: contract.action,
+        })
+      );
+
+      const params = {
+        contracts: [formattedActiveContract],
+        employee_id: employeeId,
+      };
+
+      params.contracts.push(...formattedInactiveContracts);
+
+      try {
+        await contracts.edit(params);
+      } catch (error) {
+        console.error(error);
       }
     };
 
@@ -107,34 +169,50 @@ export default {
 
       try {
         const { data } = await contracts.getByEmployeeId(employeeId, params);
-        activeContract.value = data.find((contract) => contract.active) || {};
-        inactiveContracts.value = data.filter((contract) => !contract.active);
+
+        const formattedContracts = data.map((contract) => ({
+          ...contract,
+          company: { id: contract.company.id, label: contract.company.name },
+          role: { id: contract.role.id, label: contract.role.name },
+          action: 'update',
+        }));
+
+        activeContract.value =
+          formattedContracts.find((contract) => contract.active) || {};
+
+        inactiveContracts.value = formattedContracts.filter(
+          (contract) => !contract.active
+        );
       } catch (error) {
         console.error('Erro buscando contratos:', error);
       }
     };
 
-    const inactivateContract = (inactivatedContractId) => {
+    const inactivateContract = (inactivatedContract) => {
+      activeContract.value.date_end = inactivatedContract.date_end;
       activeContract.value.active = false;
+
       inactiveContracts.value = [
         ...inactiveContracts.value,
         activeContract.value,
       ];
       activeContract.value = {};
-
-      inactivatedContractId = inactivatedContractId;
     };
 
     const modifyContract = async (edittedContract) => {
-      activeContract.value = {
-        id: activeContract.value.id,
-        ...edittedContract,
-      };
+      if (activeContract.value.id) {
+        activeContract.value = {
+          id: activeContract.value.id,
+          ...edittedContract,
+        };
+      }
     };
 
     const openContractModal = () => {
       isContractModalOpened.value = true;
     };
+
+    const isEditing = computed(() => props.isEditing);
 
     onMounted(() => {
       employeeId = props.employeeId;
@@ -147,12 +225,13 @@ export default {
     expose({
       clearFields,
       createContracts,
-      editContract,
+      editContracts,
     });
 
     return {
       activeContract,
       addContract,
+      isEditing,
       fetchContracts,
       inactivateContract,
       inactiveContracts,
@@ -178,6 +257,7 @@ export default {
     <active-contract
       v-if="Object.keys(activeContract).length"
       :contract="activeContract"
+      :is-editing="isEditing"
       @edit-contract="modifyContract"
       @inactivate-contract="inactivateContract"
     />

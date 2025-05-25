@@ -1,10 +1,10 @@
 <script>
-import { Cascader, DatePicker, message, Modal } from 'ant-design-vue';
-import { watch, ref } from 'vue';
-import dayjs from 'dayjs';
-import company from '@/services/company';
 import RoleModal from '@/components/Modals/RoleModal.vue';
+import company from '@/services/company';
 import role from '@/services/role';
+import { Cascader, DatePicker, message, Modal } from 'ant-design-vue';
+import dayjs from 'dayjs';
+import { ref, watch } from 'vue';
 
 export default {
   name: 'ContractModal',
@@ -28,7 +28,7 @@ export default {
   },
 
   setup(props, { emit }) {
-    const dateFormatList = 'DD/MM/YYYY HH:mm';
+    const dateFormatList = 'DD/MM/YYYY';
 
     const companyOptions = ref([]);
     const isEditing = ref(false);
@@ -39,6 +39,7 @@ export default {
     const selectedRoleId = ref('');
 
     const addContract = (newContract) => {
+      newContract.action = 'create';
       emit('add-contract', newContract);
     };
 
@@ -63,14 +64,11 @@ export default {
       const contract = {
         company: {
           id: selectedCompany.data.id,
-          name: selectedCompany.data.name,
+          label: selectedCompany.data.name,
         },
-        role: {
-          id: selectedRole.data.id,
-          name: selectedRole.data.name,
-        },
-        datetime_start: selectedDatetime.value[0],
-        datetime_end: selectedDatetime.value[1],
+        role: { id: selectedRole.data.id, label: selectedRole.data.name },
+        date_start: dayjs(selectedDatetime.value[0]).format('YYYY-MM-DD'),
+        date_end: dayjs(selectedDatetime.value[1]).format('YYYY-MM-DD'),
       };
 
       if (isEditing.value) editContract(contract);
@@ -99,6 +97,7 @@ export default {
     };
 
     const editContract = (edittedContract) => {
+      edittedContract.action = 'update';
       emit('edit-contract', edittedContract);
     };
 
@@ -160,8 +159,8 @@ export default {
         selectedCompanyId.value = props.contract.company.id;
         selectedRoleId.value = props.contract.role.id;
         selectedDatetime.value = [
-          dayjs(props.contract.datetime_start),
-          dayjs(props.contract.datetime_end),
+          dayjs(props.contract.date_start),
+          dayjs(props.contract.date_end),
         ];
       }
     };
@@ -245,10 +244,8 @@ export default {
         <a-range-picker
           v-model:value="selectedDatetime"
           style="width: 100%"
-          show-time
           :format="dateFormatList"
           :placeholder="['Data início', 'Data fim']"
-          :time-picker-props="{ format: 'HH:mm' }"
         />
       </div>
     </div>
