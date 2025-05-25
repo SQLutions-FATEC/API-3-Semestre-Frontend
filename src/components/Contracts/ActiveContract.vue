@@ -1,9 +1,10 @@
 <script>
-import { Button, Tooltip } from 'ant-design-vue';
+import { Button, Tooltip, message } from 'ant-design-vue';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons-vue';
 import { ref, computed } from 'vue';
 import ContractModal from '@/components/Modals/ContractModal.vue';
 import InactivateContractModal from '@/components/Modals/InactivateContractModal.vue';
+import contracts from '@/services/contracts';
 import dayjs from 'dayjs';
 
 export default {
@@ -39,7 +40,16 @@ export default {
       emit('edit-contract', edittedContract);
     };
 
-    const inactivateContract = (inactivatedContractId) => {
+    const inactivateContract = async (inactivatedContractId) => {
+      try {
+        await contracts.inactivate(inactivatedContractId);
+        message.success('O contrato foi inativado');
+      } catch (error) {
+        message.error(
+          'Houve um problema ao inativar o contrato. Tente novamente'
+        );
+        console.error('Erro ao inativar contrato:', error);
+      }
       emit('inactivate-contract', inactivatedContractId);
     };
 
